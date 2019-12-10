@@ -3,23 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public static class  Common
+public static class Common 
 {
-    private static GameObject model;
-
-    public static GameObject GetModel()
+    private static string _modelPath = string.Empty;
+    public static string ModelPath
     {
-        return model;
+        get
+        {
+            return _modelPath;
+        }
     }
 
-    public static void LoadARScene(GameObject modelToCreate)
+    public static void LoadARScene()
     {
-        model = modelToCreate;
         SceneManager.LoadScene("ARScene");
     }
 
     public static void LoadInitialScene()
     {
         SceneManager.LoadScene("InitialScene");
+    }
+
+    public static void QuitApp()
+    {
+        Application.Quit();
     }
 }

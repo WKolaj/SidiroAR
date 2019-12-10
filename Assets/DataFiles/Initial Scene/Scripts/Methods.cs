@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class Methods : MonoBehaviour
 {
-    public GameObject model;
+
     public void LoadARScene()
     {
-        Common.LoadARScene(model);
+        Common.LoadARScene();
     }
 
 
     public void QuitApp()
     {
-        Application.Quit();
+        Common.QuitApp();
+    }
+
+    void Awake()
+    {
+        LoadARScene();
     }
 }

@@ -7,49 +7,9 @@ using UnityEngine.XR.ARFoundation;
 [RequireComponent(typeof(ARRaycastManager))]
 public class PlacementController : MonoBehaviour
 {
-    /// <summary>
-    /// Method for generating size and position of model
-    /// </summary>
-    /// <param name="model">
-    /// Model to measure
-    /// </param>
-    /// <returns>
-    /// Array of vectors
-    /// [0] - size
-    /// [1] - position
-    /// </returns>
-    private static Vector3[] GetSizeAndPositionOfCombinedMesh(GameObject model)
-    {
-        GameObject objectToReturn = new GameObject("object with mesh");
-
-        objectToReturn.AddComponent<MeshFilter>();
-        objectToReturn.AddComponent<MeshRenderer>();
-        MeshFilter[] meshFilters = model.GetComponentsInChildren<MeshFilter>();
-        CombineInstance[] combine = new CombineInstance[meshFilters.Length];
-
-        int i = 0;
-        while (i < meshFilters.Length)
-        {
-            combine[i].mesh = meshFilters[i].sharedMesh;
-            combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
-
-            i++;
-        }
-
-        objectToReturn.transform.GetComponent<MeshFilter>().mesh = new Mesh();
-        objectToReturn.transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
-
-        Mesh mesh = objectToReturn.transform.GetComponent<MeshFilter>().mesh;
-
-        var sizeVector = new Vector3(mesh.bounds.size.x, mesh.bounds.size.y, mesh.bounds.size.z);
-        var positionVector = new Vector3(mesh.bounds.min.x, mesh.bounds.min.y, mesh.bounds.min.z);
-
-        if (objectToReturn != null)
-            Destroy(objectToReturn);
-
-        return new Vector3[] { sizeVector, positionVector };
-    }
-
+    [SerializeField]
+    //only for testing
+    public GameObject modelToPlace;
 
     [SerializeField]
     private GameObject _indicator;
@@ -87,18 +47,6 @@ public class PlacementController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Object OBJ to place on scene
-    /// </summary>
-    protected GameObject ModelToPlace
-    {
-        get
-        {
-            return Common.GetModel(); 
-        }
-
-    }
-
     [SerializeField]
     private GameObject _mainControllerGO;
     public GameObject MainControllerGO
@@ -123,30 +71,54 @@ public class PlacementController : MonoBehaviour
         }
     }
 
-    private GameObject _model = null;
+    [SerializeField]
+    private GameObject _doorComponentsButtonGO;
+    /// <summary>
+    /// Component for representing door components button game object
+    /// </summary>
+    public GameObject DoorComponentsButtonGO
+    {
+        get
+        {
+            return _doorComponentsButtonGO;
+        }
+
+        set
+        {
+            _doorComponentsButtonGO = value;
+        }
+    }
+
+    private DoorComponentsButton _doorComponentsButton;
+    /// <summary>
+    /// Component for representing door components button
+    /// </summary>
+    public DoorComponentsButton DoorComponentsButton
+    {
+        get
+        {
+            return _doorComponentsButton;
+        }
+
+        set
+        {
+            _doorComponentsButton = value;
+        }
+    }
+
+    private OBJModel _model = null;
     /// <summary>
     /// Object OBJ already placed on scene
     /// </summary>
-    protected GameObject Model
+    protected OBJModel Model
     {
         get
         {
             return _model;
         }
 
-        set
-        {
-            _model = value;
-        }
     }
 
-    protected bool ModelShown
-    {
-        get
-        {
-            return Model.activeSelf;
-        }
-    }
 
     protected bool IndicatorShown
     {
@@ -156,15 +128,6 @@ public class PlacementController : MonoBehaviour
         }
     }
 
-    protected void ShowModel()
-    {
-        this.Model.SetActive(true);
-    }
-    protected void HideModel()
-    {
-        this.Model.SetActive(false);
-    }
-
     protected void ShowIndicator()
     {
         this.Indicator.SetActive(true);
@@ -172,24 +135,6 @@ public class PlacementController : MonoBehaviour
     protected void HideIndicator()
     {
         this.Indicator.SetActive(false);
-    }
-
-    private Vector3 _modelSize;
-    protected Vector3 ModelSize
-    {
-        get
-        {
-            return _modelSize;
-        }
-    }
-
-    private Vector3 _modelPosition;
-    protected Vector3 ModelPosition
-    {
-        get
-        {
-            return _modelPosition;
-        }
     }
 
     private Quaternion _initialContainerRotation;
@@ -288,6 +233,55 @@ public class PlacementController : MonoBehaviour
     }
 
     /// <summary>
+    /// Method for initializing door component button
+    /// </summary>
+    private void InitDoorComponentsButton()
+    {
+        //Retrieveng main controller script from main controller game object
+        this._doorComponentsButton = DoorComponentsButtonGO.GetComponent<DoorComponentsButton>();
+
+        this.DoorComponentsButton.onHideDoorComponentsClicked += DoorComponentsButton_onHideDoorComponentsClicked;
+        this.DoorComponentsButton.onShowDoorComponentsClicked += DoorComponentsButton_onShowDoorComponentsClicked;
+
+        DoorComponentsButton.Hide();
+        ShowDoorComponents();
+    }
+
+    /// <summary>
+    /// Method for showing door components of switchboard
+    /// </summary>
+    private void ShowDoorComponents()
+    {
+        this.Model.ShowDoorComponents();
+        this.DoorComponentsButton.SetDoorsToShown();
+    }
+
+    /// <summary>
+    /// Method for hiding door components of switchboard
+    /// </summary>
+    private void HideDoorComponents()
+    {
+        this.Model.HideDoorComponents();
+        this.DoorComponentsButton.SetDoorsToHidden();
+    }
+
+    /// <summary>
+    /// Method invoked when show door compoenent button is clicked
+    /// </summary>
+    private void DoorComponentsButton_onShowDoorComponentsClicked()
+    {
+        ShowDoorComponents();
+    }
+
+    /// <summary>
+    /// Method invoked when hide door compoenent button is clicked
+    /// </summary>
+    private void DoorComponentsButton_onHideDoorComponentsClicked()
+    {
+        HideDoorComponents();
+    }
+
+    /// <summary>
     /// On main controller remove button clicked
     /// </summary>
     private void MainControllerOnRemoveButtonClicked()
@@ -341,7 +335,7 @@ public class PlacementController : MonoBehaviour
     private void InitIndicator()
     {
         //Rescale indicator to the size of model
-        Indicator.transform.localScale = new Vector3(ModelSize.x / Indicator.transform.localScale.x, ModelSize.z / Indicator.transform.localScale.y, 1);
+        Indicator.transform.localScale = new Vector3(Model.Size.x / Indicator.transform.localScale.x, Model.Size.z / Indicator.transform.localScale.y, 1);
 
         //Hide indicator at the begining
         HideIndicator();
@@ -349,22 +343,13 @@ public class PlacementController : MonoBehaviour
 
     private void InitModel()
     {
-        Debug.Log(ModelToPlace);
-        //Creating instance of model and assing it to container
-        Model = Instantiate(ModelToPlace);
-        Model.transform.parent = Container.transform;
+        _model = new OBJModel();
+        _model.Init(modelToPlace);
 
-        //Get and assign model size and position
-        var sizeAndPosition = GetSizeAndPositionOfCombinedMesh(Model);
-        _modelSize = sizeAndPosition[0];
-        _modelPosition = sizeAndPosition[1];
+        //Assinging model to container
+        Model.AssignParent(Container);
 
-        //Center the model according to container
-        Model.transform.Translate(-ModelPosition);
-        Model.transform.Translate(new Vector3(-0.5f * ModelSize.x, 0, -0.5f * ModelSize.z));
-
-        //Hide model at the begining
-        HideModel();
+        Model.Hide();
     }
 
     private void InitRaycastManager()
@@ -394,16 +379,19 @@ public class PlacementController : MonoBehaviour
     {
         if (!RotationInitialized || !PositionInitialized) return;
 
-        ShowModel();
+        Model.Show();
         HideIndicator();
+        DoorComponentsButton.Show();
+        ShowDoorComponents();
     }
 
     public void PickModel()
     {
         if (!RotationInitialized || !PositionInitialized) return;
 
-        HideModel();
+        Model.Hide();
         ShowIndicator();
+        DoorComponentsButton.Hide();
     }
 
     public void RotateContainer(float x, float y, float z)
@@ -431,6 +419,7 @@ public class PlacementController : MonoBehaviour
         InitScreenCenterPoint();
         InitContainer();
         InitMainController();
+        InitDoorComponentsButton();
     }
 
     /// <summary>
@@ -455,7 +444,7 @@ public class PlacementController : MonoBehaviour
     void Update()
     {
         //If model is shown - do not anything
-        if (ModelShown) return;
+        if (Model.Shown) return;
         
         //Casting raycast to real enviroment
         List<ARRaycastHit> hits = CastRaycast();

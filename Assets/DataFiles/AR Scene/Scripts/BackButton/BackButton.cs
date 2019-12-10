@@ -9,6 +9,9 @@ public class BackButton : ClickableButton
         base.onClicked();
 
         //Go back to previous scene
-        Common.LoadInitialScene();
+        //Common.LoadInitialScene();
+
+        //Quiting app for testing
+        Common.QuitApp();
     }
 }
