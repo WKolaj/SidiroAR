@@ -18,6 +18,5 @@ public class Methods : MonoBehaviour
 
     void Awake()
     {
-        LoadARScene();
     }
 }

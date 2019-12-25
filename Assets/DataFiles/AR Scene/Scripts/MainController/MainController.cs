@@ -88,16 +88,6 @@ public class MainController : MonoBehaviour
     public event Action<float> onAngleChanged;
 
     /// <summary>
-    /// Event called when green button clicked
-    /// </summary>
-    public event Action onPlaceButtonClicked;
-
-    /// <summary>
-    /// Event called when red button clicked
-    /// </summary>
-    public event Action onRemoveButtonClicked;
-
-    /// <summary>
     /// Method for initializing ring slider button
     /// </summary>
     private void InitComponents()
@@ -107,35 +97,12 @@ public class MainController : MonoBehaviour
         _placeButton = GetComponentInChildren<PlaceButton>();
         _removeButton = GetComponentInChildren<RemoveButton>();
 
-        PlaceButton.onButtonClicked += PlaceButtonClicked;
-        RemoveButton.onButtonClicked += RemoveButtonClicked;
 
         ShowPlaceButton();
         HideRemoveButton();
         ShowRotationRing();
     }
 
-    /// <summary>
-    /// Method invoked when remove button is clicked
-    /// </summary>
-    private void RemoveButtonClicked()
-    {
-        if(this.onRemoveButtonClicked != null)
-        {
-            this.onRemoveButtonClicked();
-        }
-    }
-
-    /// <summary>
-    /// Method invoked when place button is clicked
-    /// </summary>
-    private void PlaceButtonClicked()
-    {
-        if (this.onPlaceButtonClicked != null)
-        {
-            this.onPlaceButtonClicked();
-        }
-    }
 
     /// <summary>
     /// Method for calculating rotation related to Y axis based on direction vector
@@ -209,7 +176,7 @@ public class MainController : MonoBehaviour
     /// </summary>
     public void ShowPlaceButton()
     {
-        PlaceButton.Show();
+        PlaceButton.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -217,7 +184,7 @@ public class MainController : MonoBehaviour
     /// </summary>
     public void HidePlaceButton()
     {
-        PlaceButton.Hide();
+        PlaceButton.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -225,7 +192,7 @@ public class MainController : MonoBehaviour
     /// </summary>
     public void ShowRemoveButton()
     {
-        RemoveButton.Show();
+        RemoveButton.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -233,6 +200,6 @@ public class MainController : MonoBehaviour
     /// </summary>
     public void HideRemoveButton()
     {
-        RemoveButton.Hide();
+        RemoveButton.gameObject.SetActive(false);
     }
 }

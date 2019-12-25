@@ -12,11 +12,28 @@ public class PlacementController : MonoBehaviour
     public GameObject modelToPlace;
 
     [SerializeField]
-    private GameObject _indicator;
+    private GameObject _indicatorGO;
     /// <summary>
     /// Quad of indicicator of object holder
     /// </summary>
-    public GameObject Indicator
+    public GameObject IndicatorGO
+    {
+        get
+        {
+            return _indicatorGO;
+        }
+
+        set
+        {
+            _indicatorGO = value;
+        }
+    }
+
+    private Indicator _indicator;
+    /// <summary>
+    /// Quad of indicicator of object holder
+    /// </summary>
+    public Indicator Indicator
     {
         get
         {
@@ -26,6 +43,41 @@ public class PlacementController : MonoBehaviour
         set
         {
             _indicator = value;
+        }
+    }
+
+    [SerializeField]
+    private GameObject _indicatorArrowGO;
+    /// <summary>
+    /// Quad of indicicator arrow of object holder
+    /// </summary>
+    public GameObject IndicatorArrowGO
+    {
+        get
+        {
+            return _indicatorArrowGO;
+        }
+
+        set
+        {
+            _indicatorArrowGO = value;
+        }
+    }
+
+    private IndicatorArrow _indicatorArrow;
+    /// <summary>
+    /// Quad of indicicator Arrow of object holder
+    /// </summary>
+    public IndicatorArrow IndicatorArrow
+    {
+        get
+        {
+            return _indicatorArrow;
+        }
+
+        set
+        {
+            _indicatorArrow = value;
         }
     }
 
@@ -72,37 +124,73 @@ public class PlacementController : MonoBehaviour
     }
 
     [SerializeField]
-    private GameObject _doorComponentsButtonGO;
+    private GameObject _showDoorComponentsButtonGO;
     /// <summary>
     /// Component for representing door components button game object
     /// </summary>
-    public GameObject DoorComponentsButtonGO
+    public GameObject ShowDoorComponentsButtonGO
     {
         get
         {
-            return _doorComponentsButtonGO;
+            return _showDoorComponentsButtonGO;
         }
 
         set
         {
-            _doorComponentsButtonGO = value;
+            _showDoorComponentsButtonGO = value;
         }
     }
 
-    private DoorComponentsButton _doorComponentsButton;
+    [SerializeField]
+    private GameObject _hideDoorComponentsButtonGO;
     /// <summary>
-    /// Component for representing door components button
+    /// Component for representing door components button game object
     /// </summary>
-    public DoorComponentsButton DoorComponentsButton
+    public GameObject HideDoorComponentsButtonGO
     {
         get
         {
-            return _doorComponentsButton;
+            return _hideDoorComponentsButtonGO;
         }
 
         set
         {
-            _doorComponentsButton = value;
+            _hideDoorComponentsButtonGO = value;
+        }
+    }
+
+
+    private ShowDoorComponentsButton _showDoorComponentsButton;
+    /// <summary>
+    /// Component for representing door components button
+    /// </summary>
+    public ShowDoorComponentsButton ShowDoorComponentsButton
+    {
+        get
+        {
+            return _showDoorComponentsButton;
+        }
+
+        set
+        {
+            _showDoorComponentsButton = value;
+        }
+    }
+
+    private HideDoorComponentsButton _hideDoorComponentsButton;
+    /// <summary>
+    /// Component for representing door components button
+    /// </summary>
+    public HideDoorComponentsButton HideDoorComponentsButton
+    {
+        get
+        {
+            return _hideDoorComponentsButton;
+        }
+
+        set
+        {
+            _hideDoorComponentsButton = value;
         }
     }
 
@@ -124,17 +212,20 @@ public class PlacementController : MonoBehaviour
     {
         get
         {
-            return Indicator.activeSelf;
+            return IndicatorGO.activeSelf;
         }
     }
 
     protected void ShowIndicator()
     {
-        this.Indicator.SetActive(true);
+        this.IndicatorGO.SetActive(true);
+        this.IndicatorArrowGO.SetActive(true);
     }
+
     protected void HideIndicator()
     {
-        this.Indicator.SetActive(false);
+        this.IndicatorGO.SetActive(false);
+        this.IndicatorArrowGO.SetActive(false);
     }
 
     private Quaternion _initialContainerRotation;
@@ -228,8 +319,6 @@ public class PlacementController : MonoBehaviour
         this._mainController = MainControllerGO.GetComponent<MainController>();
 
         this.MainController.onAngleChanged += OnAngleChanged;
-        this.MainController.onPlaceButtonClicked += MainControllerOnPlaceButtonClicked;
-        this.MainController.onRemoveButtonClicked += MainControllerOnRemoveButtonClicked;
     }
 
     /// <summary>
@@ -238,13 +327,11 @@ public class PlacementController : MonoBehaviour
     private void InitDoorComponentsButton()
     {
         //Retrieveng main controller script from main controller game object
-        this._doorComponentsButton = DoorComponentsButtonGO.GetComponent<DoorComponentsButton>();
+        this._showDoorComponentsButton = ShowDoorComponentsButtonGO.GetComponent<ShowDoorComponentsButton>();
+        this._hideDoorComponentsButton = HideDoorComponentsButtonGO.GetComponent<HideDoorComponentsButton>();
 
-        this.DoorComponentsButton.onHideDoorComponentsClicked += DoorComponentsButton_onHideDoorComponentsClicked;
-        this.DoorComponentsButton.onShowDoorComponentsClicked += DoorComponentsButton_onShowDoorComponentsClicked;
-
-        DoorComponentsButton.Hide();
-        ShowDoorComponents();
+        this.ShowDoorComponentsButton.gameObject.SetActive(false);
+        this.HideDoorComponentsButton.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -253,7 +340,8 @@ public class PlacementController : MonoBehaviour
     private void ShowDoorComponents()
     {
         this.Model.ShowDoorComponents();
-        this.DoorComponentsButton.SetDoorsToShown();
+        this.ShowDoorComponentsButton.gameObject.SetActive(false);
+        this.HideDoorComponentsButton.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -262,13 +350,14 @@ public class PlacementController : MonoBehaviour
     private void HideDoorComponents()
     {
         this.Model.HideDoorComponents();
-        this.DoorComponentsButton.SetDoorsToHidden();
+        this.ShowDoorComponentsButton.gameObject.SetActive(true);
+        this.HideDoorComponentsButton.gameObject.SetActive(false);
     }
 
     /// <summary>
     /// Method invoked when show door compoenent button is clicked
     /// </summary>
-    private void DoorComponentsButton_onShowDoorComponentsClicked()
+    public void HandleShowDoorComponentsClicked()
     {
         ShowDoorComponents();
     }
@@ -276,7 +365,7 @@ public class PlacementController : MonoBehaviour
     /// <summary>
     /// Method invoked when hide door compoenent button is clicked
     /// </summary>
-    private void DoorComponentsButton_onHideDoorComponentsClicked()
+    public void HandleHideDoorComponentsClicked()
     {
         HideDoorComponents();
     }
@@ -284,7 +373,7 @@ public class PlacementController : MonoBehaviour
     /// <summary>
     /// On main controller remove button clicked
     /// </summary>
-    private void MainControllerOnRemoveButtonClicked()
+    public void HandleRemoveButtonClicked()
     {
         this.PickModel();
         MainController.ShowPlaceButton();
@@ -295,7 +384,7 @@ public class PlacementController : MonoBehaviour
     /// <summary>
     /// On main controller place button clicked
     /// </summary>
-    private void MainControllerOnPlaceButtonClicked()
+    public void HandlePlaceButtonClicked()
     {
         this.PlaceModel();
         MainController.HidePlaceButton();
@@ -334,11 +423,22 @@ public class PlacementController : MonoBehaviour
 
     private void InitIndicator()
     {
-        //Rescale indicator to the size of model
-        Indicator.transform.localScale = new Vector3(Model.Size.x / Indicator.transform.localScale.x, Model.Size.z / Indicator.transform.localScale.y, 1);
+        //Assigning indicator component
+        _indicator = IndicatorGO.GetComponent<Indicator>();
+
+        this.Indicator.AdjustSize(Model.Size);
 
         //Hide indicator at the begining
         HideIndicator();
+    }
+
+    private void InitIndicatorArrow()
+    {
+        //Assigning indicator component
+        _indicatorArrow = IndicatorArrowGO.GetComponent<IndicatorArrow>();
+
+        this.IndicatorArrow.AdjustSize(Model.Size);
+
     }
 
     private void InitModel()
@@ -381,7 +481,6 @@ public class PlacementController : MonoBehaviour
 
         Model.Show();
         HideIndicator();
-        DoorComponentsButton.Show();
         ShowDoorComponents();
     }
 
@@ -391,7 +490,8 @@ public class PlacementController : MonoBehaviour
 
         Model.Hide();
         ShowIndicator();
-        DoorComponentsButton.Hide();
+        this.ShowDoorComponentsButton.gameObject.SetActive(false);
+        this.HideDoorComponentsButton.gameObject.SetActive(false);
     }
 
     public void RotateContainer(float x, float y, float z)
@@ -415,6 +515,8 @@ public class PlacementController : MonoBehaviour
     {
         InitRaycastManager();
         InitModel();
+        //Always init arrow before indicator
+        InitIndicatorArrow();
         InitIndicator();
         InitScreenCenterPoint();
         InitContainer();
