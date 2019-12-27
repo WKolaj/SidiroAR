@@ -100,6 +100,7 @@ public class OBJModel : MonoBehaviour
         }
     }
 
+
     /// <summary>
     /// Method for generating size and position of model
     /// </summary>

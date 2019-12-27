@@ -4,8 +4,49 @@ using UnityEngine;
 
 public class ARSceneMethods : MonoBehaviour
 {
-    public void LoadInitialScene()
+    [SerializeField]
+    private GameObject _arCanvasGO;
+    public GameObject ARCanvasGO
     {
-        Common.LoadInitialScene();
+        get
+        {
+            return _arCanvasGO;
+        }
+
+        set
+        {
+            _arCanvasGO = value;
+        }
+    }
+
+    private ARCanvas _arCanvas;
+    public ARCanvas ARCanvas
+    {
+        get
+        {
+            return _arCanvas;
+        }
+
+    }
+
+    private void Awake()
+    {
+        InitARCanvas();
+    }
+
+    private void InitARCanvas()
+    {
+        _arCanvas = ARCanvasGO.GetComponent<ARCanvas>();
+    }
+
+
+    public void TryGoBackToInitialScene()
+    {
+        var dialogBox = ARCanvas.ShowDialogBox("Powrót","Czy na pewno chcesz wrócić do wyboru rozdzielnicy",DialogBoxMode.Question,DialogBoxType.YesNo);
+
+        dialogBox.onYesClicked += new System.Action(() =>
+        {
+            Common.LoadInitialScene();
+        });
     }
 }

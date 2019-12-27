@@ -4,6 +4,41 @@ using UnityEngine;
 
 public class Methods : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject _mainCanvasGO;
+    public GameObject MainCanvasGO
+    {
+        get
+        {
+            return _mainCanvasGO;
+        }
+
+        set
+        {
+            _mainCanvasGO = value;
+        }
+    }
+
+    private MainCanvas _mainCanvas;
+    public MainCanvas MainCanvas
+    {
+        get
+        {
+            return _mainCanvas;
+        }
+
+    }
+
+    void Awake()
+    {
+        InitMainCanvas();
+    }
+
+    private void InitMainCanvas()
+    {
+        _mainCanvas = MainCanvasGO.GetComponent<MainCanvas>();
+    }
+
 
     public void LoadARScene()
     {
@@ -11,12 +46,14 @@ public class Methods : MonoBehaviour
     }
 
 
-    public void QuitApp()
+    public void TryQuitApp()
     {
-        Common.QuitApp();
+        var dialogBox = MainCanvas.ShowDialogBox("Wyjście", "Czy na pewno chcesz opuścić program?", DialogBoxMode.Question, DialogBoxType.YesNo);
+
+        dialogBox.onYesClicked += new System.Action(() =>
+        {
+            Common.QuitApp();
+        });
     }
 
-    void Awake()
-    {
-    }
 }

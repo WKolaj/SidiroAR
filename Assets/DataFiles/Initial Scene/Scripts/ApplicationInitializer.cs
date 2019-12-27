@@ -40,7 +40,12 @@ public class ApplicationInitializer : MonoBehaviour
     /// Name for directory inside app data dir to store models
     /// </summary>
     private static string modelsDirName = "models";
-    
+
+    /// <summary>
+    /// Name for directory inside models directory to store models for default user
+    /// </summary>
+    private static string defaultUserDirName = "_default";
+
     public string AppDirPath
     {
         get
@@ -54,6 +59,14 @@ public class ApplicationInitializer : MonoBehaviour
         get
         {
             return Path.Combine(Application.persistentDataPath, dataDirName, modelsDirName);
+        }
+    }
+
+    public string DefaultUserDirPath
+    {
+        get
+        {
+            return Path.Combine(Application.persistentDataPath, dataDirName, modelsDirName, defaultUserDirName);
         }
     }
 
@@ -82,6 +95,9 @@ public class ApplicationInitializer : MonoBehaviour
         //Create directories if not exist
         if (!Directory.Exists(ModelsDirPath)) Directory.CreateDirectory(ModelsDirPath);
 
+        //Create directories if not exist
+        if (!Directory.Exists(DefaultUserDirPath)) Directory.CreateDirectory(DefaultUserDirPath);
+
         //Initializing all models path
         this.ModelsPath.Clear();
 
@@ -91,8 +107,6 @@ public class ApplicationInitializer : MonoBehaviour
         {
             this.ModelsPath.Add(Path.Combine(ModelsDirPath, name));
         }
-
-
 
         _appIninitalied = true;
     }
