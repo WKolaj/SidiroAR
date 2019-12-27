@@ -21,6 +21,7 @@ public class SwitchboardItem : MonoBehaviour
     /// </summary>
     public void LoadARScene()
     {
+        Common.ModelPath = string.Empty;
         Common.LoadARScene();
     }
 

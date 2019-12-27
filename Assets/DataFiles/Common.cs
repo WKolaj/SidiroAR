@@ -12,6 +12,11 @@ public static class Common
         {
             return _modelPath;
         }
+
+        set
+        {
+            _modelPath = value;
+        }
     }
 
     public static void LoadARScene()

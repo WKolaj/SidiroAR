@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Dummiesman;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -144,18 +145,50 @@ public class OBJModelCreator
     }
 
     /// <summary>
+    /// Creator of OBJ models - for testing loading prefabs directly, without initialization
+    /// </summary>
+    public OBJModelCreator()
+    {
+    }
+
+    /// <summary>
     /// Method for creating new obj model
     /// </summary>
-    /// <param name="parentGameObject">
-    /// Parent for created model
+    /// <param name="parentGO">
+    /// Parent game object for created model
+    /// </param>
+    /// <param name="modelPrefab">
+    /// Optional parameter to load prefab instead of filePath
     /// </param>
     /// <returns>
     /// New obj model
     /// </returns>
-    public OBJModel CreateModel(GameObject parentGameObject)
+    public OBJModel CreateModel(GameObject parentGO, GameObject modelPrefab = null)
     {
-        //TO DO LATER
-        throw new InvalidDataException("Not implemented yet!");
+        GameObject modelGO = null;
+
+        //Creating prefab of model from file if modelprefab does not exist
+        if (modelPrefab == null)
+        {
+            modelGO = MTLFileAvailable ?
+                new OBJLoader().Load(OBJFilePath, MTLFilePath) :
+                new OBJLoader().Load(OBJFilePath);
+        }
+        else
+        {
+            modelGO = GameObject.Instantiate(modelPrefab);
+        }
+
+        modelGO.transform.SetParent(parentGO.transform);
+
+        //Creating new OBJ Model script
+        modelGO.AddComponent<OBJModel>();
+
+        //getting and returning obj model script
+        _model = modelGO.GetComponent<OBJModel>();
+        Model.Init(this);
+
+        return Model;
     }
 
     /// <summary>

@@ -1764,7 +1764,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 248.3658}
+  m_AnchoredPosition: {x: 0, y: 221.14}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &527266679
@@ -3962,8 +3962,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _appInitializerGO: {fileID: 1574269444}
-  _fileBrowserPrefab: {fileID: 1760643962491650, guid: 4599b5ba3543545db92bb18160cea721,
-    type: 3}
   _dialogBoxPrefab: {fileID: 1859937492006263693, guid: 93cb27fca6741b64cbcd586d6ccbddb9,
     type: 3}
   _modelExplorerPrefab: {fileID: 6100721477608214974, guid: 43385acf22ae4e740b35bfab8db8e10a,

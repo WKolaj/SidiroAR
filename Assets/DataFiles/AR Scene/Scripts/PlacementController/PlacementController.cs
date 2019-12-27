@@ -443,11 +443,18 @@ public class PlacementController : MonoBehaviour
 
     private void InitModel()
     {
-        _model = new OBJModel();
-        _model.Init(modelToPlace);
-
-        //Assinging model to container
-        Model.AssignParent(Container);
+        //If model path is loaded - load from file
+        //Else load prefab
+        if(String.IsNullOrEmpty(Common.ModelPath))
+        {
+            var creator = new OBJModelCreator();
+            _model = creator.CreateModel(Container,modelToPlace);
+        }
+        else
+        {
+            var creator = new OBJModelCreator(Common.ModelPath);
+            _model = creator.CreateModel(Container);
+        }
 
         Model.Hide();
     }
@@ -511,7 +518,7 @@ public class PlacementController : MonoBehaviour
     }
 
 
-    private void Start()
+    private void Awake()
     {
         InitRaycastManager();
         InitModel();

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class ModelItem : MonoBehaviour
 {
     private GameObject nameLabel;
+    private GameObject eyeButton;
 
     /// <summary>
     /// Instance of model creator
@@ -79,6 +80,16 @@ public class ModelItem : MonoBehaviour
     private void InitComponents()
     {
         nameLabel = transform.Find("NameLabel").gameObject;
+        eyeButton = transform.Find("EyeButton").gameObject;
+    }
+
+    /// <summary>
+    /// Method for loading AR Scene based on path from game object creator
+    /// </summary>
+    public void LoadARSceneWithGameObjectCreator()
+    {
+        Common.ModelPath = ModelCreator.OBJFilePath;
+        Common.LoadARScene();
     }
 
 }

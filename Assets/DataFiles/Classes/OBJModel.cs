@@ -1,10 +1,24 @@
-﻿using System.Collections;
+﻿using Dummiesman;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class OBJModel : MonoBehaviour
 {
     private static string doorComponentName = "Door";
+
+    /// <summary>
+    /// Creator of obj model
+    /// </summary>
+    private OBJModelCreator _creator;
+    public OBJModelCreator Creator
+    {
+        get
+        {
+            return _creator;
+        }
+
+    }
 
     private List<GameObject> _doorComponents = new List<GameObject>();
     /// <summary>
@@ -18,15 +32,14 @@ public class OBJModel : MonoBehaviour
         }
     }
 
-    private GameObject _obj;
     /// <summary>
-    /// Game object of obj model
+    /// Name of OBJ model
     /// </summary>
-    public GameObject OBJ
+    public string Name
     {
         get
         {
-            return _obj;
+            return Creator.ModelName;
         }
     }
 
@@ -38,30 +51,6 @@ public class OBJModel : MonoBehaviour
         get
         {
             return DoorComponents.Count > 0;
-        }
-    }
-
-    private bool _initialized = false;
-    /// <summary>
-    /// Is OBJModel initialized
-    /// </summary>
-    public bool Initialized
-    {
-        get
-        {
-            return _initialized;
-        }
-    }
-
-    private string _filePath = string.Empty;
-    /// <summary>
-    /// Path to file of OBJ Model
-    /// </summary>
-    public string FilePath
-    {
-        get
-        {
-            return _filePath;
         }
     }
 
@@ -96,7 +85,7 @@ public class OBJModel : MonoBehaviour
     {
         get
         {
-            return OBJ.activeSelf;
+            return gameObject.activeSelf;
         }
     }
 
@@ -148,7 +137,7 @@ public class OBJModel : MonoBehaviour
     {
         DoorComponents.Clear();
 
-        foreach(var child in OBJ.transform)
+        foreach(var child in gameObject.transform)
         {
             if(typeof(Transform).IsAssignableFrom(child.GetType()))
             {
@@ -160,24 +149,22 @@ public class OBJModel : MonoBehaviour
 
     }
 
-    public void Init(GameObject gameObjectTemplate)
+    public void Init(OBJModelCreator creator)
     {
-        this._obj = Instantiate(gameObjectTemplate);
-
+        this._creator = creator;
 
         //Get and assign model size and position
-        var sizeAndPosition = GetSizeAndPositionOfCombinedMesh(OBJ);
+        var sizeAndPosition = GetSizeAndPositionOfCombinedMesh(gameObject);
         _size = sizeAndPosition[0];
         _initialPosition = sizeAndPosition[1];
 
         //Center the model according to container
-        OBJ.transform.Translate(-InitialPosition);
-        OBJ.transform.Translate(new Vector3(-0.5f * Size.x, 0, -0.5f * Size.z));
+        gameObject.transform.Translate(-InitialPosition);
+        gameObject.transform.Translate(new Vector3(-0.5f * Size.x, 0, -0.5f * Size.z));
 
         //Initializing door components
         InitDoorComponents();
 
-        this._initialized = true;
     }
 
     /// <summary>
@@ -207,7 +194,7 @@ public class OBJModel : MonoBehaviour
     /// </summary>
     public void Hide()
     {
-        this.OBJ.SetActive(false);
+        this.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -215,13 +202,7 @@ public class OBJModel : MonoBehaviour
     /// </summary>
     public void Show()
     {
-        this.OBJ.SetActive(true);
+        this.gameObject.SetActive(true);
     }
-
-    public void AssignParent(GameObject parentContainer)
-    {
-        OBJ.transform.parent = parentContainer.transform;
-    }
-
 
 }
