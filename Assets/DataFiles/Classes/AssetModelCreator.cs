@@ -115,7 +115,9 @@ public class AssetModelCreator
     /// </returns>
     public AssetModel CreateModel(GameObject parentGO)
     {
-        GameObject modelPrefab = AssetBundleLoader.LoadBundle(this.BundleFilePath);
+        AssetBundle bundle;
+
+        GameObject modelPrefab = AssetBundleLoader.LoadBundle(this.BundleFilePath, out bundle);
 
         var modelGO = GameObject.Instantiate(modelPrefab);
 
@@ -126,7 +128,7 @@ public class AssetModelCreator
 
         //getting and returning obj model script
         _model = modelGO.GetComponent<AssetModel>();
-        Model.Init(this);
+        Model.Init(this, bundle);
 
         return Model;
     }

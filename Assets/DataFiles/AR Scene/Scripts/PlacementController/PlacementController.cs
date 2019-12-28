@@ -371,6 +371,7 @@ public class PlacementController : MonoBehaviour
         HideDoorComponents();
     }
 
+
     /// <summary>
     /// On main controller remove button clicked
     /// </summary>

@@ -19,6 +19,19 @@ public class AssetModel : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Asset bundle containing model template
+    /// </summary>
+    private AssetBundle _bundle = null;
+    public AssetBundle Bundle
+    {
+        get
+        {
+            return _bundle;
+        }
+
+    }
+
     private List<GameObject> _doorComponents = new List<GameObject>();
     /// <summary>
     /// List containing components for door elements
@@ -148,9 +161,10 @@ public class AssetModel : MonoBehaviour
 
     }
 
-    public void Init(AssetModelCreator creator)
+    public void Init(AssetModelCreator creator, AssetBundle bundle)
     {
         this._creator = creator;
+        this._bundle = bundle;
 
         //Get and assign model size and position
         var sizeAndPosition = GetSizeAndPositionOfCombinedMesh(gameObject);
@@ -164,6 +178,18 @@ public class AssetModel : MonoBehaviour
         //Initializing door components
         InitDoorComponents();
 
+    }
+
+    /// <summary>
+    /// Method from unloading asset model (and its bundle) from app
+    /// </summary>
+    public void Unload()
+    {
+        if(this.Bundle != null)
+        {
+            //Unloading bundle from app
+            AssetBundleLoader.Unload(this.Bundle);
+        }
     }
 
     /// <summary>
@@ -204,4 +230,12 @@ public class AssetModel : MonoBehaviour
         this.gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Method called on destroing object
+    /// </summary>
+    private void OnDestroy()
+    {
+        //Unloading asset bundle when destroying model
+        Unload();
+    }
 }
