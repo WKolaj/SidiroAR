@@ -302,7 +302,7 @@ public class PlacementController : MonoBehaviour
         }
     }
 
-    private UnityEngine.XR.ARSubsystems.TrackableType _trackingType = UnityEngine.XR.ARSubsystems.TrackableType.PlaneWithinBounds;
+    private UnityEngine.XR.ARSubsystems.TrackableType _trackingType = UnityEngine.XR.ARSubsystems.TrackableType.Planes;
     public UnityEngine.XR.ARSubsystems.TrackableType TrackingType
     {
         get
