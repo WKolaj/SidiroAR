@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
@@ -194,11 +195,11 @@ public class PlacementController : MonoBehaviour
         }
     }
 
-    private OBJModel _model = null;
+    private AssetModel _model = null;
     /// <summary>
     /// Object OBJ already placed on scene
     /// </summary>
-    protected OBJModel Model
+    protected AssetModel Model
     {
         get
         {
@@ -443,18 +444,8 @@ public class PlacementController : MonoBehaviour
 
     private void InitModel()
     {
-        //If model path is loaded - load from file
-        //Else load prefab
-        if(String.IsNullOrEmpty(Common.ModelPath))
-        {
-            var creator = new OBJModelCreator();
-            _model = creator.CreateModel(Container,modelToPlace);
-        }
-        else
-        {
-            var creator = new OBJModelCreator(Common.ModelPath);
-            _model = creator.CreateModel(Container);
-        }
+        var creator = new AssetModelCreator(Common.ModelPath);
+        _model = creator.CreateModel(Container);
 
         Model.Hide();
     }

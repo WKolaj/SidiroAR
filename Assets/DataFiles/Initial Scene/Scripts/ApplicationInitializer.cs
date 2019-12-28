@@ -108,6 +108,7 @@ public class ApplicationInitializer : MonoBehaviour
             this.ModelsPath.Add(Path.Combine(ModelsDirPath, name));
         }
 
+
         _appIninitalied = true;
     }
 }

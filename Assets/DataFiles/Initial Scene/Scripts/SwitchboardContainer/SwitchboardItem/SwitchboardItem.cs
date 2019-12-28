@@ -16,15 +16,6 @@ public class SwitchboardItem : MonoBehaviour
     {
     }
 
-    /// <summary>
-    /// Method for loading ARScene
-    /// </summary>
-    public void LoadARScene()
-    {
-        Common.ModelPath = string.Empty;
-        Common.LoadARScene();
-    }
-
     private void InitResizeMechanism()
     {
         rectTransform = GetComponent<RectTransform>();

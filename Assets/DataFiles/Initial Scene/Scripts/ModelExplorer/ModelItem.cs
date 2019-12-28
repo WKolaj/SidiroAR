@@ -12,8 +12,8 @@ public class ModelItem : MonoBehaviour
     /// <summary>
     /// Instance of model creator
     /// </summary>
-    private OBJModelCreator _modeCreator;
-    public OBJModelCreator ModelCreator
+    private AssetModelCreator _modeCreator;
+    public AssetModelCreator ModelCreator
     {
         get
         {
@@ -27,7 +27,7 @@ public class ModelItem : MonoBehaviour
     /// <param name="modelCreator">
     /// Model creator to set
     /// </param>
-    public void AssignModelCreator(OBJModelCreator modelCreator)
+    public void AssignModelCreator(AssetModelCreator modelCreator)
     {
         this._modeCreator = modelCreator;
         SetLabelText(this.ModelCreator.ModelName);
@@ -88,7 +88,7 @@ public class ModelItem : MonoBehaviour
     /// </summary>
     public void LoadARSceneWithGameObjectCreator()
     {
-        Common.ModelPath = ModelCreator.OBJFilePath;
+        Common.ModelPath = ModelCreator.BundleFilePath;
         Common.LoadARScene();
     }
 

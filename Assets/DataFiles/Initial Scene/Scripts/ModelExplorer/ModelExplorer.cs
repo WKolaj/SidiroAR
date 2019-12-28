@@ -47,8 +47,8 @@ public class ModelExplorer : MonoBehaviour
     /// <summary>
     /// All model creators read from directory
     /// </summary>
-    private List<OBJModelCreator> _allCreators = null;
-    public List<OBJModelCreator> AllCreators
+    private List<AssetModelCreator> _allCreators = null;
+    public List<AssetModelCreator> AllCreators
     {
         get
         {
@@ -87,7 +87,7 @@ public class ModelExplorer : MonoBehaviour
     private void InitCreators()
     {
         //Getting all possible creators from directory
-        _allCreators = OBJModelCreator.GetCreatorsFromDirectory(DirPath);
+        _allCreators = AssetModelCreator.GetCreatorsFromDirectory(DirPath);
 
         //Instantiating model items for each creator an assigning them
         foreach (var creator in AllCreators)
