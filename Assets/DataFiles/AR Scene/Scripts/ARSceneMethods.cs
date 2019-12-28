@@ -39,6 +39,15 @@ public class ARSceneMethods : MonoBehaviour
         _arCanvas = ARCanvasGO.GetComponent<ARCanvas>();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            //Trying to update when back button clicked
+            TryGoBackToInitialScene();
+        }
+    }
+
 
     public void TryGoBackToInitialScene()
     {

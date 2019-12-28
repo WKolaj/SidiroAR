@@ -45,6 +45,14 @@ public class Methods : MonoBehaviour
         Common.LoadARScene();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            //Trying to quit when back button clicked
+            TryQuitApp();
+        }
+    }
 
     public void TryQuitApp()
     {
