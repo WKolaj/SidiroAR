@@ -90,7 +90,10 @@ public class AssetModelCreator
     /// <param name="smdlFilePath">
     /// Path for smdl file
     /// </param>
-    public AssetModelCreator(string smdlFilePath)
+    /// <param name="name">
+    /// Name of model (name set as name of file if null is given)
+    /// </param>
+    public AssetModelCreator(string smdlFilePath, string name = null)
     {
         //Checking obj file path
         var pathCheckResult = CheckSMDLFilePath(smdlFilePath);
@@ -100,7 +103,17 @@ public class AssetModelCreator
         this._bundleFilePath = smdlFilePath;
 
         //Assigning model name
-        this._modelName = AssetModelCreator.GetModelName(smdlFilePath);
+
+        if(name != null)
+        {
+            //Setting name based on given argument - if exisists
+            this._modelName = name;
+        }
+        else
+        {
+            //If argument does not exist - set name according to file name
+            this._modelName = AssetModelCreator.GetModelName(smdlFilePath);
+        }
 
     }
 

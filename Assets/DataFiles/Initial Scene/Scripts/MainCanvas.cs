@@ -151,7 +151,7 @@ public class MainCanvas : MonoBehaviour
 
         ModelExplorer modelExplorerScript = actualModelExplorer.GetComponent<ModelExplorer>();
 
-        modelExplorerScript.Init(AppInitializer.DefaultUserDirPath);
+        modelExplorerScript.Init(Common.DefaultUserDirPath);
 
         return modelExplorerScript;
     }
