@@ -30,6 +30,20 @@ public class User
     }
 
     /// <summary>
+    /// Class representing user
+    /// </summary> 
+    /// <param name="jsonData">
+    /// json data of user
+    /// </param>
+    /// <param name="loader">
+    /// User loader used to create this user
+    /// </param>
+    public User(UserJSONData jsonData, UserLoader loader)
+    {
+        Init(jsonData.id, jsonData.name, jsonData.jwt, UserLoader.GenerateAssetModelLoaders(this, jsonData.modelIds,jsonData.modelNames), loader);
+    }
+
+    /// <summary>
     /// Method for initializing user object
     /// </summary>
     /// <param name="id">
@@ -49,9 +63,10 @@ public class User
     /// </param>
     private void Init(string id, string name, string jwt, List<AssetModelLoader> models, UserLoader loader)
     {
-        CreateUserDirIfNotExists();
         this._userLoader = loader;
         SetData(id, name, jwt, models);
+        //Has to be invoked after set data - require setting of id!
+        CreateUserDirIfNotExists();
     }
 
 
@@ -135,7 +150,7 @@ public class User
     /// </summary>
     private void CreateUserDirIfNotExists()
     {
-        if(!Directory.Exists(this.DirectoryPath))
+        if (!Directory.Exists(this.DirectoryPath))
         {
             Directory.CreateDirectory(this.DirectoryPath);
         }
@@ -166,6 +181,17 @@ public class User
     }
 
     /// <summary>
+    /// Method for setting new data of user
+    /// </summary>
+    /// <param name="jsonData">
+    /// users jsonData
+    /// </param>
+    public void SetData(UserJSONData jsonData)
+    {
+        this.SetData(jsonData.id, jsonData.name, jsonData.jwt, UserLoader.GenerateAssetModelLoaders(this, jsonData.modelIds, jsonData.modelNames));
+    }
+
+    /// <summary>
     /// Method for refreshing user data from server
     /// </summary>
     public void RefreshDataFromServer()
@@ -178,7 +204,7 @@ public class User
     /// </summary>
     public void LogOut()
     {
-        if (this.UserLoader.LoggedUser == this)
+        if (UserLoader.LoggedUser == this)
             this.UserLoader.LogoutUser();
     }
 
@@ -189,5 +215,6 @@ public class User
     {
         this.UserLoader.LoginUser(this);
     }
+
 
 }
