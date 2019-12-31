@@ -47,7 +47,7 @@ public class ARCanvas : MonoBehaviour
     /// <returns>
     /// Dialog box script
     /// </returns>
-    public DialogBox ShowDialogBox(string titleText, string contentText, DialogBoxMode mode, DialogBoxType type)
+    public DialogBoxWindow ShowDialogBox(string titleText, string contentText, DialogBoxMode mode, DialogBoxType type)
     {
         if (actualDialogBox) Destroy(actualDialogBox);
 
@@ -56,7 +56,7 @@ public class ARCanvas : MonoBehaviour
 
         actualDialogBox = dialogBox;
 
-        DialogBox dialogBoxScript = dialogBox.GetComponent<DialogBox>();
+        DialogBoxWindow dialogBoxScript = dialogBox.GetComponent<DialogBoxWindow>();
 
         dialogBoxScript.SetMode(mode);
         dialogBoxScript.SetType(type);

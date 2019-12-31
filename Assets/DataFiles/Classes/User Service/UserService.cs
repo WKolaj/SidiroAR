@@ -35,7 +35,7 @@ public class UserService
         }
         else
         {
-            return null;
+            throw new InvalidOperationException("Invalid token provided");
         }
 
     }
@@ -79,7 +79,7 @@ public class UserService
         }
         else
         {
-            return null;
+            throw new InvalidOperationException("User or password invalid");
         }
     }
 }

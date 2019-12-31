@@ -20,19 +20,55 @@ public class ApplicationInitializer : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    private MainCanvas _mainCanvasGO;
+    /// <summary>
+    /// Main canvas object
+    /// </summary>
+    public MainCanvas MainCanvasGO
+    {
+        get
+        {
+            return _mainCanvasGO;
+        }
+
+        set
+        {
+            _mainCanvasGO = value;
+        }
+    }
+
+    private MainCanvas mainCanvas;
+
+    [SerializeField]
+    private UserLoader _userLoader;
+    /// <summary>
+    /// Object of user loader - for creating and managing users
+    /// </summary>
+    public UserLoader Loader
+    {
+        get
+        {
+            return _userLoader;
+        }
+        set
+        {
+            _userLoader = value;
+        }
+    }
+
 
     // Start is called before the first frame update
     void Awake()
     {
-        //try
-        //{
-            //Initializing app if not initialzied
-            if (!AppInitialized) InitApp();
-        //}
-        //catch(Exception err)
-        //{
-        //    Debug.Log(err.Message);
-        //}
+        InitializeComponents();
+        if (!AppInitialized) InitApp();
+    }
+
+    private void InitializeComponents()
+    {
+        mainCanvas = MainCanvasGO.GetComponent<MainCanvas>();
+        mainCanvas.SetAppInitializer(this);
     }
 
     /// <summary>
@@ -49,48 +85,37 @@ public class ApplicationInitializer : MonoBehaviour
         //Create directories if not exist
         if (!Directory.Exists(Common.DefaultUserDirPath)) Directory.CreateDirectory(Common.DefaultUserDirPath);
 
-        //Purelty for test - remove later
-        var userLoader = new UserLoader();
-        userLoader.LoginUserFromPlayerPrefs();
-        if(UserLoader.LoggedUser == null)
+        InitUserLoader();
+
+        _appIninitalied = true;
+    }
+
+    /// <summary>
+    /// Method for initializing user loader
+    /// </summary>
+    private void InitUserLoader()
+    {
+        //Trying loading user from prefs
+        Loader.LoginUserFromPlayerPrefs();
+
+        if(UserLoader.LoggedUser != null)
         {
-            Debug.Log(null);
+            RefreshDataAccordingToNewUser(UserLoader.LoggedUser);
         }
         else
         {
-            Debug.Log(UserLoader.LoggedUser.ID);
-            Debug.Log(UserLoader.LoggedUser.Name);
-            Debug.Log(UserLoader.LoggedUser.JWT);
-
-            foreach(var model in UserLoader.LoggedUser.ModelList)
-            {
-                Debug.Log(model.ID + " - " + model.ModelName);
-            }
-
+            mainCanvas.ShowLoginWindow();
         }
+    }
 
-        var task = userLoader.LoginUserFromServer("witold.kolaj@siemens.com","1234");
+    /// <summary>
+    /// Method for setting up ui based on new user object
+    /// </summary>
+    /// <param name="user">
+    /// New user object
+    /// </param>
+    private void RefreshDataAccordingToNewUser(User user)
+    {
 
-
-        task.ContinueWith((a)=> {
-            if (UserLoader.LoggedUser == null)
-            {
-                Debug.Log(null);
-            }
-            else
-            {
-                Debug.Log(UserLoader.LoggedUser.ID);
-                Debug.Log(UserLoader.LoggedUser.Name);
-                Debug.Log(UserLoader.LoggedUser.JWT);
-
-                foreach (var model in UserLoader.LoggedUser.ModelList)
-                {
-                    Debug.Log(model.ID + " - " + model.ModelName);
-                }
-
-            }
-        });
-
-        _appIninitalied = true;
     }
 }

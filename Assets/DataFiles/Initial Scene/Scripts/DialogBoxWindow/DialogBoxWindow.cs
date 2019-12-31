@@ -15,7 +15,7 @@ public enum DialogBoxMode
 }
 
 
-public class DialogBox : MonoBehaviour
+public class DialogBoxWindow : MonoBehaviour
 {
     public event Action onOkClicked;
     public event Action onCancelClicked;
@@ -126,14 +126,16 @@ public class DialogBox : MonoBehaviour
     /// </summary>
     void InitComponents()
     {
-        var infoItem = transform.Find("InfoItem").gameObject;
+        var dialogBox = transform.Find("DialogBox").gameObject;
+
+        var infoItem = dialogBox.transform.Find("InfoItem").gameObject;
         infoIcon = infoItem.transform.Find("InfoIcon").gameObject;
 
         var infoContainer = infoItem.transform.Find("InfoContainer").gameObject;
         infoTitleLabel = infoContainer.transform.Find("InfoTitleLabel").gameObject;
         infoContentLabel = infoContainer.transform.Find("InfoContentLabel").gameObject;
 
-        var buttonsItemContainer = transform.Find("ButtonsItemContainer").gameObject;
+        var buttonsItemContainer = dialogBox.transform.Find("ButtonsItemContainer").gameObject;
         okButton = buttonsItemContainer.transform.Find("OkButton").gameObject;
         cancelButton = buttonsItemContainer.transform.Find("CancelButton").gameObject;
         yesButton = buttonsItemContainer.transform.Find("YesButton").gameObject;

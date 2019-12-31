@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class UserLoader 
+public class UserLoader : MonoBehaviour 
 {
     private static string loggedUserLabel = "appData_currentlyLoggedUser";
 
@@ -23,7 +23,7 @@ public class UserLoader
     /// <summary>
     /// Class for loading users from server
     /// </summary>
-    public UserLoader()
+    public UserLoader() : base()
     {
         Init();
     }
@@ -33,7 +33,7 @@ public class UserLoader
     /// </summary>
     private void Init()
     {
-        //TO DO LATER
+
     }
 
     /// <summary>
@@ -132,6 +132,7 @@ public class UserLoader
         var jsonToReturn = new UserJSONData();
         jsonToReturn.id = user.ID;
         jsonToReturn.name = user.Name;
+        jsonToReturn.jwt = user.JWT;
         jsonToReturn.modelIds = UserLoader.GenerateAssetModelIds(user.ModelList);
         jsonToReturn.modelNames = UserLoader.GenerateAssetModelNames(user.ModelList);
 
@@ -249,7 +250,8 @@ public class UserLoader
         else
         {
             //Removing data from player prefs if there is no logged user
-            PlayerPrefs.DeleteKey(loggedUserLabel);
+            PlayerPrefs.SetString(loggedUserLabel, null);
+
         }
     }
 

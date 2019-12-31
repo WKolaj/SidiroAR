@@ -4,24 +4,6 @@ using UnityEngine;
 
 public class MainCanvas : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject _appInitializerGO;
-    /// <summary>
-    /// Application initizer game object
-    /// </summary>
-    public GameObject AppInitializerGO
-    {
-        get
-        {
-            return _appInitializerGO;
-        }
-
-        set
-        {
-            _appInitializerGO = value;
-        }
-    }
-
     private ApplicationInitializer _appInitializer;
     /// <summary>
     /// Application initizer game object
@@ -76,6 +58,43 @@ public class MainCanvas : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    private GameObject _progressWindowPrefab;
+    /// <summary>
+    /// Prefab of progress window
+    /// </summary>
+    public GameObject ProgressWindowPrefab
+    {
+        get
+        {
+            return _progressWindowPrefab;
+        }
+
+        set
+        {
+            _progressWindowPrefab = value;
+        }
+    }
+
+
+    [SerializeField]
+    private GameObject _loginWindowPrefab;
+    /// <summary>
+    /// Prefab of loginWindow
+    /// </summary>
+    public GameObject LoginWindowPrefab
+    {
+        get
+        {
+            return _loginWindowPrefab;
+        }
+
+        set
+        {
+            _loginWindowPrefab = value;
+        }
+    }
+
     /// <summary>
     /// Actual dialog box - shown in order to check no to instantiate more than one dialog box at once
     /// </summary>
@@ -86,15 +105,27 @@ public class MainCanvas : MonoBehaviour
     /// </summary>
     private GameObject actualModelExplorer = null;
 
+    /// <summary>
+    /// Actual progress window - shown in order to check no to instantiate more than one model explorer at once
+    /// </summary>
+    private GameObject actualProgressWindow = null;
+
+    /// <summary>
+    /// Actual login window - shown in order to check no to instantiate more than one model explorer at once
+    /// </summary>
+    private GameObject actualLoginWindow = null;
+
     void Awake()
     {
-        InitAppInitializer();
-
     }
 
-    private void InitAppInitializer()
+    /// <summary>
+    /// Method for setting app initializer
+    /// </summary>
+    public void SetAppInitializer(ApplicationInitializer initializer)
     {
-        AppInitializer = AppInitializerGO.GetComponent<ApplicationInitializer>();
+        //Has to be invoked separetelly - sometime before awake of main canvas (login window on beginin)
+        AppInitializer = initializer;
     }
 
     /// <summary>
@@ -115,7 +146,7 @@ public class MainCanvas : MonoBehaviour
     /// <returns>
     /// Dialog box script
     /// </returns>
-    public DialogBox ShowDialogBox(string titleText, string contentText, DialogBoxMode mode, DialogBoxType type)
+    public DialogBoxWindow ShowDialogBox(string titleText, string contentText, DialogBoxMode mode, DialogBoxType type)
     {
         if (actualDialogBox) Destroy(actualDialogBox);
 
@@ -124,7 +155,7 @@ public class MainCanvas : MonoBehaviour
 
         actualDialogBox = dialogBox;
 
-        DialogBox dialogBoxScript = dialogBox.GetComponent<DialogBox>();
+        DialogBoxWindow dialogBoxScript = dialogBox.GetComponent<DialogBoxWindow>();
 
         dialogBoxScript.SetMode(mode);
         dialogBoxScript.SetType(type);
@@ -155,4 +186,45 @@ public class MainCanvas : MonoBehaviour
 
         return modelExplorerScript;
     }
+
+    /// <summary>
+    /// Method for progress window
+    /// </summary>
+    public void ShowProgressWindow()
+    {
+        if (actualProgressWindow) Destroy(actualProgressWindow);
+
+        GameObject progressWindow = Instantiate(ProgressWindowPrefab, transform);
+        progressWindow.name = "ProgressWindow";
+
+        actualProgressWindow = progressWindow;
+
+    }
+
+
+    /// <summary>
+    /// Method for hiding progress window
+    /// </summary>
+    public void HideProgressWindow()
+    {
+        if (actualProgressWindow) Destroy(actualProgressWindow);
+
+    }
+    
+    /// <summary>
+    /// Method for showing login window
+    /// </summary>
+    public void ShowLoginWindow()
+    {
+        if (actualLoginWindow) Destroy(actualLoginWindow);
+
+        GameObject loginWindow = Instantiate(this.LoginWindowPrefab, transform);
+        loginWindow.name = "LoginWindow";
+
+        LoginWindow loginWindowScript = loginWindow.GetComponent<LoginWindow>();
+        loginWindowScript.Init(this,AppInitializer.Loader);
+
+        actualLoginWindow = loginWindow;
+    }
+
 }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class User
@@ -194,9 +195,9 @@ public class User
     /// <summary>
     /// Method for refreshing user data from server
     /// </summary>
-    public void RefreshDataFromServer()
+    public async Task RefreshDataFromServer()
     {
-        this.UserLoader.RefreshUsersDataFromServer(this);
+        await this.UserLoader.RefreshUsersDataFromServer(this);
     }
 
     /// <summary>

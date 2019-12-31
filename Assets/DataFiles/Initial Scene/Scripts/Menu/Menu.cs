@@ -39,6 +39,7 @@ public class Menu : MonoBehaviour
         }
     }
 
+
     private Animator slidingAnimator;
 
     // Start is called before the first frame update
@@ -101,6 +102,29 @@ public class Menu : MonoBehaviour
     private void HandleFileBrowserFileSelected(string filePath)
     {
         Debug.Log(filePath);
+    }
+
+    /// <summary>
+    /// Method for handling click of user button
+    /// </summary>
+    public void HandleUserButtonClicked()
+    {
+        if(UserLoader.LoggedUser == null)
+        {
+            MainCanvas.ShowLoginWindow();
+        }
+    }
+
+    /// <summary>
+    /// Method for handling click of logout button
+    /// </summary>
+    public void HandleLogoutButton()
+    {
+        if (UserLoader.LoggedUser != null)
+        {
+            MainCanvas.AppInitializer.Loader.LogoutUser();
+            MainCanvas.ShowLoginWindow();
+        }
     }
 
 }
