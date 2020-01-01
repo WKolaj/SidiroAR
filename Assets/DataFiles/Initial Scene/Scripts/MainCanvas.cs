@@ -1,26 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainCanvas : MonoBehaviour
+public class MainCanvas : InitializableWithInitializerBase
 {
-    private ApplicationInitializer _appInitializer;
-    /// <summary>
-    /// Application initizer game object
-    /// </summary>
-    public ApplicationInitializer AppInitializer
-    {
-        get
-        {
-            return _appInitializer;
-        }
-
-        set
-        {
-            _appInitializer = value;
-        }
-    }
-
 
     [SerializeField]
     private GameObject _dialogBoxPrefab;
@@ -115,17 +99,25 @@ public class MainCanvas : MonoBehaviour
     /// </summary>
     private GameObject actualLoginWindow = null;
 
-    void Awake()
-    {
-    }
+    //Object of slider menu
+    private Menu menu;
+
+    //Object of container for switchboard items
+    private SwitchboardContainer switchboardContainer = null;
 
     /// <summary>
-    /// Method for setting app initializer
+    /// Method for initializing all components
     /// </summary>
-    public void SetAppInitializer(ApplicationInitializer initializer)
+    protected override void OnInitializeComponents()
     {
-        //Has to be invoked separetelly - sometime before awake of main canvas (login window on beginin)
-        AppInitializer = initializer;
+        var menuGO = this.transform.Find("Menu").gameObject;
+        menu = menuGO.GetComponent<Menu>();
+
+        var switchboardContainerGO = this.transform.Find("SwitchboardContainer").gameObject;
+        switchboardContainer = switchboardContainerGO.GetComponent<SwitchboardContainer>();
+
+        menu.InitializeComponents(Initalizer);
+        switchboardContainer.InitializeComponents(Initalizer);
     }
 
     /// <summary>
@@ -222,9 +214,22 @@ public class MainCanvas : MonoBehaviour
         loginWindow.name = "LoginWindow";
 
         LoginWindow loginWindowScript = loginWindow.GetComponent<LoginWindow>();
-        loginWindowScript.Init(this,AppInitializer.Loader);
+        loginWindowScript.Init(this,Initalizer.Loader);
 
         actualLoginWindow = loginWindow;
+    }
+
+    /// <summary>
+    /// Method for refreshing display of all user elements
+    /// </summary>
+    /// <param name="newUser">
+    /// Object of new user
+    /// </param>
+    public void RefreshUserDisplay(User newUser)
+    {
+
+        this.menu.RefreshUserDisplay(newUser);
+        this.switchboardContainer.RefreshUserDisplay(newUser);
     }
 
 }

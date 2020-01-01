@@ -83,6 +83,7 @@ public class LoginWindow : MonoBehaviour
             await userLoader.LoginUserFromServer(this.userIDInput.text, this.userPasswordIDInput.text);
             mainCanvas.HideProgressWindow();
             Hide();
+            mainCanvas.RefreshUserDisplay(UserLoader.LoggedUser);
         }
         catch(Exception err)
         {
@@ -99,5 +100,6 @@ public class LoginWindow : MonoBehaviour
     public void HandleOfflineButtonClicked()
     {
         Hide();
+        mainCanvas.RefreshUserDisplay(UserLoader.LoggedUser);
     }
 }

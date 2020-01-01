@@ -1,8 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Menu : MonoBehaviour
+public class Menu : InitializableWithInitializerBase
 {
     [SerializeField]
     private GameObject _mainCanvasGO;
@@ -19,6 +22,42 @@ public class Menu : MonoBehaviour
         set
         {
             _mainCanvasGO = value;
+        }
+    }
+
+    [SerializeField]
+    private Sprite _loginButtonIconPrefab;
+    /// <summary>
+    /// Login button icon
+    /// </summary>
+    public Sprite LoginButtonIconPrefab
+    {
+        get
+        {
+            return _loginButtonIconPrefab;
+        }
+
+        set
+        {
+            _loginButtonIconPrefab = value;
+        }
+    }
+
+    [SerializeField]
+    private Sprite _logoutButtonIconPrefab;
+    /// <summary>
+    /// Logout button icon
+    /// </summary>
+    public Sprite LogoutButtonIconPrefab
+    {
+        get
+        {
+            return _logoutButtonIconPrefab;
+        }
+
+        set
+        {
+            _logoutButtonIconPrefab = value;
         }
     }
 
@@ -41,26 +80,28 @@ public class Menu : MonoBehaviour
 
 
     private Animator slidingAnimator;
+    private TextMeshProUGUI userNameLabel;
+    private Image loginButtonIcon;
+    private TextMeshProUGUI loginButtonLabel;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        InitAnimator();
-        InitMainCanvas();
-    }
-
-
-    /// <summary>
-    /// Method for initializing animator
-    /// </summary>
-    private void InitAnimator()
+    protected override void OnInitializeComponents()
     {
         this.slidingAnimator = GetComponentInChildren<Animator>();
-    }
-
-    private void InitMainCanvas()
-    {
         MainCanvas = MainCanvasGO.GetComponent<MainCanvas>();
+
+        var menuListMaskGO = this.transform.Find("MenuListMask").gameObject;
+        var menuListGO = menuListMaskGO.transform.Find("MenuList").gameObject;
+
+        var userItemGO = menuListGO.transform.Find("UserItem").gameObject;
+        var userNameLabelGO = userItemGO.transform.Find("UserNameLabel").gameObject;
+        this.userNameLabel = userNameLabelGO.GetComponent<TextMeshProUGUI>();
+
+        var loginItemGO = menuListGO.transform.Find("LoginItem").gameObject;
+        var loginButtonGO = loginItemGO.transform.Find("LoginButton").gameObject;
+        loginButtonIcon = loginButtonGO.GetComponent<Image>();
+        var loginLabelGO = loginItemGO.transform.Find("LoginLabel").gameObject;
+        loginButtonLabel = loginLabelGO.GetComponent<TextMeshProUGUI>();
+
     }
 
     /// <summary>
@@ -118,12 +159,46 @@ public class Menu : MonoBehaviour
     /// <summary>
     /// Method for handling click of logout button
     /// </summary>
-    public void HandleLogoutButton()
+    public void HandleLoginButtonClicked()
     {
         if (UserLoader.LoggedUser != null)
         {
-            MainCanvas.AppInitializer.Loader.LogoutUser();
+            var dialogBoxResult = MainCanvas.ShowDialogBox("Wylogowanie", "Czy na pewno chcesz się wylogować?", DialogBoxMode.Question, DialogBoxType.YesNo);
+            dialogBoxResult.onYesClicked += new Action(() =>
+            {
+                MainCanvas.Initalizer.Loader.LogoutUser();
+                MainCanvas.ShowLoginWindow();
+                this.SlideOut();
+                
+            });
+        }
+        else
+        {
             MainCanvas.ShowLoginWindow();
+            this.SlideOut();
+        }
+
+    }
+
+    /// <summary>
+    /// Method for refreshing display of all user elements
+    /// </summary>
+    /// <param name="newUser">
+    /// Object of new user
+    /// </param>
+    public void RefreshUserDisplay(User newUser)
+    {
+        if(newUser != null)
+        {
+            this.userNameLabel.SetText(newUser.Name);
+            this.loginButtonIcon.sprite = this.LogoutButtonIconPrefab;
+            this.loginButtonLabel.SetText("Wyloguj");
+        }
+        else
+        {
+            this.userNameLabel.SetText(string.Empty);
+            this.loginButtonIcon.sprite = this.LoginButtonIconPrefab;
+            this.loginButtonLabel.SetText("Zaloguj");
         }
     }
 

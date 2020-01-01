@@ -58,17 +58,16 @@ public class ApplicationInitializer : MonoBehaviour
     }
 
 
-    // Start is called before the first frame update
-    void Awake()
+    private void Awake()
     {
         InitializeComponents();
-        if (!AppInitialized) InitApp();
+        InitApp();
     }
 
     private void InitializeComponents()
     {
         mainCanvas = MainCanvasGO.GetComponent<MainCanvas>();
-        mainCanvas.SetAppInitializer(this);
+        mainCanvas.InitializeComponents(this);
     }
 
     /// <summary>
@@ -106,6 +105,8 @@ public class ApplicationInitializer : MonoBehaviour
         {
             mainCanvas.ShowLoginWindow();
         }
+
+        mainCanvas.RefreshUserDisplay(UserLoader.LoggedUser);
     }
 
     /// <summary>
