@@ -212,32 +212,35 @@ public class AssetModelLoader
     {
         if (e.Cancelled)
         {
+            RemoveDownloadedModel();
+            SetProgress(0);
+
             if (OnDownloadCanceled != null)
             {
                 OnDownloadCanceled();
             }
 
-            SetProgress(0);
-            RemoveDownloadedModel();
         }
         else if (e.Error != null)
         {
-            if(OnDownloadFailure!= null)
+            RemoveDownloadedModel();
+            SetProgress(0);
+
+            if (OnDownloadFailure!= null)
             {
                 OnDownloadFailure(e.Error.Message);
             }
 
-            SetProgress(0);
-            RemoveDownloadedModel();
         }
         else
         {
-            if(OnDownloadCompleted != null)
+            SetProgress(100);
+
+            if (OnDownloadCompleted != null)
             {
                 OnDownloadCompleted();
             }
 
-            SetProgress(100);
         }
 
         //Removing handler from model

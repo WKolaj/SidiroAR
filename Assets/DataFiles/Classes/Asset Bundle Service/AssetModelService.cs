@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class AssetModelService
 {
-    static string fileApiURL = "http://localhost:5000/api/models";
+    static string fileApiURL = "http://192.168.0.57:5000/api/models";
 
     /// <summary>
     /// Method for downloading file asynchronously

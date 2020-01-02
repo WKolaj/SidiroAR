@@ -16,6 +16,23 @@ public class SwitchboardItem : MonoBehaviour
 
     private DownloadButtonContainer downloadButtonContainer = null;
 
+    private bool fileExists = false;
+    private GameObject eyeButtonGO = null;
+    private GameObject removeButtonGO = null;
+    private SwitchboardItemEyeButton eyebutton = null;
+
+    private void RefreshFileExistance()
+    {
+        if(modelLoader != null)
+        {
+            fileExists = modelLoader.CheckIfModelFileExists();
+        }
+        else
+        {
+            fileExists = false;
+        }
+    }
+
     protected void Awake()
     {
         InitResizeMechanism();
@@ -45,6 +62,27 @@ public class SwitchboardItem : MonoBehaviour
         rectTransform.sizeDelta = new Vector2(scrollRectRectTransform.rect.size.x, rectTransform.sizeDelta.y);
     }
 
+    private void Update()
+    {
+        RefreshButtonsVisibility();
+    }
+
+    private void RefreshButtonsVisibility()
+    {
+        if(this.fileExists && !this.modelLoader.IsDownloading)
+        {
+            this.downloadButtonContainer.DisableDownload();
+            this.removeButtonGO.SetActive(true);
+            this.eyebutton.EnableView();
+        }
+        else
+        {
+            this.downloadButtonContainer.EnableDownload();
+            this.removeButtonGO.SetActive(false);
+            this.eyebutton.DisableView();
+        }
+    }
+
 
     /// <summary>
     /// Method for initialzing item
@@ -66,6 +104,25 @@ public class SwitchboardItem : MonoBehaviour
 
 
         this.nameLabel.text = loader.ModelName;
+
+        RefreshFileExistance();
+    }
+
+    /// <summary>
+    /// Method for initializing components
+    /// </summary>
+    private void InitializeComponents()
+    {
+        var nameLabelGO = this.transform.Find("NameLabel").gameObject;
+        nameLabel = nameLabelGO.GetComponent<TextMeshProUGUI>();
+
+        var buttonsContainer = this.transform.Find("ButtonsContainer").gameObject;
+        var downloadButtonContainerGO = buttonsContainer.transform.Find("DownloadButtonContainer").gameObject;
+        this.downloadButtonContainer = downloadButtonContainerGO.GetComponent<DownloadButtonContainer>();
+
+        this.eyeButtonGO = buttonsContainer.transform.Find("EyeButton").gameObject;
+        this.removeButtonGO = buttonsContainer.transform.Find("RemoveButton").gameObject;
+        this.eyebutton = eyeButtonGO.GetComponent<SwitchboardItemEyeButton>();
     }
 
     /// <summary>
@@ -75,6 +132,8 @@ public class SwitchboardItem : MonoBehaviour
     private void HandleDownloadCompleted()
     {
         this.downloadButtonContainer.HideRadialProgress();
+
+        RefreshFileExistance();
     }
 
     /// <summary>
@@ -93,6 +152,8 @@ public class SwitchboardItem : MonoBehaviour
     private void HandleDownloadStart()
     {
         this.downloadButtonContainer.ShowRadialProgress();
+
+        RefreshFileExistance();
     }
 
     /// <summary>
@@ -102,6 +163,8 @@ public class SwitchboardItem : MonoBehaviour
     private void HandleDownloadCanceled()
     {
         this.downloadButtonContainer.HideRadialProgress();
+
+        RefreshFileExistance();
     }
 
     /// <summary>
@@ -112,19 +175,8 @@ public class SwitchboardItem : MonoBehaviour
     {
         this.downloadButtonContainer.HideRadialProgress();
         mainCanvas.ShowDialogBox("Błąd pobierania", errorMessage, DialogBoxMode.Warning, DialogBoxType.Ok);
-    }
 
-    /// <summary>
-    /// Method for initializing components
-    /// </summary>
-    private void InitializeComponents()
-    {
-        var nameLabelGO = this.transform.Find("NameLabel").gameObject;
-        nameLabel = nameLabelGO.GetComponent<TextMeshProUGUI>();
-
-        var buttonsContainer = this.transform.Find("ButtonsContainer").gameObject;
-        var downloadButtonContainerGO = buttonsContainer.transform.Find("DownloadButtonContainer").gameObject;
-        this.downloadButtonContainer = downloadButtonContainerGO.GetComponent<DownloadButtonContainer>();
+        RefreshFileExistance();
     }
 
     /// <summary>
@@ -136,6 +188,8 @@ public class SwitchboardItem : MonoBehaviour
         dialogBox.onYesClicked += new System.Action(() =>
         {
             modelLoader.RemoveDownloadedModel();
+
+            RefreshFileExistance();
         });
     }
 
@@ -150,12 +204,16 @@ public class SwitchboardItem : MonoBehaviour
             dialogBox.onYesClicked += new System.Action(() =>
             {
                 modelLoader.StopDownloading();
+
             });
         }
         else
         {
             modelLoader.DownloadModelFromServer();
+
         }
+
+        RefreshFileExistance();
     }
 
     /// <summary>
@@ -163,8 +221,21 @@ public class SwitchboardItem : MonoBehaviour
     /// </summary>
     public void HandleEyeButtonClicked()
     {
-        Debug.Log("Handle eye button clicked");
+        if(modelLoader!=null && modelLoader.CheckIfModelFileExists())
+        {
+            //Assigning current model path and starting ar scene
+            Common.ModelPath = this.modelLoader.BundleFilePath;
+            Common.LoadARScene();
+        }
     }
 
+    //Stopping downloading if it is in progress but item is being destroyed
+    private void OnDestroy()
+    {
+        if(modelLoader != null && modelLoader.CheckIfModelFileExists() && modelLoader.IsDownloading)
+        {
+            modelLoader.StopDownloading();
+        }
+    }
 
 }
