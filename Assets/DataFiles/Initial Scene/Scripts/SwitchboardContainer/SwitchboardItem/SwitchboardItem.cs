@@ -14,6 +14,8 @@ public class SwitchboardItem : MonoBehaviour
 
     private MainCanvas mainCanvas = null;
 
+    private DownloadButtonContainer downloadButtonContainer = null;
+
     protected void Awake()
     {
         InitResizeMechanism();
@@ -54,7 +56,6 @@ public class SwitchboardItem : MonoBehaviour
     {
         InitializeComponents();
         this.mainCanvas = canvas;
-        Debug.Log(canvas);
         this.modelLoader = loader;
 
         this.modelLoader.OnDownloadCanceled += HandleDownloadCanceled;
@@ -62,6 +63,7 @@ public class SwitchboardItem : MonoBehaviour
         this.modelLoader.OnDownloadFailure += HandleDownloadFailure;
         this.modelLoader.OnProgressChanged += HandleDownloadProgressChanged;
         this.modelLoader.OnDownloadStarted += HandleDownloadStart;
+
 
         this.nameLabel.text = loader.ModelName;
     }
@@ -72,7 +74,7 @@ public class SwitchboardItem : MonoBehaviour
     /// <param name="progress"></param>
     private void HandleDownloadCompleted()
     {
-        Debug.Log("Download completed");
+        this.downloadButtonContainer.HideRadialProgress();
     }
 
     /// <summary>
@@ -81,7 +83,7 @@ public class SwitchboardItem : MonoBehaviour
     /// <param name="progress"></param>
     private void HandleDownloadProgressChanged(float progress)
     {
-        //Debug.Log("Progress changed: " + progress); 
+        this.downloadButtonContainer.SetProgress(progress);
     }
 
     /// <summary>
@@ -90,7 +92,7 @@ public class SwitchboardItem : MonoBehaviour
     /// <param name="progress"></param>
     private void HandleDownloadStart()
     {
-        Debug.Log("Download started");
+        this.downloadButtonContainer.ShowRadialProgress();
     }
 
     /// <summary>
@@ -99,7 +101,7 @@ public class SwitchboardItem : MonoBehaviour
     /// <param name="progress"></param>
     private void HandleDownloadCanceled()
     {
-        Debug.Log("Download canceled");
+        this.downloadButtonContainer.HideRadialProgress();
     }
 
     /// <summary>
@@ -108,7 +110,8 @@ public class SwitchboardItem : MonoBehaviour
     /// <param name="progress"></param>
     private void HandleDownloadFailure(string errorMessage)
     {
-        Debug.Log(errorMessage);
+        this.downloadButtonContainer.HideRadialProgress();
+        mainCanvas.ShowDialogBox("Błąd pobierania", errorMessage, DialogBoxMode.Warning, DialogBoxType.Ok);
     }
 
     /// <summary>
@@ -118,6 +121,10 @@ public class SwitchboardItem : MonoBehaviour
     {
         var nameLabelGO = this.transform.Find("NameLabel").gameObject;
         nameLabel = nameLabelGO.GetComponent<TextMeshProUGUI>();
+
+        var buttonsContainer = this.transform.Find("ButtonsContainer").gameObject;
+        var downloadButtonContainerGO = buttonsContainer.transform.Find("DownloadButtonContainer").gameObject;
+        this.downloadButtonContainer = downloadButtonContainerGO.GetComponent<DownloadButtonContainer>();
     }
 
     /// <summary>
