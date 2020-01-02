@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using UnityEngine;
 
 public class AssetModelLoader
@@ -119,6 +120,59 @@ public class AssetModelLoader
     }
 
     /// <summary>
+    /// Is asset model during downloading model form server
+    /// </summary>
+    public bool IsDownloading
+    {
+        get
+        {
+            return this.downloadHandler != null;
+        }
+    }
+
+    /// <summary>
+    /// Handler for download action
+    /// </summary>
+    private WebClient downloadHandler = null;
+
+    /// <summary>
+    /// Progress of download action
+    /// </summary>
+    private float _downloadProgress = 0.0f;
+    public float DownloadProgress
+    {
+        get
+        {
+            return _downloadProgress;
+        }
+    }
+
+    /// <summary>
+    /// Event called when download is started
+    /// </summary>
+    public event Action OnDownloadStarted;
+
+    /// <summary>
+    /// Event called when progress changed
+    /// </summary>
+    public event Action<float> OnProgressChanged;
+
+    /// <summary>
+    /// Event called when download has been completed
+    /// </summary>
+    public event Action OnDownloadCompleted;
+
+    /// <summary>
+    /// Event called when download has been canceled
+    /// </summary>
+    public event Action OnDownloadCanceled;
+
+    /// <summary>
+    /// Event called when download has failed
+    /// </summary>
+    public event Action<string> OnDownloadFailure;
+
+    /// <summary>
     /// Method for checking if model file has already been downloaded
     /// </summary>
     public bool CheckIfModelFileExists()
@@ -127,12 +181,98 @@ public class AssetModelLoader
     }
 
     /// <summary>
+    /// Method for handling hange progress event
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void HandleProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+    {
+        SetProgress(e.ProgressPercentage);
+    }
+
+    /// <summary>
+    /// Method for setting progress
+    /// </summary>
+    /// <param name="progress">
+    /// new progress
+    /// </param>
+    private void SetProgress(float progress)
+    {
+        this._downloadProgress = progress;
+
+        if (OnProgressChanged != null) OnProgressChanged(progress);
+    }
+
+    /// <summary>
+    /// Method for handling download completed action
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void HandleDownloadCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+    {
+        if (e.Cancelled)
+        {
+            if (OnDownloadCanceled != null)
+            {
+                OnDownloadCanceled();
+            }
+
+            SetProgress(0);
+            RemoveDownloadedModel();
+        }
+        else if (e.Error != null)
+        {
+            if(OnDownloadFailure!= null)
+            {
+                OnDownloadFailure(e.Error.Message);
+            }
+
+            SetProgress(0);
+            RemoveDownloadedModel();
+        }
+        else
+        {
+            if(OnDownloadCompleted != null)
+            {
+                OnDownloadCompleted();
+            }
+
+            SetProgress(100);
+        }
+
+        //Removing handler from model
+        this.downloadHandler = null;
+    }
+
+    /// <summary>
     /// Method for downloading model from server
     /// </summary>
     public void DownloadModelFromServer()
     {
-        //TO DO LATER
-        Debug.Log("Downloading model from server..");
+        if (this.downloadHandler != null && this.downloadHandler.IsBusy)
+            StopDownloading();
+
+        downloadHandler = AssetModelService.DownloadAssembly(this.User.ID, this.ID, this.BundleFilePath);
+        downloadHandler.DownloadProgressChanged += HandleProgressChanged;
+        downloadHandler.DownloadFileCompleted += HandleDownloadCompleted;
+
+        if (OnDownloadStarted != null) OnDownloadStarted();
+
+    }
+
+
+
+    /// <summary>
+    /// Method for downloading model from server
+    /// </summary>
+    public void StopDownloading()
+    {
+        if (this.downloadHandler != null && this.downloadHandler.IsBusy)
+        {
+            this.downloadHandler.CancelAsync();
+            this.downloadHandler = null;
+        }
+
     }
 
     /// <summary>

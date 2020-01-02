@@ -22,12 +22,48 @@ public class SwitchboardContainer : InitializableWithInitializerBase
         }
     }
 
+    /// <summary>
+    /// Main canvas game object
+    /// </summary>
+    [SerializeField]
+    private GameObject _mainCanvasGO;
+    public GameObject MainCanvasGO
+    {
+        get
+        {
+            return _mainCanvasGO;
+        }
+
+        set
+        {
+            _mainCanvasGO = value;
+        }
+    }
+
+    /// <summary>
+    /// Main canvas 
+    /// </summary>
+    private MainCanvas _mainCanvas;
+    public MainCanvas MainCanvas
+    {
+        get
+        {
+            return _mainCanvas;
+        }
+
+        set
+        {
+            _mainCanvas = value;
+        }
+    }
+
     private GameObject itemsContainerGO;
 
     protected override void OnInitializeComponents()
     {
         var scrollViewGO = this.transform.Find("ScrollView").gameObject;
         this.itemsContainerGO = scrollViewGO.transform.Find("ItemsContainer").gameObject;
+        this._mainCanvas = this.MainCanvasGO.GetComponent<MainCanvas>();
     }
 
     /// <summary>
@@ -53,7 +89,7 @@ public class SwitchboardContainer : InitializableWithInitializerBase
         {
             GameObject modelItem = Instantiate(SwitchboadItemPrefab, this.itemsContainerGO.transform);
             SwitchboardItem modelItemScript = modelItem.GetComponent<SwitchboardItem>();
-            modelItemScript.Init(modelLoader);
+            modelItemScript.Init(modelLoader,MainCanvas);
         }
     }
 

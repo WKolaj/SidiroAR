@@ -1587,7 +1587,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 395.20285}
+  m_AnchoredPosition: {x: 0, y: 1452.0244}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &527266679
@@ -2487,6 +2487,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _switchboardItemPrefab: {fileID: 1846171472397345408, guid: 335129186fda1d8438834df179b250ac,
     type: 3}
+  _mainCanvasGO: {fileID: 2133385397}
 --- !u!1 &1385610584
 GameObject:
   m_ObjectHideFlags: 0
