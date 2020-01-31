@@ -6,6 +6,6 @@ using UnityEngine;
 [Serializable]
 public class AuthJSONData 
 {
-    public string id;
+    public string email;
     public string password;
 }

@@ -255,7 +255,7 @@ public class AssetModelLoader
         if (this.downloadHandler != null && this.downloadHandler.IsBusy)
             StopDownloading();
 
-        downloadHandler = AssetModelService.DownloadAssembly(this.User.ID, this.ID, this.BundleFilePath);
+        downloadHandler = AssetModelService.DownloadAssembly(this.User.JWT, this.ID, this.BundleFilePath);
         downloadHandler.DownloadProgressChanged += HandleProgressChanged;
         downloadHandler.DownloadFileCompleted += HandleDownloadCompleted;
 

@@ -7,28 +7,6 @@ using UnityEngine;
 
 public class User
 {
-    /// <summary>
-    /// Class representing user
-    /// </summary> 
-    /// <param name="id">
-    /// id of user
-    /// </param>
-    /// <param name="name">
-    /// name of user
-    /// </param>
-    /// <param name="jwt">
-    /// jwt object used to authorize user on backend
-    /// </param>
-    /// <param name="models">
-    /// All models owned by user
-    /// </param>
-    /// <param name="loader">
-    /// User loader used to create this user
-    /// </param>
-    public User(string id, string name, string jwt, List<AssetModelLoader> models, UserLoader loader)
-    {
-        Init(id,name,jwt,models,loader);
-    }
 
     /// <summary>
     /// Class representing user
@@ -41,7 +19,7 @@ public class User
     /// </param>
     public User(UserJSONData jsonData, UserLoader loader)
     {
-        Init(jsonData.id, jsonData.name, jsonData.jwt, UserLoader.GenerateAssetModelLoaders(this, jsonData.modelIds,jsonData.modelNames), loader);
+        Init(jsonData, loader);
     }
 
     /// <summary>
@@ -62,10 +40,10 @@ public class User
     /// <param name="loader">
     /// User loader used to create this user
     /// </param>
-    private void Init(string id, string name, string jwt, List<AssetModelLoader> models, UserLoader loader)
+    private void Init(UserJSONData jsonData, UserLoader loader)
     {
         this._userLoader = loader;
-        SetData(id, name, jwt, models);
+        SetData(jsonData);
         //Has to be invoked after set data - require setting of id!
         CreateUserDirIfNotExists();
     }
@@ -97,6 +75,19 @@ public class User
 
     }
 
+    private string _email;
+    /// <summary>
+    /// Email of user
+    /// </summary>
+    public string Email
+    {
+        get
+        {
+            return _email;
+        }
+
+    }
+
     private string _name;
     /// <summary>
     /// Name of user
@@ -119,6 +110,19 @@ public class User
         get
         {
             return _jwt;
+        }
+
+    }
+
+    private Int32 _permissions;
+    /// <summary>
+    /// Permissions of user
+    /// </summary>
+    public Int32 Permissions
+    {
+        get
+        {
+            return _permissions;
         }
 
     }
@@ -174,11 +178,6 @@ public class User
     /// </param>
     public void SetData(string id, string name, string jwt, List<AssetModelLoader> models)
     {
-        //Initialzing properties
-        this._id = id;
-        this._name = name;
-        this._jwt = jwt;
-        this._modelList = models;
     }
 
     /// <summary>
@@ -189,7 +188,14 @@ public class User
     /// </param>
     public void SetData(UserJSONData jsonData)
     {
-        this.SetData(jsonData.id, jsonData.name, jsonData.jwt, UserLoader.GenerateAssetModelLoaders(this, jsonData.modelIds, jsonData.modelNames));
+        //Initialzing properties
+        if(jsonData._id != null) this._id = jsonData._id;
+        if (jsonData.name != null) this._name = jsonData.name;
+        if (jsonData.jwt != null) this._jwt = jsonData.jwt;
+        if (jsonData.email != null) this._email = jsonData.email;
+        if (jsonData.permissions != -1) this._permissions = jsonData.permissions;
+        if (jsonData.modelIds != null && jsonData.modelNames != null) this._modelList = UserLoader.GenerateAssetModelLoaders(this, jsonData.modelIds, jsonData.modelNames);
+
     }
 
     /// <summary>

@@ -130,9 +130,11 @@ public class UserLoader : MonoBehaviour
     public static UserJSONData GenerateJSONDataFromUser(User user)
     {
         var jsonToReturn = new UserJSONData();
-        jsonToReturn.id = user.ID;
+        jsonToReturn._id = user.ID;
         jsonToReturn.name = user.Name;
+        jsonToReturn.email = user.Email;
         jsonToReturn.jwt = user.JWT;
+        jsonToReturn.permissions = user.Permissions;
         jsonToReturn.modelIds = UserLoader.GenerateAssetModelIds(user.ModelList);
         jsonToReturn.modelNames = UserLoader.GenerateAssetModelNames(user.ModelList);
 
@@ -226,6 +228,7 @@ public class UserLoader : MonoBehaviour
             var user = UserLoader.GenerateUserFromJSONData(jsonData, this);
 
             UserLoader._loggedUser = user;
+
         }
         else
         {
@@ -282,9 +285,9 @@ public class UserLoader : MonoBehaviour
     /// <param name="password">
     /// Users password
     /// </param>
-    public async Task LoginUserFromServer(string id, string password)
+    public async Task LoginUserFromServer(string email, string password)
     {
-        var jsonData = await UserService.GetUserDataFromServer(id, password);
+        var jsonData = await UserService.GetUserDataFromServer(email, password);
 
         //Loading user from retrieved data - if it exists
         if (jsonData != null)

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +10,9 @@ using UnityEngine;
 
 public class UserService
 {
+    static string authApiURL = "https://sidiro.pl/sidiroar/api/auth";
+    static string userApiURL = "https://sidiro.pl/sidiroar/api/user/me";
+
     /// <summary>
     /// Method for getting user data from server
     /// </summary>
@@ -19,32 +24,24 @@ public class UserService
     /// </returns>
     public static async Task<UserJSONData> GetUserDataFromServer(string jwt)
     {
-        //CALCULATION MUST BE PREFORM ON BASIS OF JWT 
-        //BY CALLING ENDPOINT EG. /me - every user can get info only about themselves
-
-        //Code below purely for testing - remove all if else stament after
-
-        //Simulating network delay
-        await Task.Delay(2000);
-
-        if (jwt == "simpleTestJWTString")
+        using (var webClient = new WebClient())
         {
-            var testJSONUserData = "{\"id\":\"witold.kolaj@siemens.com\",\"name\":\"Witold Kolaj\",\"jwt\":\"simpleTestJWTString\",\"modelIds\":[\"RGnn\",\"OneCubicle\",\"8MF\"],\"modelNames\":[\"Switchboard RGnn\",\"One Cubicle\",\"Switchboard 8MF\"]}";
+            webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
+            webClient.Headers["x-auth-token"] = jwt;
+
+            var testJSONUserData = await webClient.DownloadStringTaskAsync(UserService.userApiURL);
+
             var userJsonObject = UserLoader.GetUserJSONDataFromString(testJSONUserData);
             return userJsonObject;
-        }
-        else
-        {
-            throw new InvalidOperationException("Invalid token provided");
-        }
 
+        }
     }
 
     /// <summary>
     /// Method for getting user data from server
     /// </summary>
-    /// <param name="id">
-    /// Id of user
+    /// <param name="email">
+    /// Email of user
     /// </param>
     /// <param name="password">
     /// User's password
@@ -53,33 +50,25 @@ public class UserService
     /// user data as JSON (string)
     /// return null in case id or password is invalid
     /// </returns>
-    public static async Task<UserJSONData> GetUserDataFromServer(string id, string password)
+    public static async Task<UserJSONData> GetUserDataFromServer(string email, string password)
     {
-        //SECOND WAY TO GATHER ALL DATA OF USER IS BY SENDING THEIR ID AND PASSWORD ON AUTH ROUTE
-        //eg. JSON with credentials -> /api/auth
-
-        //Creating Object to parse to JSON content based on given credentials
-        var newAuthObject = new AuthJSONData();
-        newAuthObject.id = id;
-        newAuthObject.password = password;
-
-        //Generating JSON content
-        var jsonAuthObject = JsonUtility.ToJson(newAuthObject);
-
-        //Code below purely for testing - remove all if else stament after
-
-        //Simulating network delay
-        await Task.Delay(2000);
-
-        if (String.Compare(jsonAuthObject,"{\"id\":\"witold.kolaj@siemens.com\",\"password\":\"1234\"}")==0)
+        using (var webClient = new WebClient())
         {
-            var testJSONUserData = "{\"id\":\"witold.kolaj@siemens.com\",\"name\":\"Witold Kolaj\",\"jwt\":\"simpleTestJWTString\",\"modelIds\":[\"RGnn\",\"OneCubicle\",\"8MF\"],\"modelNames\":[\"Switchboard RGnn\",\"One Cubicle\",\"Switchboard 8MF\"]}";
+            //Creating Object to parse to JSON content based on given credentials
+            var newAuthObject = new AuthJSONData();
+            newAuthObject.email = email;
+            newAuthObject.password = password;
+
+            //Generating JSON content
+            var jsonAuthObject = JsonUtility.ToJson(newAuthObject);
+
+            webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
+            
+            var testJSONUserData = await webClient.UploadStringTaskAsync(UserService.authApiURL,jsonAuthObject);
+
             var userJsonObject = UserLoader.GetUserJSONDataFromString(testJSONUserData);
             return userJsonObject;
-        }
-        else
-        {
-            throw new InvalidOperationException("User or password invalid");
+
         }
     }
 }

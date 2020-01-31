@@ -6,9 +6,11 @@ using UnityEngine;
 [Serializable]
 public class UserJSONData 
 {
-    public string id;
-    public string name;
-    public string jwt;
-    public List<string> modelIds;
-    public List<string> modelNames;
+    public string _id = null;
+    public string email = null;
+    public string name = null;
+    public string jwt = null;
+    public Int32 permissions = -1;
+    public List<string> modelIds = null;
+    public List<string> modelNames = null;
 }

@@ -6,13 +6,13 @@ using UnityEngine;
 
 public class AssetModelService
 {
-    static string fileApiURL = "http://192.168.0.57:5000/api/models";
+    static string fileApiURL = "https://sidiro.pl/sidiroar/api/file/me";
 
     /// <summary>
     /// Method for downloading file asynchronously
     /// </summary>
-    /// <param name="userId">
-    /// Id of user of model
+    /// <param name="jwt">
+    /// jwt of user of model
     /// </param>
     /// <param name="assemblyId">
     /// Id of assembly
@@ -23,12 +23,18 @@ public class AssetModelService
     /// <returns>
     /// Handler to downloading action
     /// </returns>
-    public static WebClient DownloadAssembly(string userId, string assemblyId, string filePath)
+    public static WebClient DownloadAssembly(string jwt, string assemblyId, string filePath)
     {
-        var webClient = new WebClient();
+        if (UserLoader.LoggedUser == null) throw new InvalidOperationException("User is not logged in!");
 
-        webClient.DownloadFileAsync(new Uri(String.Format("{0}/{1}/{2}", fileApiURL,userId, assemblyId)), filePath);
-        
-        return webClient;
+        using (var webClient = new WebClient())
+        {
+            webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
+            webClient.Headers["x-auth-token"] = jwt;
+            webClient.DownloadFileAsync(new Uri(String.Format("{0}/{1}", fileApiURL, assemblyId)), filePath);
+            
+            return webClient;
+        }
+
     }
 }
