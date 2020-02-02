@@ -107,6 +107,23 @@ public class AssetModelLoader
 
     }
 
+    private string _temporaryDownloadPath = String.Empty;
+    /// <summary>
+    /// Path for temporary file download
+    /// </summary>
+    public string TemporaryDownloadPath
+    {
+        get
+        {
+            return _temporaryDownloadPath;
+        }
+
+        set
+        {
+            _temporaryDownloadPath = value;
+        }
+    }
+
     /// <summary>
     /// Asset model creator
     /// </summary>
@@ -120,6 +137,11 @@ public class AssetModelLoader
     }
 
     /// <summary>
+    /// Handler for download action
+    /// </summary>
+    private WebClient downloadHandler = null;
+
+    /// <summary>
     /// Is asset model during downloading model form server
     /// </summary>
     public bool IsDownloading
@@ -131,9 +153,28 @@ public class AssetModelLoader
     }
 
     /// <summary>
-    /// Handler for download action
+    /// Method called to check if model file exists
     /// </summary>
-    private WebClient downloadHandler = null;
+    /// <returns>
+    /// Method for checking if model file exists
+    /// </returns>
+    public bool CheckIfModelFileExists()
+    {
+        return File.Exists(this.BundleFilePath);
+    }
+
+    /// <summary>
+    /// Method called to check if temp model file exists
+    /// </summary>
+    /// <returns>
+    /// Method for checking if temp model file exists
+    /// </returns>
+    public bool CheckIfTempFileExists()
+    {
+        if (this.TemporaryDownloadPath == null) return false;
+
+        return File.Exists(this.TemporaryDownloadPath);
+    }
 
     /// <summary>
     /// Progress of download action
@@ -145,6 +186,35 @@ public class AssetModelLoader
         {
             return _downloadProgress;
         }
+    }
+
+    /// <summary>
+    /// Method for downloading model from server
+    /// </summary>
+    public void StartDownload()
+    {
+        if (this.IsDownloading) StopDownload();
+
+        //Generating new temporary path for download file
+        this._temporaryDownloadPath = Common.GenerateRandomTemporaryFilePath();
+
+        //Generating new download handler
+        downloadHandler = AssetModelService.DownloadAssembly(this.User.JWT, this.ID, this.TemporaryDownloadPath);
+        downloadHandler.DownloadProgressChanged += HandleDownloadProgressChanged;
+        downloadHandler.DownloadFileCompleted += HandleDownloadStop;
+
+        //Firing onDownloadStarted event if it is not a null
+        if (OnDownloadStarted != null) OnDownloadStarted();
+    }
+
+    /// <summary>
+    /// Method for downloading model from server
+    /// </summary>
+    public void StopDownload()
+    {
+        //Canceling download process
+        this.downloadHandler.CancelAsync();
+
     }
 
     /// <summary>
@@ -173,11 +243,71 @@ public class AssetModelLoader
     public event Action<string> OnDownloadFailure;
 
     /// <summary>
-    /// Method for checking if model file has already been downloaded
+    /// Method for handling download completed action
     /// </summary>
-    public bool CheckIfModelFileExists()
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void HandleDownloadStop(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
     {
-        return File.Exists(BundleFilePath);
+        if (e.Cancelled)
+        {
+            HandleDownloadCancel();
+        }
+        else if (e.Error != null)
+        {
+            HandleDownloadFailure(e.Error);
+
+        }
+        else
+        {
+            HandleDownloadFinish();
+        }
+
+        //Removing handler from model
+        if(this.downloadHandler != null) this.downloadHandler.Dispose();
+        this.downloadHandler = null;
+    }
+
+    /// <summary>
+    /// Method called when download is canceled
+    /// </summary>
+    private void HandleDownloadCancel()
+    {
+        SetProgress(0);
+
+        if (OnDownloadCanceled != null)
+        {
+            OnDownloadCanceled();
+        }
+    }
+
+    /// <summary>
+    /// Method called when download fails
+    /// </summary>
+    private void HandleDownloadFailure(Exception err)
+    {
+        SetProgress(0);
+
+        if (OnDownloadFailure != null)
+        {
+            OnDownloadFailure(err.Message);
+        }
+
+    }
+
+    /// <summary>
+    /// Method called when download finishes
+    /// </summary>
+    private void HandleDownloadFinish()
+    {
+        SetProgress(100);
+        MoveTemporaryFileToModelDir();
+
+        if (OnDownloadCompleted != null)
+        {
+            OnDownloadCompleted();
+        }
+
     }
 
     /// <summary>
@@ -185,7 +315,7 @@ public class AssetModelLoader
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void HandleProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+    private void HandleDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
     {
         SetProgress(e.ProgressPercentage);
     }
@@ -204,89 +334,30 @@ public class AssetModelLoader
     }
 
     /// <summary>
-    /// Method for handling download completed action
+    /// Method for deleting model file if it exists
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void HandleDownloadCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+    public void DeleteModelFileIfExists()
     {
-        if (e.Cancelled)
-        {
-            RemoveDownloadedModel();
-            SetProgress(0);
-
-            if (OnDownloadCanceled != null)
-            {
-                OnDownloadCanceled();
-            }
-
-        }
-        else if (e.Error != null)
-        {
-            RemoveDownloadedModel();
-            SetProgress(0);
-
-            if (OnDownloadFailure!= null)
-            {
-                OnDownloadFailure(e.Error.Message);
-            }
-
-        }
-        else
-        {
-            SetProgress(100);
-
-            if (OnDownloadCompleted != null)
-            {
-                OnDownloadCompleted();
-            }
-
-        }
-
-        //Removing handler from model
-        this.downloadHandler = null;
+        if (CheckIfModelFileExists()) File.Delete(this.BundleFilePath);
     }
 
     /// <summary>
-    /// Method for downloading model from server
+    /// Method for deleting model temporary file if it exists
     /// </summary>
-    public void DownloadModelFromServer()
+    public void DeleteTempFileIfExists()
     {
-        if (this.downloadHandler != null && this.downloadHandler.IsBusy)
-            StopDownloading();
-
-        downloadHandler = AssetModelService.DownloadAssembly(this.User.JWT, this.ID, this.BundleFilePath);
-        downloadHandler.DownloadProgressChanged += HandleProgressChanged;
-        downloadHandler.DownloadFileCompleted += HandleDownloadCompleted;
-
-        if (OnDownloadStarted != null) OnDownloadStarted();
-
-    }
-
-
-
-    /// <summary>
-    /// Method for downloading model from server
-    /// </summary>
-    public void StopDownloading()
-    {
-        if (this.downloadHandler != null && this.downloadHandler.IsBusy)
-        {
-            this.downloadHandler.CancelAsync();
-            this.downloadHandler = null;
-        }
-
+        if (CheckIfTempFileExists()) File.Delete(this.TemporaryDownloadPath);
     }
 
     /// <summary>
-    /// Method for downloading model from server
+    /// Method for moving temporary file to model directory
     /// </summary>
-    public void RemoveDownloadedModel()
+    private void MoveTemporaryFileToModelDir()
     {
-        if(this.CheckIfModelFileExists())
-        {
-            File.Delete(this.BundleFilePath);
-        }
+        //Deleting file from model dir if it exists
+        DeleteModelFileIfExists();
+
+        File.Move(this.TemporaryDownloadPath, this.BundleFilePath);
     }
 
     /// <summary>
@@ -295,6 +366,6 @@ public class AssetModelLoader
     private void CreateAssetModelCreator()
     {
         //Constructor throws in case there is no such file!!
-        this._modelCreator = new AssetModelCreator(this.BundleFilePath,this.ModelName);
+        this._modelCreator = new AssetModelCreator(this.BundleFilePath, this.ModelName);
     }
 }

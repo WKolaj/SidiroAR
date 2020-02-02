@@ -33,7 +33,6 @@ public class UserLoader : MonoBehaviour
     /// </summary>
     private void Init()
     {
-
     }
 
     /// <summary>

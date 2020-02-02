@@ -86,4 +86,13 @@ public static class Common
     {
         Application.Quit();
     }
+
+    /// <summary>
+    /// Method for generating random file name for download
+    /// </summary>
+    /// <returns></returns>
+    public static string GenerateRandomTemporaryFilePath()
+    {
+        return Path.Combine(Application.temporaryCachePath,Path.GetRandomFileName());
+    }
 }

@@ -187,7 +187,7 @@ public class SwitchboardItem : MonoBehaviour
         var dialogBox = mainCanvas.ShowDialogBox("Usuwanie", string.Format("Czy na pewno usunąć model {0} z dysku?", this.modelLoader.ModelName), DialogBoxMode.Question, DialogBoxType.YesNo);
         dialogBox.onYesClicked += new System.Action(() =>
         {
-            modelLoader.RemoveDownloadedModel();
+            modelLoader.DeleteModelFileIfExists();
 
             RefreshFileExistance();
         });
@@ -203,13 +203,13 @@ public class SwitchboardItem : MonoBehaviour
             var dialogBox = mainCanvas.ShowDialogBox("Zatrzymanie", string.Format("Czy na pewno przerwać pobieranie {0}?", this.modelLoader.ModelName), DialogBoxMode.Question, DialogBoxType.YesNo);
             dialogBox.onYesClicked += new System.Action(() =>
             {
-                modelLoader.StopDownloading();
+                modelLoader.StopDownload();
 
             });
         }
         else
         {
-            modelLoader.DownloadModelFromServer();
+            modelLoader.StartDownload();
 
         }
 
@@ -234,7 +234,7 @@ public class SwitchboardItem : MonoBehaviour
     {
         if(modelLoader != null && modelLoader.CheckIfModelFileExists() && modelLoader.IsDownloading)
         {
-            modelLoader.StopDownloading();
+            modelLoader.StopDownload();
         }
     }
 
