@@ -21,11 +21,11 @@ public class ApplicationInitializer : MonoBehaviour
     }
 
     [SerializeField]
-    private MainCanvas _mainCanvasGO;
+    private GameObject _mainCanvasGO;
     /// <summary>
     /// Main canvas object
     /// </summary>
-    public MainCanvas MainCanvasGO
+    public GameObject MainCanvasGO
     {
         get
         {
@@ -107,6 +107,7 @@ public class ApplicationInitializer : MonoBehaviour
         }
 
         mainCanvas.RefreshUserDisplay(UserLoader.LoggedUser);
+
     }
 
     /// <summary>
@@ -117,6 +118,6 @@ public class ApplicationInitializer : MonoBehaviour
     /// </param>
     private void RefreshDataAccordingToNewUser(User user)
     {
-
+        mainCanvas.RefreshUserDataFromServer();
     }
 }

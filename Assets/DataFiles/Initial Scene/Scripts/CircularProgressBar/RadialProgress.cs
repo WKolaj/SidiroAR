@@ -46,8 +46,6 @@ public class RadialProgress : MonoBehaviour
     /// </summary>
     public void Hide()
     {
-        //Checking if object has been destroyed or not - for downloading method and going to another screen
-        if(this.gameObject != null)
         this.gameObject.SetActive(false);
     }
 

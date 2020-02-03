@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Timers;
 using UnityEngine;
 
 public class AssetModelLoader
@@ -41,7 +42,13 @@ public class AssetModelLoader
         this._id = id;
         this._modelName = modelName;
         this._user = user;
+        this.timeoutHandler = new Timer();
+        //60s timeout
+        this.timeoutHandler.Interval = 10*1000;
+        this.timeoutHandler.AutoReset = false;
+        this.timeoutHandler.Elapsed += HandleTimeout;
     }
+
 
     private string _id;
     /// <summary>
@@ -142,6 +149,46 @@ public class AssetModelLoader
     private WebClient downloadHandler = null;
 
     /// <summary>
+    /// Timer for handling download timer error
+    /// </summary>
+    private Timer timeoutHandler = null;
+
+    /// <summary>
+    /// Method for handling timeout
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void HandleTimeout(object sender, ElapsedEventArgs e)
+    {
+        //Stopping timer
+        StopTimeoutTimer();
+
+        //Stopping downloading
+        StopDownload();
+
+        //Invoking handling timeout error
+        HandleDownloadFailure(new Exception("Download timeout error"));
+    }
+
+    private void StartTimeoutTimer()
+    {
+        timeoutHandler.Start();
+    }
+
+    private void StopTimeoutTimer()
+    {
+        timeoutHandler.Stop();
+    }
+
+    private void ResetTimeoutTimer()
+    {
+        timeoutHandler.Stop();
+        timeoutHandler.Start();
+    }
+
+
+
+    /// <summary>
     /// Is asset model during downloading model form server
     /// </summary>
     public bool IsDownloading
@@ -203,6 +250,9 @@ public class AssetModelLoader
         downloadHandler.DownloadProgressChanged += HandleDownloadProgressChanged;
         downloadHandler.DownloadFileCompleted += HandleDownloadStop;
 
+        //Starting download timeout
+        StartTimeoutTimer();
+
         //Firing onDownloadStarted event if it is not a null
         if (OnDownloadStarted != null) OnDownloadStarted();
     }
@@ -212,8 +262,15 @@ public class AssetModelLoader
     /// </summary>
     public void StopDownload()
     {
+        //Stopping download timeout
+        StopTimeoutTimer();
+
         //Canceling download process
         this.downloadHandler.CancelAsync();
+
+        //Removing handler from model
+        if (this.downloadHandler != null) this.downloadHandler.Dispose();
+        this.downloadHandler = null;
 
     }
 
@@ -266,6 +323,9 @@ public class AssetModelLoader
         //Removing handler from model
         if(this.downloadHandler != null) this.downloadHandler.Dispose();
         this.downloadHandler = null;
+
+        //Stopping timeout handler
+        StopTimeoutTimer();
     }
 
     /// <summary>
@@ -317,6 +377,9 @@ public class AssetModelLoader
     /// <param name="e"></param>
     private void HandleDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
     {
+        //Resetting timer timeout
+        ResetTimeoutTimer();
+
         SetProgress(e.ProgressPercentage);
     }
 
@@ -367,5 +430,17 @@ public class AssetModelLoader
     {
         //Constructor throws in case there is no such file!!
         this._modelCreator = new AssetModelCreator(this.BundleFilePath, this.ModelName);
+    }
+
+    ~AssetModelLoader()
+    {
+        //Removing timer and clearing memory
+        if (this.timeoutHandler != null)
+        {
+            StopTimeoutTimer();
+            this.timeoutHandler.Dispose();
+            this.timeoutHandler = null;
+        }
+
     }
 }

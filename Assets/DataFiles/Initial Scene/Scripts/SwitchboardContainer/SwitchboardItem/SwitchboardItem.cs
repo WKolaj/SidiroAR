@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,7 +7,14 @@ using UnityEngine.UI;
 
 public class SwitchboardItem : MonoBehaviour
 {
-    private AssetModelLoader modelLoader = null;
+    private AssetModelLoader _modelLoader = null;
+    public AssetModelLoader ModelLoader
+    {
+        get
+        {
+            return _modelLoader;
+        }
+    }
 
     private RectTransform rectTransform, scrollRectRectTransform;
 
@@ -23,9 +31,9 @@ public class SwitchboardItem : MonoBehaviour
 
     private void RefreshFileExistance()
     {
-        if(modelLoader != null)
+        if(_modelLoader != null)
         {
-            fileExists = modelLoader.CheckIfModelFileExists();
+            fileExists = _modelLoader.CheckIfModelFileExists();
         }
         else
         {
@@ -69,7 +77,7 @@ public class SwitchboardItem : MonoBehaviour
 
     private void RefreshButtonsVisibility()
     {
-        if(this.fileExists && !this.modelLoader.IsDownloading)
+        if(this.fileExists && !this._modelLoader.IsDownloading)
         {
             this.downloadButtonContainer.DisableDownload();
             this.removeButtonGO.SetActive(true);
@@ -94,13 +102,13 @@ public class SwitchboardItem : MonoBehaviour
     {
         InitializeComponents();
         this.mainCanvas = canvas;
-        this.modelLoader = loader;
+        this._modelLoader = loader;
 
-        this.modelLoader.OnDownloadCanceled += HandleDownloadCanceled;
-        this.modelLoader.OnDownloadCompleted += HandleDownloadCompleted;
-        this.modelLoader.OnDownloadFailure += HandleDownloadFailure;
-        this.modelLoader.OnProgressChanged += HandleDownloadProgressChanged;
-        this.modelLoader.OnDownloadStarted += HandleDownloadStart;
+        this._modelLoader.OnDownloadCanceled += HandleDownloadCanceled;
+        this._modelLoader.OnDownloadCompleted += HandleDownloadCompleted;
+        this._modelLoader.OnDownloadFailure += HandleDownloadFailure;
+        this._modelLoader.OnProgressChanged += HandleDownloadProgressChanged;
+        this._modelLoader.OnDownloadStarted += HandleDownloadStart;
 
 
         this.nameLabel.text = loader.ModelName;
@@ -131,9 +139,13 @@ public class SwitchboardItem : MonoBehaviour
     /// <param name="progress"></param>
     private void HandleDownloadCompleted()
     {
-        this.downloadButtonContainer.HideRadialProgress();
+        Common.DispatchInMainThread(new Action(() =>
+        {
+            this.downloadButtonContainer.HideRadialProgress();
 
-        RefreshFileExistance();
+            RefreshFileExistance();
+
+        }));
     }
 
     /// <summary>
@@ -142,7 +154,11 @@ public class SwitchboardItem : MonoBehaviour
     /// <param name="progress"></param>
     private void HandleDownloadProgressChanged(float progress)
     {
-        this.downloadButtonContainer.SetProgress(progress);
+        Common.DispatchInMainThread(new Action(() =>
+        {
+            this.downloadButtonContainer.SetProgress(progress);
+
+        }));
     }
 
     /// <summary>
@@ -151,9 +167,12 @@ public class SwitchboardItem : MonoBehaviour
     /// <param name="progress"></param>
     private void HandleDownloadStart()
     {
-        this.downloadButtonContainer.ShowRadialProgress();
+        Common.DispatchInMainThread(new Action(() =>
+        {
+            this.downloadButtonContainer.ShowRadialProgress();
 
-        RefreshFileExistance();
+            RefreshFileExistance();
+        }));
     }
 
     /// <summary>
@@ -162,9 +181,12 @@ public class SwitchboardItem : MonoBehaviour
     /// <param name="progress"></param>
     private void HandleDownloadCanceled()
     {
-        this.downloadButtonContainer.HideRadialProgress();
+        Common.DispatchInMainThread(new Action(() =>
+        {
+            this.downloadButtonContainer.HideRadialProgress();
 
-        RefreshFileExistance();
+            RefreshFileExistance();
+        }));
     }
 
     /// <summary>
@@ -173,10 +195,12 @@ public class SwitchboardItem : MonoBehaviour
     /// <param name="progress"></param>
     private void HandleDownloadFailure(string errorMessage)
     {
-        this.downloadButtonContainer.HideRadialProgress();
-        mainCanvas.ShowDialogBox("Błąd pobierania", errorMessage, DialogBoxMode.Warning, DialogBoxType.Ok);
-
-        RefreshFileExistance();
+        Common.DispatchInMainThread(new Action(() =>
+        {
+            this.downloadButtonContainer.HideRadialProgress();
+            mainCanvas.ShowDialogBox("Błąd pobierania", errorMessage, DialogBoxMode.Warning, DialogBoxType.Ok);
+            RefreshFileExistance();
+        }));
     }
 
     /// <summary>
@@ -184,10 +208,10 @@ public class SwitchboardItem : MonoBehaviour
     /// </summary>
     public void HandleRemoveButtonClick()
     {
-        var dialogBox = mainCanvas.ShowDialogBox("Usuwanie", string.Format("Czy na pewno usunąć model {0} z dysku?", this.modelLoader.ModelName), DialogBoxMode.Question, DialogBoxType.YesNo);
+        var dialogBox = mainCanvas.ShowDialogBox("Usuwanie", string.Format("Czy na pewno usunąć model {0} z dysku?", this._modelLoader.ModelName), DialogBoxMode.Question, DialogBoxType.YesNo);
         dialogBox.onYesClicked += new System.Action(() =>
         {
-            modelLoader.DeleteModelFileIfExists();
+            _modelLoader.DeleteModelFileIfExists();
 
             RefreshFileExistance();
         });
@@ -198,18 +222,18 @@ public class SwitchboardItem : MonoBehaviour
     /// </summary>
     public void HandleDownloadButtonClicked()
     {
-        if (modelLoader.IsDownloading)
+        if (_modelLoader.IsDownloading)
         {
-            var dialogBox = mainCanvas.ShowDialogBox("Zatrzymanie", string.Format("Czy na pewno przerwać pobieranie {0}?", this.modelLoader.ModelName), DialogBoxMode.Question, DialogBoxType.YesNo);
+            var dialogBox = mainCanvas.ShowDialogBox("Zatrzymanie", string.Format("Czy na pewno przerwać pobieranie {0}?", this._modelLoader.ModelName), DialogBoxMode.Question, DialogBoxType.YesNo);
             dialogBox.onYesClicked += new System.Action(() =>
             {
-                modelLoader.StopDownload();
+                _modelLoader.StopDownload();
 
             });
         }
         else
         {
-            modelLoader.StartDownload();
+            _modelLoader.StartDownload();
 
         }
 
@@ -221,10 +245,10 @@ public class SwitchboardItem : MonoBehaviour
     /// </summary>
     public void HandleEyeButtonClicked()
     {
-        if(modelLoader!=null && modelLoader.CheckIfModelFileExists())
+        if(_modelLoader!=null && _modelLoader.CheckIfModelFileExists())
         {
             //Assigning current model path and starting ar scene
-            Common.ModelPath = this.modelLoader.BundleFilePath;
+            Common.ModelPath = this._modelLoader.BundleFilePath;
             Common.LoadARScene();
         }
     }
@@ -232,9 +256,9 @@ public class SwitchboardItem : MonoBehaviour
     //Stopping downloading if it is in progress but item is being destroyed
     private void OnDestroy()
     {
-        if(modelLoader != null && modelLoader.CheckIfModelFileExists() && modelLoader.IsDownloading)
+        if(_modelLoader != null && _modelLoader.CheckIfModelFileExists() && _modelLoader.IsDownloading)
         {
-            modelLoader.StopDownload();
+            _modelLoader.StopDownload();
         }
     }
 

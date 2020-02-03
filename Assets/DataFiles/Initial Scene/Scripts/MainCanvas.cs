@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class MainCanvas : InitializableWithInitializerBase
@@ -227,9 +228,37 @@ public class MainCanvas : InitializableWithInitializerBase
     /// </param>
     public void RefreshUserDisplay(User newUser)
     {
-
         this.menu.RefreshUserDisplay(newUser);
         this.switchboardContainer.RefreshUserDisplay(newUser);
+    }
+    
+    /// <summary>
+    /// Method for getting users data from server and refreshing data based on gathered data from server
+    /// </summary>
+    public async Task RefreshUserDataFromServer()
+    {
+        Common.DispatchInMainThread(() =>
+        {
+            ShowProgressWindow();
+        });
+
+        try
+        {
+            await UserLoader.LoggedUser.RefreshDataFromServer();
+            RefreshUserDisplay(UserLoader.LoggedUser);
+        }
+        catch (Exception err)
+        {
+            Common.DispatchInMainThread(() =>
+            {
+                ShowDialogBox("Błąd wczytywania", err.Message, DialogBoxMode.Warning, DialogBoxType.Ok);
+            });
+        }
+
+        Common.DispatchInMainThread(() =>
+        {
+            HideProgressWindow();
+        });
     }
 
 }

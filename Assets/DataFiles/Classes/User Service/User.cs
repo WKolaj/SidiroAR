@@ -141,7 +141,7 @@ public class User
     /// <summary>
     /// List of all models owned by user
     /// </summary>
-    private List<AssetModelLoader> _modelList = null;
+    private List<AssetModelLoader> _modelList = new List<AssetModelLoader>();
     public List<AssetModelLoader> ModelList
     {
         get
@@ -164,37 +164,79 @@ public class User
     /// <summary>
     /// Method for setting new data of user
     /// </summary>
-    /// <param name="id">
-    /// id of user
-    /// </param>
-    /// <param name="name">
-    /// name of user
-    /// </param>
-    /// <param name="jwt">
-    /// jwt object used to authorize user on backend
-    /// </param>
-    /// <param name="models">
-    /// All models owned by user
-    /// </param>
-    public void SetData(string id, string name, string jwt, List<AssetModelLoader> models)
-    {
-    }
-
-    /// <summary>
-    /// Method for setting new data of user
-    /// </summary>
     /// <param name="jsonData">
     /// users jsonData
     /// </param>
     public void SetData(UserJSONData jsonData)
     {
         //Initialzing properties
-        if(jsonData._id != null) this._id = jsonData._id;
+        if (jsonData._id != null) this._id = jsonData._id;
         if (jsonData.name != null) this._name = jsonData.name;
         if (jsonData.jwt != null) this._jwt = jsonData.jwt;
         if (jsonData.email != null) this._email = jsonData.email;
         if (jsonData.permissions != -1) this._permissions = jsonData.permissions;
-        if (jsonData.modelIds != null && jsonData.modelNames != null) this._modelList = UserLoader.GenerateAssetModelLoaders(this, jsonData.modelIds, jsonData.modelNames);
+        if (jsonData.modelIds != null && jsonData.modelNames != null) this.SetAssetModelLoadersData(jsonData.modelIds, jsonData.modelNames);
+    }
+
+    /// <summary>
+    /// Method called to set new asset models in user based on ids and names from server
+    /// </summary>
+    /// <param name="ids">
+    /// collection of ids
+    /// </param>
+    /// <param name="names">
+    /// collection of names
+    /// </param>
+    private void SetAssetModelLoadersData(List<string> ids, List<string> names)
+    {
+        //Checking length of both - ids and names
+        if (ids.Count != names.Count)
+            throw new InvalidOperationException(String.Format("length of id and name collection of models has to be the same! id length: {0} name length: {1}", ids.Count, names.Count));
+
+        //Building two lists - of models to add and of models to delete
+        List<AssetModelLoader> listOfModelsToAdd = new List<AssetModelLoader>();
+        List<AssetModelLoader> listOfModelsToDelete = new List<AssetModelLoader>();
+
+        //Creating models that should be added
+        for (var i = 0; i < ids.Count; i++)
+        {
+            var id = ids[i];
+            var name = names[i];
+
+            //Adding all models that has id the or name different - they should be added
+            bool modelExists = this.ModelList.Exists((model) => model.ID == id && model.ModelName == name);
+
+            if (!modelExists) listOfModelsToAdd.Add(new AssetModelLoader(id, name, this));
+        }
+
+        //Finding models that should be deleted - id not exists inside new list of ids
+        foreach (var model in this.ModelList)
+        {
+            var idIndex = ids.IndexOf(model.ID);
+            if (idIndex < 0)
+            {
+                //If model of given id does not exists in new ids - it should be deleted 
+                listOfModelsToDelete.Add(model);
+                continue;
+            }
+
+            //Element should be deleted if its name changed
+            var modelName = names[idIndex];
+            if (model.ModelName != modelName)
+                listOfModelsToDelete.Add(model);
+        }
+
+        //Deleting models
+        foreach(var model in listOfModelsToDelete)
+        {
+            this.ModelList.Remove(model);
+        }
+
+        //Adding new models
+        foreach (var model in listOfModelsToAdd)
+        {
+            this.ModelList.Add(model);
+        }
 
     }
 

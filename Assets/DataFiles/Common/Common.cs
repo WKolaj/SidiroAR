@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -94,5 +95,10 @@ public static class Common
     public static string GenerateRandomTemporaryFilePath()
     {
         return Path.Combine(Application.temporaryCachePath,Path.GetRandomFileName());
+    }
+
+    public static void DispatchInMainThread(Action action)
+    {
+        UnityMainThreadDispatcher.Instance().Enqueue(action);
     }
 }

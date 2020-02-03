@@ -92,13 +92,17 @@ public class LoginWindow : MonoBehaviour
         }
     }
 
-    public void TryLogIn()
+    public async void HandleLoginButtonClicked()
     {
-        AsyncTryLogIn();
+        await AsyncTryLogIn();
+        this.userPasswordIDInput.text = "";
     }
+
 
     public void HandleOfflineButtonClicked()
     {
+        this.userIDInput.text = "";
+        this.userPasswordIDInput.text = "";
         Hide();
         mainCanvas.RefreshUserDisplay(UserLoader.LoggedUser);
     }
