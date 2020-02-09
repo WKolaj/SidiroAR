@@ -20,9 +20,9 @@ public class AssetModelLoader
     /// <param name="user">
     /// user who owns this model
     /// </param>
-    public AssetModelLoader(string id, string modelName, User user)
+    public AssetModelLoader(string id, string modelName, bool fileExists, User user)
     {
-        this.Init(id, modelName, user);
+        this.Init(id, modelName, fileExists, user );
     }
 
     /// <summary>
@@ -37,11 +37,12 @@ public class AssetModelLoader
     /// <param name="user">
     /// user who owns this model
     /// </param>
-    private void Init(string id, string modelName, User user)
+    private void Init(string id, string modelName, bool fileExists, User user)
     {
         this._id = id;
         this._modelName = modelName;
         this._user = user;
+        this._fileExists = fileExists;
         this.timeoutHandler = new Timer();
         //60s timeout
         this.timeoutHandler.Interval = 10*1000;
@@ -81,6 +82,23 @@ public class AssetModelLoader
         private set
         {
             _user = value;
+        }
+    }
+
+    private bool _fileExists;
+    /// <summary>
+    /// File exists on server
+    /// </summary>
+    public bool FileExists
+    {
+        get
+        {
+            return _fileExists;
+        }
+
+        private set
+        {
+            _fileExists = value;
         }
     }
 

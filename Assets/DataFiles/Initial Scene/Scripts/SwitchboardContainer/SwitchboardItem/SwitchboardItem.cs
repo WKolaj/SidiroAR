@@ -85,7 +85,9 @@ public class SwitchboardItem : MonoBehaviour
         }
         else
         {
-            this.downloadButtonContainer.EnableDownload();
+            if(this.ModelLoader.FileExists) this.downloadButtonContainer.EnableDownload();
+            else this.downloadButtonContainer.DisableDownload();
+
             this.removeButtonGO.SetActive(false);
             this.eyebutton.DisableView();
         }

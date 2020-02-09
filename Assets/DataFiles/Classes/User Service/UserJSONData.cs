@@ -13,4 +13,5 @@ public class UserJSONData
     public Int32 permissions = -1;
     public List<string> modelIds = null;
     public List<string> modelNames = null;
+    public List<bool> filesExist = null;
 }

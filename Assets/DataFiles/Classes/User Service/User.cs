@@ -175,7 +175,7 @@ public class User
         if (jsonData.jwt != null) this._jwt = jsonData.jwt;
         if (jsonData.email != null) this._email = jsonData.email;
         if (jsonData.permissions != -1) this._permissions = jsonData.permissions;
-        if (jsonData.modelIds != null && jsonData.modelNames != null) this.SetAssetModelLoadersData(jsonData.modelIds, jsonData.modelNames);
+        if (jsonData.modelIds != null && jsonData.modelNames != null && jsonData.filesExist != null) this.SetAssetModelLoadersData(jsonData.modelIds, jsonData.modelNames,jsonData.filesExist);
     }
 
     /// <summary>
@@ -187,11 +187,18 @@ public class User
     /// <param name="names">
     /// collection of names
     /// </param>
-    private void SetAssetModelLoadersData(List<string> ids, List<string> names)
+    /// <param name="filesExist">
+    /// Do file exist on server
+    /// </param>
+    private void SetAssetModelLoadersData(List<string> ids, List<string> names, List<bool> filesExist)
     {
         //Checking length of both - ids and names
         if (ids.Count != names.Count)
             throw new InvalidOperationException(String.Format("length of id and name collection of models has to be the same! id length: {0} name length: {1}", ids.Count, names.Count));
+
+        //Checking length of both - ids and filesExist
+        if (ids.Count != filesExist.Count)
+            throw new InvalidOperationException(String.Format("length of id and filesExist collection of models has to be the same! id length: {0} filesExist length: {1}", ids.Count, filesExist.Count));
 
         //Building two lists - of models to add and of models to delete
         List<AssetModelLoader> listOfModelsToAdd = new List<AssetModelLoader>();
@@ -202,11 +209,12 @@ public class User
         {
             var id = ids[i];
             var name = names[i];
+            var fileExist = filesExist[i];
 
             //Adding all models that has id the or name different - they should be added
-            bool modelExists = this.ModelList.Exists((model) => model.ID == id && model.ModelName == name);
+            bool modelExists = this.ModelList.Exists((model) => model.ID == id && model.ModelName == name && model.FileExists == fileExist);
 
-            if (!modelExists) listOfModelsToAdd.Add(new AssetModelLoader(id, name, this));
+            if (!modelExists) listOfModelsToAdd.Add(new AssetModelLoader(id, name, fileExist, this));
         }
 
         //Finding models that should be deleted - id not exists inside new list of ids
@@ -222,7 +230,9 @@ public class User
 
             //Element should be deleted if its name changed
             var modelName = names[idIndex];
-            if (model.ModelName != modelName)
+            var fileExists = filesExist[idIndex];
+
+            if (model.ModelName != modelName || model.FileExists != fileExists)
                 listOfModelsToDelete.Add(model);
         }
 
