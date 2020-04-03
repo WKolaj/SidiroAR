@@ -85,8 +85,27 @@ public class SwitchboardItem : MonoBehaviour
         }
         else
         {
-            if(this.ModelLoader.FileExists) this.downloadButtonContainer.EnableDownload();
-            else this.downloadButtonContainer.DisableDownload();
+            #region PLATFORM_DEPENDED_CODE
+
+            Common.RunplatformDependendCode(
+                ()=> {
+                    //Android Code
+
+                    if (this.ModelLoader.FileExists) this.downloadButtonContainer.EnableDownload();
+                    else this.downloadButtonContainer.DisableDownload();
+
+                    return null;
+                },()=>
+                {
+                    //IOS Code
+
+                    if (this.ModelLoader.IOSFileExists) this.downloadButtonContainer.EnableDownload();
+                    else this.downloadButtonContainer.DisableDownload();
+
+                    return null;
+                });
+
+            #endregion PLATFORM_DEPENDED_CODE
 
             this.removeButtonGO.SetActive(false);
             this.eyebutton.DisableView();

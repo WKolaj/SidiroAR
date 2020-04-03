@@ -7,6 +7,7 @@ using UnityEngine;
 public class AssetModelService
 {
     static string fileApiURL = "https://sidiro.pl/sidiroar/api/file/me";
+    static string iosFileApiURL = "https://sidiro.pl/sidiroar/api/file/ios/me";
 
     /// <summary>
     /// Method for downloading file asynchronously
@@ -31,7 +32,27 @@ public class AssetModelService
         {
             webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
             webClient.Headers["x-auth-token"] = jwt;
-            webClient.DownloadFileAsync(new Uri(String.Format("{0}/{1}", fileApiURL, assemblyId)), filePath);
+
+            #region PLATFORM_DEPENDED_CODE
+
+            Common.RunplatformDependendCode(
+                () => {
+                    //Android Code
+
+                    webClient.DownloadFileAsync(new Uri(String.Format("{0}/{1}", fileApiURL, assemblyId)), filePath);
+
+                    return null;
+                }, () =>
+                {
+                    //IOS Code
+
+                    webClient.DownloadFileAsync(new Uri(String.Format("{0}/{1}", iosFileApiURL, assemblyId)), filePath);
+
+                    return null;
+                });
+
+            #endregion PLATFORM_DEPENDED_CODE
+
             
             return webClient;
         }

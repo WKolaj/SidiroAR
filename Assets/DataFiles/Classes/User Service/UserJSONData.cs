@@ -14,4 +14,5 @@ public class UserJSONData
     public List<string> modelIds = null;
     public List<string> modelNames = null;
     public List<bool> filesExist = null;
+    public List<bool> iosFilesExist = null;
 }

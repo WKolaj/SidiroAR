@@ -50,7 +50,7 @@ public class UserLoader : MonoBehaviour
     /// <returns>
     /// Collection of generated AssetModelLoaders
     /// </returns>
-    public static List<AssetModelLoader> GenerateAssetModelLoaders(User user, List<string> ids, List<string> names, List<bool> filesExist)
+    public static List<AssetModelLoader> GenerateAssetModelLoaders(User user, List<string> ids, List<string> names, List<bool> filesExist, List<bool> iosFilesExist)
     {
         //Checking length of both - ids and names
         if (ids.Count != names.Count)
@@ -68,8 +68,9 @@ public class UserLoader : MonoBehaviour
             var id = ids[i];
             var name = names[i];
             var fileExist = filesExist[i];
+            var iosFileExist = iosFilesExist[i];
 
-            var assetModelLoader = new AssetModelLoader(id, name, fileExist, user);
+            var assetModelLoader = new AssetModelLoader(id, name, fileExist, user, iosFileExist);
             listToReturn.Add(assetModelLoader);
         }
 
@@ -94,6 +95,29 @@ public class UserLoader : MonoBehaviour
         for (var i = 0; i < models.Count; i++)
         {
             listToReturn.Add(models[i].FileExists);
+        }
+
+        return listToReturn;
+    }
+
+    /// <summary>
+    /// Method for getting ios file exists on server list based on given models collection
+    /// </summary>
+    /// <param name="models">
+    /// Models collection
+    /// </param>
+    /// <returns>
+    /// list of all info about file existing on server
+    /// </returns>
+    public static List<Boolean> GenerateAssetModelIOSFileExists(List<AssetModelLoader> models)
+    {
+        //Creating and fetching list to return
+        List<Boolean> listToReturn = new List<Boolean>();
+
+        //Has to be for - in order to ensure order together with id generation in different method
+        for (var i = 0; i < models.Count; i++)
+        {
+            listToReturn.Add(models[i].IOSFileExists);
         }
 
         return listToReturn;
@@ -165,7 +189,8 @@ public class UserLoader : MonoBehaviour
         jsonToReturn.modelIds = UserLoader.GenerateAssetModelIds(user.ModelList);
         jsonToReturn.modelNames = UserLoader.GenerateAssetModelNames(user.ModelList);
         jsonToReturn.filesExist = UserLoader.GenerateAssetModelFileExists(user.ModelList);
-
+        jsonToReturn.iosFilesExist = UserLoader.GenerateAssetModelIOSFileExists(user.ModelList);
+        
         return jsonToReturn;
     }
 

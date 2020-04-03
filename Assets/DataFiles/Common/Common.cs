@@ -23,6 +23,7 @@ public static class Common
     /// </summary>
     private static string defaultUserDirName = "_default";
 
+
     /// <summary>
     /// Path to applicaton files directory
     /// </summary>
@@ -73,6 +74,7 @@ public static class Common
         }
     }
 
+
     public static void LoadARScene()
     {
         SceneManager.LoadScene("ARScene");
@@ -101,4 +103,48 @@ public static class Common
     {
         UnityMainThreadDispatcher.Instance().Enqueue(action);
     }
+    
+    /// <summary>
+    /// Method for running code
+    /// </summary>
+    /// <param name="androidCode"></param>
+    /// <param name="iosCode"></param>
+    /// <returns></returns>
+    public static object RunplatformDependendCode(Func<object> androidCode, Func<object> iosCode )
+    {
+        switch (Application.platform)
+        {
+            case RuntimePlatform.Android:
+                {
+                    return androidCode();
+                }
+
+            case RuntimePlatform.IPhonePlayer:
+                {
+                    return iosCode();
+                }
+
+            case RuntimePlatform.WindowsEditor:
+                {
+                    return androidCode();
+                }
+
+            case RuntimePlatform.LinuxEditor:
+                {
+                    return androidCode();
+                }
+
+            case RuntimePlatform.OSXEditor:
+                {
+                    return androidCode();
+                }
+
+            default:
+                {
+                    throw new InvalidProgramException(String.Format("Unsupported platform :{0}", Application.platform));
+                }
+        }
+
+    }
 }
+
