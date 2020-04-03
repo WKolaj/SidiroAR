@@ -145,7 +145,23 @@ public class AssetModelLoader
     {
         get
         {
-            return Path.Combine(User.DirectoryPath, String.Format("{0}.{1}", this.ID, "smdl"));
+            #region PLATFORM_DEPENDED_CODE
+
+            return (String)Common.RunplatformDependendCode(
+                () => {
+                    //Android Code
+
+                    return Path.Combine(User.DirectoryPath, String.Format("{0}.{1}", this.ID, "smdl"));
+                }, () =>
+                {
+                    //IOS Code
+
+                    return Path.Combine(User.DirectoryPath, String.Format("{0}.{1}", this.ID, "ismdl"));
+                });
+
+            #endregion PLATFORM_DEPENDED_CODE
+
+
         }
 
     }

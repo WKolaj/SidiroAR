@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -64,7 +65,29 @@ public class AssetModelCreator
 
         //Checking file extension
         var extension = Path.GetExtension(smdlFilePath);
-        if (extension != ".smdl") return string.Format("SMDL file has invalid extension: {0}", extension);
+
+
+        #region PLATFORM_DEPENDED_CODE
+
+        var invalidExtensionMessage = (String)Common.RunplatformDependendCode(
+            () => {
+                //Android Code
+
+                if (extension != ".smdl") return string.Format("SMDL file has invalid extension: {0}", extension);
+
+                return null;
+            }, () =>
+            {
+                //IOS Code
+
+                if (extension != ".ismdl") return string.Format("iSMDL file has invalid extension: {0}", extension);
+
+                return null;
+            });
+
+        #endregion PLATFORM_DEPENDED_CODE
+
+        if (invalidExtensionMessage != null) return invalidExtensionMessage;
 
         //Returning null if path is ok
         return null;
