@@ -4,16 +4,22 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LoginWindow : MonoBehaviour
 {
 
     private MainCanvas mainCanvas;
     private UserLoader userLoader;
+    private GameObject inputArea;
     private GameObject userIDInputGO;
     private TMP_InputField userIDInput;
     private GameObject userPasswordIDInputGO;
     private TMP_InputField userPasswordIDInput;
+    private GameObject loginButtonGO;
+    private Button loginButton;
+    private GameObject offlineButtonGO;
+    private Button offlineButton;
 
     public void Awake()
     {
@@ -33,18 +39,24 @@ public class LoginWindow : MonoBehaviour
         InitComponents(canvas,loader);
     }
 
+
     private void InitComponents(MainCanvas canvas, UserLoader loader)
     {
         this.mainCanvas = canvas;
         this.userLoader = loader;
 
-        this.userIDInputGO = transform.Find("UserIDInput").gameObject;
-        var userPasswordElement = transform.Find("UserPasswordElement").gameObject;
-        this.userPasswordIDInputGO = userPasswordElement.transform.Find("UserPasswordInput").gameObject;
+        this.inputArea = transform.Find("InputArea").gameObject;
+        this.userIDInputGO = this.inputArea.transform.Find("UserIDInput").gameObject;
+        this.userPasswordIDInputGO = this.inputArea.transform.Find("UserPasswordInput").gameObject;
 
         this.userIDInput = userIDInputGO.GetComponent<TMP_InputField>();
         this.userPasswordIDInput = userPasswordIDInputGO.GetComponent<TMP_InputField>();
 
+        this.loginButtonGO = this.inputArea.transform.Find("LoginButton").gameObject;
+        this.loginButton = this.loginButtonGO.GetComponent<Button>();
+
+        this.offlineButtonGO = this.inputArea.transform.Find("OfflineButton").gameObject;
+        this.offlineButton = this.loginButtonGO.GetComponent<Button>();
     }
 
     public void Show()
@@ -55,19 +67,6 @@ public class LoginWindow : MonoBehaviour
     public void Hide()
     {
         this.gameObject.SetActive(false);
-    }
-
-    public void AppendPIN(string characterToAdd)
-    {
-        this.userPasswordIDInput.text += characterToAdd;
-    }
-
-    public void CutPIN()
-    {
-        if(!string.IsNullOrEmpty(this.userPasswordIDInput.text))
-        {
-            this.userPasswordIDInput.text = this.userPasswordIDInput.text.Remove(this.userPasswordIDInput.text.Length-1);
-        }
     }
 
     /// <summary>
@@ -106,4 +105,11 @@ public class LoginWindow : MonoBehaviour
         Hide();
         mainCanvas.RefreshUserDisplay(UserLoader.LoggedUser);
     }
+
+    public void Update()
+    {
+        //Checking if login button should be enabled
+        this.loginButton.interactable = (!String.IsNullOrEmpty(userIDInput.text) && !String.IsNullOrEmpty(userPasswordIDInput.text) && userPasswordIDInput.text.Length == 4);
+    }
+
 }
