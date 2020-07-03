@@ -109,7 +109,7 @@ public class LoginWindow : MonoBehaviour
     public void Update()
     {
         //Checking if login button should be enabled
-        this.loginButton.interactable = (!String.IsNullOrEmpty(userIDInput.text) && !String.IsNullOrEmpty(userPasswordIDInput.text) && userPasswordIDInput.text.Length == 4);
+        this.loginButton.interactable = (!String.IsNullOrEmpty(userIDInput.text) && !String.IsNullOrEmpty(userPasswordIDInput.text) && userPasswordIDInput.text.Length >= 8);
     }
 
 }
