@@ -222,32 +222,40 @@ public class MenuItem : MonoBehaviour
 
     private MenuitemButton _menuItemButton = null;
 
+    //ITEM DEPENDS ON SIZE AFTER UI SCALING - SO METHODS MUST BE INVOKED AFTER SCALING (IN START), AWAKE IS USED TO SET UP REFERENCES
     private void Awake()
-    {
-        _initIcon();
-        _initLabel();
-        _initSeprator();
-        _initMenuItemButton();
-    }
-
-    private void _initIcon()
     {
         this._iconGO = this.transform.Find("Icon").gameObject;
         this._iconRectTrans = _iconGO.GetComponent<RectTransform>();
         this._iconImage = _iconGO.GetComponent<Image>();
 
-        _iconImage.sprite = _iconSprite;
-        _iconImage.color = _iconColor;
 
-        _iconRectTrans.anchoredPosition = new Vector3(IconOffset, _iconRectTrans.anchoredPosition.y);
-        _iconRectTrans.sizeDelta = new Vector2(IconSize, IconSize);
-    }
-
-    private void _initLabel()
-    {
         this._labelGO = this.transform.Find("Label").gameObject;
         this._labelRectTrans = _labelGO.GetComponent<RectTransform>();
         this._labelTMP = _labelGO.GetComponent<TextMeshProUGUI>();
+
+        this._separatorGO = this.transform.Find("Separator").gameObject;
+        this._separatorRectTrans = _separatorGO.GetComponent<RectTransform>();
+        this._separatorImage = _separatorGO.GetComponent<Image>();
+
+        _menuItemButtonGO = this.transform.Find("MenuItemButton").gameObject;
+        this._menuItemButton = _menuItemButtonGO.GetComponent<MenuitemButton>();
+
+
+        this._menuItemButton.OnClick = this.OnClick;
+
+
+    }
+
+    //ITEM DEPENDS ON SIZE AFTER UI SCALING - SO METHODS MUST BE INVOKED AFTER SCALING (IN START), START IS USED TO SET UP UI
+    private void Start()
+    {
+
+        this._iconImage.sprite = _iconSprite;
+        this._iconImage.color = _iconColor;
+
+        this._iconRectTrans.anchoredPosition = new Vector3(IconOffset, _iconRectTrans.anchoredPosition.y);
+        this._iconRectTrans.sizeDelta = new Vector2(IconSize, IconSize);
 
         this._labelTMP.text = LabelText;
         this._labelTMP.fontSize = LabelFontSize;
@@ -255,13 +263,6 @@ public class MenuItem : MonoBehaviour
         this._labelTMP.fontStyle = this.LabelBold ? FontStyles.Bold : FontStyles.Normal;
 
         this._labelRectTrans.offsetMin = new Vector2(LabelOffset, this._labelRectTrans.offsetMin.y);
-    }
-
-    private void _initSeprator()
-    {
-        this._separatorGO = this.transform.Find("Separator").gameObject;
-        this._separatorRectTrans = _separatorGO.GetComponent<RectTransform>();
-        this._separatorImage = _separatorGO.GetComponent<Image>();
 
         this._separatorImage.color = SeparatorColor;
         this._separatorRectTrans.sizeDelta = new Vector3(_separatorRectTrans.sizeDelta.x, SeparatorWidth);
@@ -269,14 +270,5 @@ public class MenuItem : MonoBehaviour
 
     }
 
-    private void _initMenuItemButton()
-    {
-        _menuItemButtonGO = this.transform.Find("MenuItemButton").gameObject;
-
-        this._menuItemButton = _menuItemButtonGO.GetComponent<MenuitemButton>();
-
-        this._menuItemButton.OnClick = this.OnClick;
-
-    }
 
 }

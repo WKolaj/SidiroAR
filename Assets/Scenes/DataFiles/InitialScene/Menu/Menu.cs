@@ -5,6 +5,21 @@ using UnityEngine.EventSystems;
 
 public class Menu : MonoBehaviour
 {
+    private static Menu _actualMenu = null;
+
+    public static void DrawOutStatic()
+    {
+        if (_actualMenu != null)
+            _actualMenu.DrawOut();
+    }
+
+    public static void DrawInStatic()
+    {
+
+        if (_actualMenu != null)
+            _actualMenu.DrawIn();
+    }
+
     [SerializeField]
     private float _drawOutSpeed = 2000;
     public float DrawOutSpeed
@@ -45,14 +60,32 @@ public class Menu : MonoBehaviour
     private RectTransform _menuContentRectTrans;
     private GameObject _backgroundGO;
 
-
-
+    //ITEM DEPENDS ON SIZE AFTER UI SCALING - SO METHODS MUST BE INVOKED AFTER SCALING (IN START), AWAKE IS USED TO SET UP REFERENCES
     private void Awake()
     {
         this._rectTrans = this.transform.GetComponent<RectTransform>();
-        
-        _initMenuContent();
-        _initBackground();
+
+        var menuListMask = this.transform.Find("MenuListMask").gameObject;
+        this._menuContentGO = menuListMask.transform.Find("MenuContent").gameObject;
+        this._menuContentRectTrans = _menuContentGO.GetComponent<RectTransform>();
+
+        this._backgroundGO = menuListMask.transform.Find("Background").gameObject;
+
+        //Assinging as actual object - to use static methods
+        Menu._actualMenu = this;
+    }
+
+    //ITEM DEPENDS ON SIZE AFTER UI SCALING - SO METHODS MUST BE INVOKED AFTER SCALING (IN START), START IS USED TO SET UP UI
+    private void Start()
+    {
+        //Calculating real menu width based on percentage
+        _calculateMenuWidth();
+
+        //Setting size and initial position of menu
+        this._menuContentRectTrans.sizeDelta = new Vector2(_menuWidth, this._menuContentRectTrans.sizeDelta.y);
+        this._menuContentRectTrans.anchoredPosition = new Vector3(0, 0);
+
+        this._backgroundGO.SetActive(false);
 
         //Speed should be normalized according to menu width
         _normalizeDrawOutSpeed();
@@ -62,7 +95,7 @@ public class Menu : MonoBehaviour
     {
         get
         {
-            return _menuContentRectTrans.localPosition.x;
+            return _menuContentRectTrans.anchoredPosition.x;
         }
     }
 
@@ -86,24 +119,10 @@ public class Menu : MonoBehaviour
 
     private void _initBackground()
     {
-        var menuListMask = this.transform.Find("MenuListMask").gameObject;
-        this._backgroundGO = menuListMask.transform.Find("Background").gameObject;
-
-        this._backgroundGO.SetActive(false);
     }
 
     private void _initMenuContent()
     {
-        //Calculating real menu width based on percentage
-        _calculateMenuWidth();
-
-        var menuListMask = this.transform.Find("MenuListMask").gameObject;
-        this._menuContentGO = menuListMask.transform.Find("MenuContent").gameObject;
-        this._menuContentRectTrans = _menuContentGO.GetComponent<RectTransform>();
-
-        //Setting size and initial position of menu
-        this._menuContentRectTrans.sizeDelta = new Vector2(_menuWidth, this._menuContentRectTrans.sizeDelta.y);
-        this._menuContentRectTrans.localPosition = new Vector3(0, 0);
 
     }
 
@@ -176,7 +195,7 @@ public class Menu : MonoBehaviour
             newOffset = _menuWidth;
         }
 
-        _menuContentRectTrans.localPosition = new Vector3(newOffset, _menuContentRectTrans.localPosition.y);
+        _menuContentRectTrans.anchoredPosition = new Vector3(newOffset, _menuContentRectTrans.anchoredPosition.y);
     }
 
 }

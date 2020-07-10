@@ -95,42 +95,33 @@ public class CircleController : MonoBehaviour
     }
 
 
-    void Awake()
+
+    //ITEM DEPENDS ON SIZE AFTER UI SCALING - SO METHODS MUST BE INVOKED AFTER SCALING (IN START), AWAKE IS USED TO SET UP REFERENCES
+    private void Awake()
     {
-        _initCircleController();
-    }
-
-    private void _initCircleController()
-    {
-        //Initialzing Circle
-        _initCircle();
-
-        //Initializing indicator
-        _initCircleIndicator();
-
-        //Initializing middle button
-        _initMiddleButton();
-    }
-
-    private void _initCircle()
-    {
-
         _circleGO = this.transform.Find("Circle").gameObject;
         _circleRectTrans = _circleGO.GetComponent<RectTransform>();
 
-        _circleControllerScale = _circleRectTrans.rect.width / 583;
-
-    }
-
-    private void _initCircleIndicator()
-    {
         _indicatorGO = _circleGO.transform.Find("Indicator").gameObject;
-
         _indicator = _indicatorGO.GetComponent<CircleControllerIndicator>();
         _indicatorRectTransform = _indicatorGO.GetComponent<RectTransform>();
 
         _indicator.DragHandler = _handleIndicatorDrag;
 
+        _middleButtonGO = _circleGO.transform.Find("MiddleButton").gameObject;
+
+        _middleButton = _middleButtonGO.GetComponent<ClickableImage>();
+        _middleButtonRectTransform = _middleButtonGO.GetComponent<RectTransform>();
+
+        _middleButton.OnClick = _middleButtonClicked;
+
+    }
+
+    //ITEM DEPENDS ON SIZE AFTER UI SCALING - SO METHODS MUST BE INVOKED AFTER SCALING (IN START), START IS USED TO SET UP UI
+    private void Start()
+    {
+        //Initialzing Circle
+        _circleControllerScale = _circleRectTrans.rect.width / 583;
 
         //Calculating indicator maginitude, size and position
         _indicatorMagnitude = 249 * _circleControllerScale;
@@ -138,7 +129,7 @@ public class CircleController : MonoBehaviour
 
         //Postioning and scaling indicator
         _indicatorRectTransform.sizeDelta = new Vector2(_indicatorSize, _indicatorSize);
-        _indicatorRectTransform.localPosition = new Vector2(0, _indicatorMagnitude);
+        _indicatorRectTransform.anchoredPosition = new Vector2(0, _indicatorMagnitude);
 
         //Enabling indicator
         _indicatorGO.SetActive(true);
@@ -146,29 +137,23 @@ public class CircleController : MonoBehaviour
         //Setting reference angle vector
         _referenceAngleVector = new Vector3(0, -_indicatorMagnitude, 0); ;
         _rotationVector = new Vector3(0, 0, 1);
-    }
 
-    private void _initMiddleButton()
-    {
-        _middleButtonGO = _circleGO.transform.Find("MiddleButton").gameObject;
+        //Initializing middle button
 
-        _middleButton = _middleButtonGO.GetComponent<ClickableImage>();
-        _middleButtonRectTransform = _middleButtonGO.GetComponent<RectTransform>();
 
         //Setting size of middle button
         var middleButtonSize = 285 * _circleControllerScale;
         _middleButtonRectTransform.sizeDelta = new Vector2(middleButtonSize, middleButtonSize);
 
-        //Initializing events
-        _middleButton.OnClick = _middleButtonClicked;
-
     }
+
+
 
     public float Value
     {
         get
         {
-            var angle = getAngleFromIndicatorPosition(_indicatorRectTransform.localPosition);
+            var angle = getAngleFromIndicatorPosition(_indicatorRectTransform.anchoredPosition);
 
             return _convertAngleToValue(angle);
         }
@@ -186,9 +171,9 @@ public class CircleController : MonoBehaviour
         _setIndicatorAngle(angle);
     }
 
-    private void _handleIndicatorDrag(Vector3 delta)
+    private void _handleIndicatorDrag(Vector2 delta)
     {
-        var newIndicatorPosition = _indicatorRectTransform.localPosition + delta;
+        var newIndicatorPosition = _indicatorRectTransform.anchoredPosition + delta;
         var newAngle = getAngleFromIndicatorPosition(newIndicatorPosition);
 
         var newValue = _convertAngleToValue(newAngle);
@@ -205,7 +190,7 @@ public class CircleController : MonoBehaviour
     {
         var newVector = Quaternion.AngleAxis(-angle, _rotationVector) * _referenceAngleVector;
 
-        _indicatorRectTransform.localPosition = newVector;
+        _indicatorRectTransform.anchoredPosition = newVector;
     }
 
     private float _convertAngleToValue(float angle)

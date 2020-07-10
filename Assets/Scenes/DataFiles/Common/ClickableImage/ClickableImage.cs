@@ -184,35 +184,33 @@ public class ClickableImage : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    //ITEM DEPENDS ON SIZE AFTER UI SCALING - SO METHODS MUST BE INVOKED AFTER SCALING (IN START), AWAKE IS USED TO SET UP REFERENCES
     private void Awake()
     {
-        _initBackground();
-        _initForeground();
-    }
 
-    private void _initBackground()
-    {
-        //Setting background image
+        this._foregroundGO = this.transform.Find("Foreground").gameObject;
+        this._foregroundImage = _foregroundGO.GetComponent<Image>();
+        this._foregroundRectTrans = _foregroundGO.GetComponent<RectTransform>();
+
         this._backgroundGO = this.transform.Find("Background").gameObject;
         this._backgroundImage = _backgroundGO.GetComponent<Image>();
-        this._backgroundImage.sprite = BackgroundSprite;
-        this._backgroundImage.color = BackgroundColorEnabled;
         this._backgroundRectTrans = _backgroundGO.GetComponent<RectTransform>();
     }
 
-    private void _initForeground()
+    //ITEM DEPENDS ON SIZE AFTER UI SCALING - SO METHODS MUST BE INVOKED AFTER SCALING (IN START), START IS USED TO SET UP UI
+    private void Start()
     {
-        this._foregroundGO = this.transform.Find("Foreground").gameObject;
-
         //Setting foreground image
-        this._foregroundImage = _foregroundGO.GetComponent<Image>();
         this._foregroundImage.sprite = ForegroundSprite;
         this._foregroundImage.color = ForegroundColorEnabled;
-        this._foregroundRectTrans = _foregroundGO.GetComponent<RectTransform>();
 
         //Setting margin to icon
-        this._foregroundRectTrans.offsetMin = new Vector2(ForegroundMargin,ForegroundMargin);
+        this._foregroundRectTrans.offsetMin = new Vector2(ForegroundMargin, ForegroundMargin);
         this._foregroundRectTrans.offsetMax = new Vector2(-ForegroundMargin, -ForegroundMargin);
 
+        //Setting background image
+        this._backgroundImage.sprite = BackgroundSprite;
+        this._backgroundImage.color = BackgroundColorEnabled;
     }
+
 }

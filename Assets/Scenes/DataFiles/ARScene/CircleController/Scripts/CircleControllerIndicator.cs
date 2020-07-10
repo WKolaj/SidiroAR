@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 public class CircleControllerIndicator : MonoBehaviour, IDragHandler
 {
-    public Action<Vector3> DragHandler = null;
+    public Action<Vector2> DragHandler = null;
 
     /// <summary>
     /// Method called every drag of button
