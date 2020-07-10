@@ -100,6 +100,17 @@ public class DialogWindowButton : MonoBehaviour
         _labelTMP.fontSize = LabelFontSize;
     }
 
+    public void SetTextAndColor(string text, string color)
+    {
+        _labelTMP.text = text;
 
+        Color newCol;
+
+        if (ColorUtility.TryParseHtmlString(color, out newCol))
+        {
+            _labelTMP.color = newCol;
+        }
+
+    }
 
 }

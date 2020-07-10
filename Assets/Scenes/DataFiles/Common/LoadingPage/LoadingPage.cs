@@ -21,6 +21,7 @@ public class LoadingPage : MonoBehaviour
     private void Awake()
     {
         LoadingPage._actualLoadingPage = this;
+        this.gameObject.SetActive(false);
     }
 
     public void Show()

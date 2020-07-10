@@ -21,4 +21,14 @@ public class MainCanvas : MonoBehaviour
     {
         Debug.Log("Circle button clicked");
     }
+
+    public void ShowDialog1()
+    {
+        DialogWindow.ShowStatic("To jest jakaś wiadomość", "OK", () => Debug.Log("OK Clicked"), "#eb4334");
+    }
+
+    public void ShowDialog2()
+    {
+        DialogWindow.ShowStatic("windo text2", "button0 Text2", () => Debug.Log("Button0 2"), "#2e5de8", "Button1 text2", () => Debug.Log("BUtton1 2"), "#e8e22e");
+    }
 }
