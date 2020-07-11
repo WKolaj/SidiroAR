@@ -67,6 +67,10 @@ public class MenuItem : MonoBehaviour
 
     }
 
+    public void SetText(string text)
+    {
+        this._labelTMP.text = text;
+    }
 
 
 }

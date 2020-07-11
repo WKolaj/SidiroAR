@@ -41,4 +41,9 @@ public class AuxPageHeader : MonoBehaviour
         MainCanvas.HideAuxPage();
     }
 
+    public void SetText(string text)
+    {
+        this._label.text = text;
+    }
+
 }

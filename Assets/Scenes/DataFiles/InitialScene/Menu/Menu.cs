@@ -43,6 +43,20 @@ public class Menu : MonoBehaviour
     private RectTransform _menuContentRectTrans;
     private GameObject _backgroundGO;
 
+    private GameObject _userMenuItemGO;
+    private GameObject _settingsMenuItemGO;
+    private GameObject _languageMenuItemGO;
+    private GameObject _helpMenuItemGO;
+    private GameObject _exitMenuItemGO;
+    private GameObject _logOutMenuItemGO;
+
+    private MenuItem _userMenuItem;
+    private MenuItem _settingsMenuItem;
+    private MenuItem _languageMenuItem;
+    private MenuItem _helpMenuItem;
+    private MenuItem _exitMenuItem;
+    private MenuItem _logOutMenuItem;
+
     //ITEM DEPENDS ON SIZE AFTER UI SCALING - SO METHODS MUST BE INVOKED AFTER SCALING (IN START), AWAKE IS USED TO SET UP REFERENCES
     private void Awake()
     {
@@ -54,6 +68,22 @@ public class Menu : MonoBehaviour
 
         this._backgroundGO = menuListMask.transform.Find("Background").gameObject;
 
+        var _menuItemContainerTopGO = _menuContentGO.transform.Find("MenuItemContainerTop").gameObject;
+        var _menuItemContainerBottomGO = _menuContentGO.transform.Find("MenuItemContainerBottom").gameObject;
+
+        _userMenuItemGO = _menuItemContainerTopGO.transform.Find("UserMenuItem").gameObject;
+        _settingsMenuItemGO = _menuItemContainerTopGO.transform.Find("SettingsMenuItem").gameObject;
+        _languageMenuItemGO = _menuItemContainerTopGO.transform.Find("LanguageMenuItem").gameObject;
+        _helpMenuItemGO = _menuItemContainerTopGO.transform.Find("HelpMenuItem").gameObject;
+        _exitMenuItemGO = _menuItemContainerBottomGO.transform.Find("ExitMenuItem").gameObject;
+        _logOutMenuItemGO = _menuItemContainerBottomGO.transform.Find("LogOutMenuItem").gameObject;
+
+        _userMenuItem = _userMenuItemGO.GetComponent<MenuItem>();
+        _settingsMenuItem = _settingsMenuItemGO.GetComponent<MenuItem>();
+        _languageMenuItem = _languageMenuItemGO.GetComponent<MenuItem>();
+        _helpMenuItem= _helpMenuItemGO.GetComponent<MenuItem>();
+        _exitMenuItem = _exitMenuItemGO.GetComponent<MenuItem>();
+        _logOutMenuItem = _logOutMenuItemGO.GetComponent<MenuItem>();
     }
 
     //ITEM DEPENDS ON SIZE AFTER UI SCALING - SO METHODS MUST BE INVOKED AFTER SCALING (IN START), START IS USED TO SET UP UI
@@ -71,6 +101,8 @@ public class Menu : MonoBehaviour
         //Speed should be normalized according to menu width
         _normalizeDrawOutSpeed();
     }
+
+   
 
     public float MenuContentOffset
     {
@@ -160,6 +192,15 @@ public class Menu : MonoBehaviour
             _backgroundGO.SetActive(false);
         }
 
+
+        _userMenuItem.SetText(Translator.GetTranslation("Menu.UserMenuItemText"));
+        _settingsMenuItem.SetText(Translator.GetTranslation("Menu.SettingsMenuItemText"));
+        _languageMenuItem.SetText(Translator.GetTranslation("Menu.LanguageMenuItemText"));
+        _helpMenuItem.SetText(Translator.GetTranslation("Menu.HelpMenuItemText"));
+        _exitMenuItem.SetText(Translator.GetTranslation("Menu.ExitMenuItemText"));
+        _logOutMenuItem.SetText(Translator.GetTranslation("Menu.LogOutMenuItemText"));
+
+
     }
 
     private void _moveMenuContent(float numberOfPixels)
@@ -185,7 +226,30 @@ public class Menu : MonoBehaviour
         var translationWindowPolishButtonText = Translator.GetTranslation("TranslationWindow.PolishButtonText");
         var translationWindowEnglishButtonText = Translator.GetTranslation("TranslationWindow.EnglishButtonText");
 
-        MainCanvas.ShowDialogWindow(translationWindowContentText, translationWindowPolishButtonText, () => { Translator.SetLang("pl"); this.DrawIn(); }, "#41ABAB", translationWindowEnglishButtonText, () => { Translator.SetLang("en"); this.DrawIn(); }, "#41ABAB");
+        MainCanvas.ShowDialogWindow(
+            translationWindowContentText, 
+            translationWindowPolishButtonText, 
+            () => { Translator.SetLang("pl"); this.DrawIn(); }, 
+            "#41ABAB", 
+            translationWindowEnglishButtonText, 
+            () => { Translator.SetLang("en"); this.DrawIn(); }, 
+            "#41ABAB");
+    }
+
+    public void HandleExitMenuItemClicked()
+    {
+        var contentText = Translator.GetTranslation("Menu.ExitWindowDialog.ContentText");
+        var yesButtonText = Translator.GetTranslation("Menu.ExitWindowDialog.YesButtonText");
+        var cancelButtonText = Translator.GetTranslation("Menu.ExitWindowDialog.CancelButtonText");
+
+        MainCanvas.ShowDialogWindow(
+            contentText,
+            yesButtonText, 
+            () => { Application.Quit(); },
+            "#FF0266",
+            cancelButtonText, 
+            () => { this.DrawIn(); }, 
+            "#41ABAB");
     }
 
 }
