@@ -35,6 +35,21 @@ public class Menu : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    private GameObject _helpAuxPageContent = null;
+    public GameObject HelpAuxPageContent
+    {
+        get
+        {
+            return _helpAuxPageContent;
+        }
+
+        set
+        {
+            _helpAuxPageContent = value;
+        }
+    }
+
     private float _menuWidth;
     private float _normalizedDrawOutSpeed;
 
@@ -220,7 +235,14 @@ public class Menu : MonoBehaviour
         _menuContentRectTrans.anchoredPosition = new Vector3(newOffset, _menuContentRectTrans.anchoredPosition.y);
     }
     
+
     public void HandleHelpMenuItemClicked()
+    {
+        MainCanvas.ShowAuxPage(HelpAuxPageContent);
+        this.DrawIn();
+    }
+
+    public void HandleLanguageMenuItemClicked()
     {
         var translationWindowContentText = Translator.GetTranslation("TranslationWindow.ContentText");
         var translationWindowPolishButtonText = Translator.GetTranslation("TranslationWindow.PolishButtonText");

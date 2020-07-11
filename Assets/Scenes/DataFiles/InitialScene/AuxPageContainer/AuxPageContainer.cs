@@ -112,8 +112,6 @@ public class AuxPageContainer : MonoBehaviour
         
         this._shouldBeDrawnOut = true;
 
-        //Showing aux page should automatically hide menu
-        MainCanvas.HideMenu();
     }
 
     public void SetContent(GameObject content)

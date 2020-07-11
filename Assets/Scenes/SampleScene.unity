@@ -234,7 +234,7 @@ PrefabInstance:
     - target: {fileID: 1103523211181319507, guid: 26c489b8b305db8409b3926d1012ccd1,
         type: 3}
       propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1103523211181319507, guid: 26c489b8b305db8409b3926d1012ccd1,
         type: 3}
@@ -479,7 +479,7 @@ PrefabInstance:
     - target: {fileID: 3646749575905557488, guid: 26c489b8b305db8409b3926d1012ccd1,
         type: 3}
       propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: HandleHelpMenuItemClicked
+      value: HandleLanguageMenuItemClicked
       objectReference: {fileID: 0}
     - target: {fileID: 3646749575905557488, guid: 26c489b8b305db8409b3926d1012ccd1,
         type: 3}
@@ -698,6 +698,12 @@ PrefabInstance:
       propertyPath: _drawOutSpeed
       value: 3000
       objectReference: {fileID: 0}
+    - target: {fileID: 5662485483395374187, guid: 26c489b8b305db8409b3926d1012ccd1,
+        type: 3}
+      propertyPath: _helpAuxPageContent
+      value: 
+      objectReference: {fileID: 3760697451399860083, guid: 6219bb1155e9d484f8ce546b3f4a2424,
+        type: 3}
     - target: {fileID: 5662485484340780558, guid: 26c489b8b305db8409b3926d1012ccd1,
         type: 3}
       propertyPath: m_IsActive
@@ -766,7 +772,7 @@ PrefabInstance:
     - target: {fileID: 6843150904655776551, guid: 26c489b8b305db8409b3926d1012ccd1,
         type: 3}
       propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6843150904655776551, guid: 26c489b8b305db8409b3926d1012ccd1,
         type: 3}
@@ -782,11 +788,11 @@ PrefabInstance:
         type: 3}
       propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1624789079}
+      objectReference: {fileID: 87514477}
     - target: {fileID: 6843150904655776551, guid: 26c489b8b305db8409b3926d1012ccd1,
         type: 3}
       propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: HandleExitClicked
+      value: HandleExitMenuItemClicked
       objectReference: {fileID: 0}
     - target: {fileID: 6843150904655776551, guid: 26c489b8b305db8409b3926d1012ccd1,
         type: 3}
@@ -801,7 +807,7 @@ PrefabInstance:
     - target: {fileID: 7000276256614110654, guid: 26c489b8b305db8409b3926d1012ccd1,
         type: 3}
       propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7000276256614110654, guid: 26c489b8b305db8409b3926d1012ccd1,
         type: 3}
@@ -812,23 +818,22 @@ PrefabInstance:
         type: 3}
       propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 389608042}
+      objectReference: {fileID: 87514477}
     - target: {fileID: 7000276256614110654, guid: 26c489b8b305db8409b3926d1012ccd1,
         type: 3}
       propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: DrawOut
+      value: HandleHelpMenuItemClicked
       objectReference: {fileID: 0}
     - target: {fileID: 7000276256614110654, guid: 26c489b8b305db8409b3926d1012ccd1,
         type: 3}
       propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.GameObject, UnityEngine
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7000276256614110654, guid: 26c489b8b305db8409b3926d1012ccd1,
         type: 3}
       propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 3760697451399860083, guid: 6219bb1155e9d484f8ce546b3f4a2424,
-        type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 7897446701526731362, guid: 26c489b8b305db8409b3926d1012ccd1,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -1331,7 +1336,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -50.000244}
+  m_AnchoredPosition: {x: 0, y: -50}
   m_SizeDelta: {x: 0, y: -100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &963194225
@@ -1687,7 +1692,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -217.00024}
+  m_AnchoredPosition: {x: 0, y: -217}
   m_SizeDelta: {x: 0, y: -434}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1456068328
