@@ -131,6 +131,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3760697451399860082}
     m_Modifications:
+    - target: {fileID: 8372145395137604375, guid: d91d47584b26eef44b36dca2e9d31356,
+        type: 3}
+      propertyPath: m_text
+      value: Pomoc
+      objectReference: {fileID: 0}
+    - target: {fileID: 8372145395137604375, guid: d91d47584b26eef44b36dca2e9d31356,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8372145395137604375, guid: d91d47584b26eef44b36dca2e9d31356,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8372145395137604375, guid: d91d47584b26eef44b36dca2e9d31356,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8372145395784278269, guid: d91d47584b26eef44b36dca2e9d31356,
         type: 3}
       propertyPath: _labelText

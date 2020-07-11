@@ -6,36 +6,6 @@ using UnityEngine.UI;
 
 public class AuxPageHeader : MonoBehaviour
 {
-    [SerializeField]
-    private bool _buttonVisible = true;
-    public bool ButtonVisible
-    {
-        get
-        {
-            return _buttonVisible;
-        }
-
-        set
-        {
-            _buttonVisible = value;
-        }
-    }
-
-    [SerializeField]
-    private string _labelText = "Button with icon";
-    public string LabelText
-    {
-        get
-        {
-            return _labelText;
-        }
-
-        set
-        {
-            _labelText = value;
-        }
-    }
-
 
     private GameObject _hidePageButtonGO;
     private GameObject _labelGO;
@@ -66,23 +36,9 @@ public class AuxPageHeader : MonoBehaviour
         this._hidePageButton.OnClick.AddListener(_handleHidePageButtonClicked);
     }
 
-    private void Start()
-    {
-        this._label.text = LabelText;
-
-        if(this.ButtonVisible)
-        {
-            _hidePageButtonGO.SetActive(true);
-        }
-        else
-        {
-            _hidePageButtonGO.SetActive(false);
-        }
-    }
-
     private void _handleHidePageButtonClicked()
     {
-        AuxPageContainer.DrawInStatic();
+        MainCanvas.HideAuxPage();
     }
 
 }

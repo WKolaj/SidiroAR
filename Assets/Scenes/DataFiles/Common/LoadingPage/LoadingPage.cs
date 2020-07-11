@@ -4,23 +4,8 @@ using UnityEngine;
 
 public class LoadingPage : MonoBehaviour
 {
-    private static LoadingPage _actualLoadingPage = null;
-
-    public static void ShowStatic()
+    private void Start()
     {
-        if (_actualLoadingPage != null)
-            _actualLoadingPage.Show();
-    }
-
-    public static void HideStatic()
-    {
-        if (_actualLoadingPage != null)
-            _actualLoadingPage.Hide();
-    }
-
-    private void Awake()
-    {
-        LoadingPage._actualLoadingPage = this;
         this.gameObject.SetActive(false);
     }
 

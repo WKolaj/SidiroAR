@@ -22,53 +22,6 @@ public class DialogWindowButton : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    private float _labelFontSize = 56;
-    public float LabelFontSize
-    {
-        get
-        {
-            return _labelFontSize;
-        }
-
-        set
-        {
-            _labelFontSize = value;
-        }
-    }
-
-
-    [SerializeField]
-    private Color _labelFontColor = Color.white;
-    public Color LabelFontColor
-    {
-        get
-        {
-            return _labelFontColor;
-        }
-
-        set
-        {
-            _labelFontColor = value;
-        }
-    }
-
-    [SerializeField]
-    private string _labelText = "Button label";
-    public string LabelText
-    {
-        get
-        {
-            return _labelText;
-        }
-
-        set
-        {
-            _labelText = value;
-        }
-    }
-
-
     private GameObject _labelGO = null;
     private GameObject _buttonMaskGO = null;
 
@@ -93,12 +46,6 @@ public class DialogWindowButton : MonoBehaviour
         this._buttonMask.OnClick = this.OnClick;
     }
 
-    private void Start()
-    {
-        _labelTMP.text = LabelText;
-        _labelTMP.color = LabelFontColor;
-        _labelTMP.fontSize = LabelFontSize;
-    }
 
     public void SetTextAndColor(string text, string color)
     {

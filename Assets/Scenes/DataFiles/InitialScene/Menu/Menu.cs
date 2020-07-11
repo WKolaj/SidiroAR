@@ -5,21 +5,6 @@ using UnityEngine.EventSystems;
 
 public class Menu : MonoBehaviour
 {
-    private static Menu _actualMenu = null;
-
-    public static void DrawOutStatic()
-    {
-        if (_actualMenu != null)
-            _actualMenu.DrawOut();
-    }
-
-    public static void DrawInStatic()
-    {
-
-        if (_actualMenu != null)
-            _actualMenu.DrawIn();
-    }
-
     [SerializeField]
     private float _drawOutSpeed = 2000;
     public float DrawOutSpeed
@@ -34,8 +19,6 @@ public class Menu : MonoBehaviour
             _drawOutSpeed = value;
         }
     }
-
-
 
     [SerializeField]
     private float _menuWidthPercentage = 80;
@@ -71,8 +54,6 @@ public class Menu : MonoBehaviour
 
         this._backgroundGO = menuListMask.transform.Find("Background").gameObject;
 
-        //Assinging as actual object - to use static methods
-        Menu._actualMenu = this;
     }
 
     //ITEM DEPENDS ON SIZE AFTER UI SCALING - SO METHODS MUST BE INVOKED AFTER SCALING (IN START), START IS USED TO SET UP UI
@@ -196,6 +177,15 @@ public class Menu : MonoBehaviour
         }
 
         _menuContentRectTrans.anchoredPosition = new Vector3(newOffset, _menuContentRectTrans.anchoredPosition.y);
+    }
+    
+    public void HandleHelpMenuItemClicked()
+    {
+        var translationWindowContentText = Translator.GetTranslation("TranslationWindow.ContentText");
+        var translationWindowPolishButtonText = Translator.GetTranslation("TranslationWindow.PolishButtonText");
+        var translationWindowEnglishButtonText = Translator.GetTranslation("TranslationWindow.EnglishButtonText");
+
+        MainCanvas.ShowDialogWindow(translationWindowContentText, translationWindowPolishButtonText, () => { Translator.SetLang("pl"); this.DrawIn(); }, "#41ABAB", translationWindowEnglishButtonText, () => { Translator.SetLang("en"); this.DrawIn(); }, "#41ABAB");
     }
 
 }

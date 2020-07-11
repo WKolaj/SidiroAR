@@ -6,19 +6,6 @@ using UnityEngine;
 
 public class DialogWindow : MonoBehaviour
 {
-    private static DialogWindow _actualDialogWindow = null;
-
-    public static void HideStatic()
-    {
-        if (_actualDialogWindow != null)
-            _actualDialogWindow.Hide();
-    }
-
-    public static void ShowStatic(string windowText = "", string button0Text = null, Action button0Method = null, string button0Color = "#FFFF0266", string button1Text = null, Action button1Method = null, string button1Color = "#FF3EACAB")
-    {
-        if (_actualDialogWindow != null)
-            _actualDialogWindow.Show(windowText,button0Text,button0Method,button0Color,button1Text,button1Method,button1Color);
-    }
 
     [SerializeField]
     private float _windowWidthPercentage = 50;
@@ -50,175 +37,6 @@ public class DialogWindow : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    private string _windowContentText = "Content text of window";
-    public string WindowContentText
-    {
-        get
-        {
-            return _windowContentText;
-        }
-
-        set
-        {
-            _windowContentText = value;
-        }
-    }
-
-    [SerializeField]
-    private float _fontSizeWindowContent = 36;
-    public float FontSizeWindowContent
-    {
-        get
-        {
-            return _fontSizeWindowContent;
-        }
-
-        set
-        {
-            _fontSizeWindowContent = value;
-        }
-    }
-
-
-    [SerializeField]
-    private Color _fontColorWindowContent = Color.white;
-    public Color FontColorWindowContent
-    {
-        get
-        {
-            return _fontColorWindowContent;
-        }
-
-        set
-        {
-            _fontColorWindowContent = value;
-        }
-    }
-
-    [SerializeField]
-    private bool _showButton0 = true;
-    public bool ShowButton0
-    {
-        get
-        {
-            return _showButton0;
-        }
-
-        set
-        {
-            _showButton0 = value;
-        }
-    }
-
-    [SerializeField]
-    private string _textButton0 = "Cancel";
-    public string TextButton0
-    {
-        get
-        {
-            return _textButton0;
-        }
-
-        set
-        {
-            _textButton0 = value;
-        }
-    }
-
-    [SerializeField]
-    private float _fontSizeButton0 = 36;
-    public float FontSizeButton0
-    {
-        get
-        {
-            return _fontSizeButton0;
-        }
-
-        set
-        {
-            _fontSizeButton0 = value;
-        }
-    }
-
-
-    [SerializeField]
-    private Color _fontColorButton0 = Color.white;
-    public Color FontColorButton0
-    {
-        get
-        {
-            return _fontColorButton0;
-        }
-
-        set
-        {
-            _fontColorButton0 = value;
-        }
-    }
-
-
-    [SerializeField]
-    private bool _showButton1 = true;
-    public bool ShowButton1
-    {
-        get
-        {
-            return _showButton1;
-        }
-
-        set
-        {
-            _showButton1 = value;
-        }
-    }
-
-    [SerializeField]
-    private string _textButton1 = "Apply";
-    public string TextButton1
-    {
-        get
-        {
-            return _textButton1;
-        }
-
-        set
-        {
-            _textButton1 = value;
-        }
-    }
-
-    [SerializeField]
-    private float _fontSizeButton1 = 36;
-    public float FontSizeButton1
-    {
-        get
-        {
-            return _fontSizeButton1;
-        }
-
-        set
-        {
-            _fontSizeButton1 = value;
-        }
-    }
-
-
-    [SerializeField]
-    private Color _fontColorButton1 = Color.white;
-    public Color FontColorButton1
-    {
-        get
-        {
-            return _fontColorButton1;
-        }
-
-        set
-        {
-            _fontColorButton1 = value;
-        }
-    }
-
     private Action _button0Method = null;
     private Action _button1Method = null;
 
@@ -242,7 +60,6 @@ public class DialogWindow : MonoBehaviour
 
     private void Awake()
     {
-        DialogWindow._actualDialogWindow = this;
 
         this._rectTrans = this.GetComponent<RectTransform>();
 
@@ -270,25 +87,6 @@ public class DialogWindow : MonoBehaviour
     {
         //Init window
         _setWindowWidth();
-        _textLabelTMP.text = WindowContentText;
-        _textLabelTMP.fontSize = FontSizeWindowContent;
-        _textLabelTMP.color = FontColorWindowContent;
-
-        //Init button 0
-        if (ShowButton0) _button0GO.SetActive(true);
-        else _button0GO.SetActive(false);
-
-        _button0.LabelText = TextButton0;
-        _button0.LabelFontSize = FontSizeButton0;
-        _button0.LabelFontColor = FontColorButton0;
-
-        //Init button 1
-        if (ShowButton1) _button1GO.SetActive(true);
-        else _button1GO.SetActive(false);
-
-        _button1.LabelText = TextButton1;
-        _button1.LabelFontSize = FontSizeButton1;
-        _button1.LabelFontColor = FontColorButton1;
 
         this.gameObject.SetActive(false);
     }
@@ -332,9 +130,9 @@ public class DialogWindow : MonoBehaviour
         //Initializng button0 only if it's label is not null
         if(!String.IsNullOrEmpty(button0Text))
         {
-            _button0GO.SetActive(true);
             _button0.SetTextAndColor(button0Text, button0Color);
             _button0Method = button0Method;
+            _button0GO.SetActive(true);
         }
         else
         {
@@ -344,9 +142,9 @@ public class DialogWindow : MonoBehaviour
         //Initializng button1 only if it's label is not null
         if (!String.IsNullOrEmpty(button1Text))
         {
-            _button1GO.SetActive(true);
             _button1.SetTextAndColor(button1Text, button1Color);
             _button1Method = button1Method;
+            _button1GO.SetActive(true);
         }
         else
         {

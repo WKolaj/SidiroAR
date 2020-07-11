@@ -10,21 +10,6 @@ using UnityEngine.UI;
 public class ClickableImage : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField]
-    private Sprite _backgroundSprite = null;
-    public Sprite BackgroundSprite
-    {
-        get
-        {
-            return _backgroundSprite;
-        }
-
-        set
-        {
-            _backgroundSprite = value;
-        }
-    }
-
-    [SerializeField]
     private Color _backgroundColorEnabled = Color.white;
     public Color BackgroundColorEnabled
     {
@@ -51,21 +36,6 @@ public class ClickableImage : MonoBehaviour, IPointerClickHandler
         set
         {
             _backgroundColorDisabled = value;
-        }
-    }
-
-    [SerializeField]
-    private Sprite _foregroundSprite = null;
-    public Sprite ForegroundSprite
-    {
-        get
-        {
-            return _foregroundSprite;
-        }
-
-        set
-        {
-            _foregroundSprite = value;
         }
     }
 
@@ -201,7 +171,6 @@ public class ClickableImage : MonoBehaviour, IPointerClickHandler
     private void Start()
     {
         //Setting foreground image
-        this._foregroundImage.sprite = ForegroundSprite;
         this._foregroundImage.color = ForegroundColorEnabled;
 
         //Setting margin to icon
@@ -209,7 +178,6 @@ public class ClickableImage : MonoBehaviour, IPointerClickHandler
         this._foregroundRectTrans.offsetMax = new Vector2(-ForegroundMargin, -ForegroundMargin);
 
         //Setting background image
-        this._backgroundImage.sprite = BackgroundSprite;
         this._backgroundImage.color = BackgroundColorEnabled;
     }
 

@@ -4,26 +4,6 @@ using UnityEngine;
 
 public class AuxPageContainer : MonoBehaviour
 {
-    private static AuxPageContainer _actualAuxPageContainer;
-
-    public static void DrawOutStatic(GameObject content)
-    {
-        if (_actualAuxPageContainer != null)
-            _actualAuxPageContainer.DrawOut(content);
-    }
-
-    public static void DrawInStatic()
-    {
-
-        if (_actualAuxPageContainer != null)
-            _actualAuxPageContainer.DrawIn();
-    }
-
-    public static void SetContentStatic(GameObject content)
-    {
-        if (_actualAuxPageContainer != null)
-            _actualAuxPageContainer.SetContent(content);
-    }
 
     [SerializeField]
     private float _drawOutSpeed = 2000;
@@ -83,8 +63,6 @@ public class AuxPageContainer : MonoBehaviour
         this._pageContainerGO = maskGO.transform.Find("PageContainer").gameObject;
         this._pageContainerRectTrans = _pageContainerGO.GetComponent<RectTransform>();
 
-        //Assinging as actual object - to use static methods
-        AuxPageContainer._actualAuxPageContainer = this;
 
     }
 
@@ -135,7 +113,7 @@ public class AuxPageContainer : MonoBehaviour
         this._shouldBeDrawnOut = true;
 
         //Showing aux page should automatically hide menu
-        Menu.DrawInStatic();
+        MainCanvas.HideMenu();
     }
 
     public void SetContent(GameObject content)
