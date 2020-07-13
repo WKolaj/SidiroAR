@@ -46,7 +46,22 @@ public class MainCanvas : MonoBehaviour
     {
         _actualMainCanvas._dialogWindow.Hide();
     }
+    
+    public static void ShowLanguageWindow()
+    {
+        var translationWindowContentText = Translator.GetTranslation("TranslationWindow.ContentText");
+        var translationWindowPolishButtonText = Translator.GetTranslation("TranslationWindow.PolishButtonText");
+        var translationWindowEnglishButtonText = Translator.GetTranslation("TranslationWindow.EnglishButtonText");
 
+        MainCanvas.ShowDialogWindow(
+            translationWindowContentText,
+            translationWindowPolishButtonText,
+            () => { Translator.SetLang("pl");  },
+            "#41ABAB",
+            translationWindowEnglishButtonText,
+            () => { Translator.SetLang("en");  },
+            "#41ABAB");
+    }
 
 
     private Menu _menu = null;

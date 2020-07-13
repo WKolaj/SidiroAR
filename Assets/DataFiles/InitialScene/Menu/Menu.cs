@@ -235,6 +235,16 @@ public class Menu : MonoBehaviour
         _menuContentRectTrans.anchoredPosition = new Vector3(newOffset, _menuContentRectTrans.anchoredPosition.y);
     }
     
+    public void HandleSettingsMenuItemClicked()
+    {
+        Debug.Log("Settings clicked");
+        this.DrawIn();
+    }
+    public void HandleLanguageMenuItemClicked()
+    {
+        MainCanvas.ShowLanguageWindow();
+        this.DrawIn();
+    }
 
     public void HandleHelpMenuItemClicked()
     {
@@ -242,20 +252,10 @@ public class Menu : MonoBehaviour
         this.DrawIn();
     }
 
-    public void HandleLanguageMenuItemClicked()
+    public void HandleLogOutMenuItemClicked()
     {
-        var translationWindowContentText = Translator.GetTranslation("TranslationWindow.ContentText");
-        var translationWindowPolishButtonText = Translator.GetTranslation("TranslationWindow.PolishButtonText");
-        var translationWindowEnglishButtonText = Translator.GetTranslation("TranslationWindow.EnglishButtonText");
-
-        MainCanvas.ShowDialogWindow(
-            translationWindowContentText, 
-            translationWindowPolishButtonText, 
-            () => { Translator.SetLang("pl"); this.DrawIn(); }, 
-            "#41ABAB", 
-            translationWindowEnglishButtonText, 
-            () => { Translator.SetLang("en"); this.DrawIn(); }, 
-            "#41ABAB");
+        Debug.Log("Log out clicked");
+        this.DrawIn();
     }
 
     public void HandleExitMenuItemClicked()
@@ -270,8 +270,10 @@ public class Menu : MonoBehaviour
             () => { Application.Quit(); },
             "#FF0266",
             cancelButtonText, 
-            () => { this.DrawIn(); }, 
+            () => {  }, 
             "#41ABAB");
+
+        this.DrawIn();
     }
 
 }

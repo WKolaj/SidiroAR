@@ -22,8 +22,12 @@ public class Translator
             ["MainPage.ModelsLabelText"] = "Twoje modele",
             ["Menu.ExitWindowDialog.ContentText"] = "Czy na pewno chcesz zamknąć aplikację?",
             ["Menu.ExitWindowDialog.YesButtonText"] = "TAK",
-            ["Menu.ExitWindowDialog.CancelButtonText"] = "ANULUJ"
-},
+            ["Menu.ExitWindowDialog.CancelButtonText"] = "ANULUJ",
+            ["LoginPage.LoginInputPlaceholder"] = "Email",
+            ["LoginPage.PasswordInputPlaceholder"] = "Hasło",
+            ["LoginPage.LoginButtonText"] = "Zaloguj",
+            ["LoginPage.MainLabelText"] = "Logowanie"
+        },
         ["en"] = new Dictionary<string, string>()
         {
             ["HelpPage.HeaderTitle"] = "Help",
@@ -39,7 +43,12 @@ public class Translator
             ["MainPage.ModelsLabelText"] = "Your models",
             ["Menu.ExitWindowDialog.ContentText"] = "Do you really want to quit?",
             ["Menu.ExitWindowDialog.YesButtonText"] = "YES",
-            ["Menu.ExitWindowDialog.CancelButtonText"] = "CANCEL"
+            ["Menu.ExitWindowDialog.CancelButtonText"] = "CANCEL",
+            ["LoginPage.LoginInputPlaceholder"] = "Email",
+            ["LoginPage.PasswordInputPlaceholder"] = "Password",
+            ["LoginPage.LoginButtonText"] = "Log in",
+            ["LoginPage.MainLabelText"] = "Logging in"
+
         }
     };
 

@@ -667,6 +667,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _drawOutSpeed: 5000
   _menuWidthPercentage: 80
+  _helpAuxPageContent: {fileID: 0}
 --- !u!1 &5662485484340780558
 GameObject:
   m_ObjectHideFlags: 0
@@ -896,6 +897,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
         type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
       propertyPath: _labelText
       value: Ustawienia aplikacji
       objectReference: {fileID: 0}
@@ -910,6 +916,31 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 7ec5787044670dc42b36ecac3b9d958f,
         type: 3}
+    - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5662485483395374187}
+    - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleSettingsMenuItemClicked
+      objectReference: {fileID: 0}
+    - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 1394555978175633282, guid: a4a52474ee5eba44aac0b259ba24a907,
         type: 3}
       propertyPath: m_Sprite
@@ -1071,6 +1102,36 @@ PrefabInstance:
       propertyPath: m_subTextObjects.Array.data[1]
       value: 
       objectReference: {fileID: 3678198746622626900}
+    - target: {fileID: 6934605370680807873, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6934605370680807873, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5662485483395374187}
+    - target: {fileID: 6934605370680807873, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleSettingsMenuItemClicked
+      objectReference: {fileID: 0}
+    - target: {fileID: 6934605370680807873, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6934605370680807873, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6934605370680807873, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a4a52474ee5eba44aac0b259ba24a907, type: 3}
 --- !u!224 &2786127729476577774 stripped
@@ -1855,6 +1916,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
         type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
       propertyPath: _labelText
       value: Wyloguj
       objectReference: {fileID: 0}
@@ -1869,6 +1935,31 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 803aa5e62ec646f4c9d96ea430942689,
         type: 3}
+    - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5662485483395374187}
+    - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleLogOutMenuItemClicked
+      objectReference: {fileID: 0}
+    - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 1394555978175633282, guid: a4a52474ee5eba44aac0b259ba24a907,
         type: 3}
       propertyPath: m_Sprite
@@ -2030,6 +2121,36 @@ PrefabInstance:
       propertyPath: m_subTextObjects.Array.data[1]
       value: 
       objectReference: {fileID: 4628593922695393079}
+    - target: {fileID: 6934605370680807873, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6934605370680807873, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5662485483395374187}
+    - target: {fileID: 6934605370680807873, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HandleLogOutMenuItemClicked
+      objectReference: {fileID: 0}
+    - target: {fileID: 6934605370680807873, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6934605370680807873, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6934605370680807873, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a4a52474ee5eba44aac0b259ba24a907, type: 3}
 --- !u!224 &8302094886237891550 stripped
@@ -2283,7 +2404,7 @@ PrefabInstance:
     - target: {fileID: 6934605370680807873, guid: a4a52474ee5eba44aac0b259ba24a907,
         type: 3}
       propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: HandleLanguageMenuItemClicked
+      value: HandleHelpMenuItemClicked
       objectReference: {fileID: 0}
     - target: {fileID: 6934605370680807873, guid: a4a52474ee5eba44aac0b259ba24a907,
         type: 3}
@@ -2335,6 +2456,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
         type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
       propertyPath: _labelText
       value: "Nazwa U\u017Cytkownika"
       objectReference: {fileID: 0}
@@ -2342,6 +2468,16 @@ PrefabInstance:
         type: 3}
       propertyPath: _labelBold
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1008389406697534391, guid: a4a52474ee5eba44aac0b259ba24a907,
+        type: 3}
+      propertyPath: _onClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1920213490631761337, guid: a4a52474ee5eba44aac0b259ba24a907,
         type: 3}
