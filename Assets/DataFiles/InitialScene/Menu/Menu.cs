@@ -145,15 +145,6 @@ public class Menu : MonoBehaviour
 
     private bool _shouldBeDrawnOut = false;
 
-    private void _initBackground()
-    {
-    }
-
-    private void _initMenuContent()
-    {
-
-    }
-
     private void _normalizeDrawOutSpeed()
     {
        this._normalizedDrawOutSpeed =  this.DrawOutSpeed * _menuWidth / 860;
@@ -208,13 +199,15 @@ public class Menu : MonoBehaviour
         }
 
 
-        _userMenuItem.SetText(Translator.GetTranslation("Menu.UserMenuItemText"));
         _settingsMenuItem.SetText(Translator.GetTranslation("Menu.SettingsMenuItemText"));
         _languageMenuItem.SetText(Translator.GetTranslation("Menu.LanguageMenuItemText"));
         _helpMenuItem.SetText(Translator.GetTranslation("Menu.HelpMenuItemText"));
         _exitMenuItem.SetText(Translator.GetTranslation("Menu.ExitMenuItemText"));
         _logOutMenuItem.SetText(Translator.GetTranslation("Menu.LogOutMenuItemText"));
 
+        //Setting users label as user name if exists
+        var userLabel = UserLoader.LoggedUser != null ? UserLoader.LoggedUser.Name :Translator.GetTranslation("Menu.UserMenuItemText");
+        _userMenuItem.SetText(userLabel);
 
     }
 
@@ -243,7 +236,6 @@ public class Menu : MonoBehaviour
     public void HandleLanguageMenuItemClicked()
     {
         MainCanvas.ShowLanguageWindow();
-        this.DrawIn();
     }
 
     public void HandleHelpMenuItemClicked()
@@ -254,8 +246,16 @@ public class Menu : MonoBehaviour
 
     public void HandleLogOutMenuItemClicked()
     {
-        Debug.Log("Log out clicked");
-        this.DrawIn();
+        MainCanvas.ShowDialogWindow(
+            "Czy na pewno chcesz się wylogować?",
+            "TAK",
+            () => { MainCanvas.LogOutUser(); this.DrawIn(); },
+            "#FF0266",
+            "NIE",
+            () => { },
+            "#41ABAB");
+
+       
     }
 
     public void HandleExitMenuItemClicked()
@@ -267,7 +267,7 @@ public class Menu : MonoBehaviour
         MainCanvas.ShowDialogWindow(
             contentText,
             yesButtonText, 
-            () => { Application.Quit(); },
+            () => { Common.QuitApp(); },
             "#FF0266",
             cancelButtonText, 
             () => {  }, 

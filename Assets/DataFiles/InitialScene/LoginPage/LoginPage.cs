@@ -59,9 +59,13 @@ public class LoginPage : MonoBehaviour
         MainCanvas.ShowLanguageWindow();
     }
 
-    private void _handleLoginButtonClicked()
+    private async void _handleLoginButtonClicked()
     {
-        Debug.Log("Login");
+        var logInSuccessfull = await MainCanvas.AsyncTryLogIn(this._loginInput.text, this._passwordInput.text);
+
+        this._passwordInput.text = "";
+
+        if (logInSuccessfull) MainCanvas.HideAuxPage();
     }
 
     private bool _validateLoginAndPassword()

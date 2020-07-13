@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AuxPageContainer : MonoBehaviour
 {
-
+    
     [SerializeField]
     private float _drawOutSpeed = 2000;
     public float DrawOutSpeed
@@ -19,6 +19,9 @@ public class AuxPageContainer : MonoBehaviour
             _drawOutSpeed = value;
         }
     }
+
+    //Used for checking if content in show changes
+    private GameObject _actualContent = null;
 
     public float PageContainerOffset
     {
@@ -114,16 +117,32 @@ public class AuxPageContainer : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Method for drawing out aux page container - user for logging window to be presented on the begining
+    /// </summary>
+    /// <param name="content"></param>
+    public void DrawOutInstantly(GameObject content)
+    {
+        DrawOut(content);
+
+        _movePageContainer(_actualHeight);
+    }
+
     public void SetContent(GameObject content)
     {
-        //Always clearing - in order to clear if null was provided
-        _clearPageContainer();
-
-        if (content != null)
+        //Changing content only if it changes
+        if(_actualContent != content)
         {
-            Instantiate(content, this._pageContainerGO.transform);
-        }
+            this._actualContent = content;
 
+            //Always clearing - in order to clear if null was provided
+            _clearPageContainer();
+
+            if (content != null)
+            {
+                Instantiate(content, this._pageContainerGO.transform);
+            }
+        }
     }
 
     private void _clearPageContainer()
