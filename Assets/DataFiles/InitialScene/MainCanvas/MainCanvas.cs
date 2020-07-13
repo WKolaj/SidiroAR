@@ -215,6 +215,7 @@ public class MainCanvas : MonoBehaviour
             await _actualMainCanvas.Loader.LoginUserFromServer(userEmail, userPassword);
             HideLoadingPage();
 
+            RefreshModelItemsContainerDisplay();
             //Returning true - user logged in succesfully
             return true;
         }
@@ -233,6 +234,52 @@ public class MainCanvas : MonoBehaviour
             //Returning false - user logged in succesfully
             return false;
         }
+    }
+
+    /// <summary>
+    /// Method for getting users data from server and refreshing data based on gathered data from server
+    /// </summary>
+    public async static Task RefreshUserDataFromServer()
+    {
+        Common.DispatchInMainThread(() =>
+        {
+            ShowLoadingPage();
+        });
+
+        try
+        {
+            await UserLoader.LoggedUser.RefreshDataFromServer();
+        }
+        catch (Exception err)
+        {
+            Common.DispatchInMainThread(() =>
+            {
+                //Getting error message
+                //If error is known network error - it will be replaced with translation
+                //Otherwise whole error text will be displayed
+                var message = Common.getNetworkErrorTextCode(err);
+
+                HideLoadingPage();
+
+                //Variant - LogginIn
+                ShowErrorWindow(message, "RefreshingData");
+
+            });
+        }
+
+        Common.DispatchInMainThread(() =>
+        {
+            HideLoadingPage();
+            RefreshModelItemsContainerDisplay();
+        });
+    }
+
+    /// <summary>
+    /// Method used for refreshing model item container data
+    /// </summary>
+    public static void RefreshModelItemsContainerDisplay()
+    {
+        MainCanvas._actualMainCanvas._modelItemContainer.RefreshDataDisplay();
     }
 
     /// <summary>
@@ -280,6 +327,11 @@ public class MainCanvas : MonoBehaviour
     private DialogWindow _dialogWindow = null;
 
     /// <summary>
+    /// Reference to model item container
+    /// </summary>
+    private ModelItemContainer _modelItemContainer = null;
+
+    /// <summary>
     /// Method called on application start
     /// </summary>
     private void Awake()
@@ -290,6 +342,7 @@ public class MainCanvas : MonoBehaviour
         this._loadingPage = this.GetComponentInChildren<LoadingPage>(true);
         this._auxPageContainer = this.GetComponentInChildren<AuxPageContainer>(true);
         this._dialogWindow = this.GetComponentInChildren<DialogWindow>(true);
+        this._modelItemContainer = this.GetComponentInChildren<ModelItemContainer>(true);
 
     }
 
@@ -317,6 +370,8 @@ public class MainCanvas : MonoBehaviour
 
         //Showing log in page instantly if logging was unsuccessful
         if (!successfullyLogIn) ShowLoginPageInstantly();
+        else RefreshModelItemsContainerDisplay();
+
     }
 
     /// <summary>
@@ -340,6 +395,5 @@ public class MainCanvas : MonoBehaviour
             ShowLoginPage();
         }
     }
-
 
 }

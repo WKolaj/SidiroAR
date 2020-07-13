@@ -36,7 +36,12 @@ public class Translator
             ["ErrorDialogWindow.OkButtonText"] = "OK",
             ["Errors.LoggingIn.HttpResponseErrorCode400"] = "Nieprawidłowy login lub hasło",
             ["Errors.LoggingIn.ConnectionError"] = "Błąd połączenia z serwerem",
+            ["Errors.RefreshingData.ConnectionError"] = "Błąd połączenia z serwerem",
+            ["Errors.RefreshingData.HttpResponseErrorCode401"] = "Dostęp zabroniony",
+            ["Errors.RefreshingData.HttpResponseErrorCode403"] = "Dostęp zabroniony",
+            ["Errors.RefreshingData.HttpResponseErrorCode404"] = "Nie znaleziono użytkownika",
         },
+        
         ["en"] = new Dictionary<string, string>()
         {
             ["HelpPage.HeaderTitle"] = "Help",
@@ -62,7 +67,11 @@ public class Translator
             ["LoginPage.MainLabelText"] = "Logging in",
             ["ErrorDialogWindow.OkButtonText"] = "OK",
             ["Errors.LoggingIn.HttpResponseErrorCode400"] = "Invalid user or password",
-            ["Errors.LoggingIn.ConnectionError"] = "Error while connecting to server"
+            ["Errors.LoggingIn.ConnectionError"] = "Error while connecting to server",
+            ["Errors.RefreshingData.ConnectionError"] = "Error while connecting to server",
+            ["Errors.RefreshingData.HttpResponseErrorCode401"] = "Forbidden access",
+            ["Errors.RefreshingData.HttpResponseErrorCode403"] = "Forbidden access",
+            ["Errors.RefreshingData.HttpResponseErrorCode404"] = "No user found",
 
         }
     };
