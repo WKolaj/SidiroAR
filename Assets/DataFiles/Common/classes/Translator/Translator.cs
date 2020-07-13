@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class Translator
 {
+    /// <summary>
+    /// Dictionary containg all translations
+    /// </summary>
     private static Dictionary<string, Dictionary<string, string>> _translations = new Dictionary<string, Dictionary<string, string>>()
     {
         ["pl"] = new Dictionary<string, string>()
@@ -23,10 +26,16 @@ public class Translator
             ["Menu.ExitWindowDialog.ContentText"] = "Czy na pewno chcesz zamknąć aplikację?",
             ["Menu.ExitWindowDialog.YesButtonText"] = "TAK",
             ["Menu.ExitWindowDialog.CancelButtonText"] = "ANULUJ",
+            ["Menu.LogOutWindowDialog.ContentText"] = "Czy na pewno chcesz się wylogować?",
+            ["Menu.ExitWindowDialog.YesButtonText"] = "TAK",
+            ["Menu.ExitWindowDialog.NoButtonText"] = "NIE",
             ["LoginPage.LoginInputPlaceholder"] = "Email",
             ["LoginPage.PasswordInputPlaceholder"] = "Hasło",
             ["LoginPage.LoginButtonText"] = "Zaloguj",
-            ["LoginPage.MainLabelText"] = "Logowanie"
+            ["LoginPage.MainLabelText"] = "Logowanie",
+            ["ErrorDialogWindow.OkButtonText"] = "OK",
+            ["Errors.LoggingIn.HttpResponseErrorCode400"] = "Nieprawidłowy login lub hasło",
+            ["Errors.LoggingIn.ConnectionError"] = "Błąd połączenia z serwerem",
         },
         ["en"] = new Dictionary<string, string>()
         {
@@ -44,16 +53,31 @@ public class Translator
             ["Menu.ExitWindowDialog.ContentText"] = "Do you really want to quit?",
             ["Menu.ExitWindowDialog.YesButtonText"] = "YES",
             ["Menu.ExitWindowDialog.CancelButtonText"] = "CANCEL",
+            ["Menu.LogOutWindowDialog.ContentText"] = "Do you really want to log out?",
+            ["Menu.ExitWindowDialog.YesButtonText"] = "YES",
+            ["Menu.ExitWindowDialog.NoButtonText"] = "NO",
             ["LoginPage.LoginInputPlaceholder"] = "Email",
             ["LoginPage.PasswordInputPlaceholder"] = "Password",
             ["LoginPage.LoginButtonText"] = "Log in",
-            ["LoginPage.MainLabelText"] = "Logging in"
+            ["LoginPage.MainLabelText"] = "Logging in",
+            ["ErrorDialogWindow.OkButtonText"] = "OK",
+            ["Errors.LoggingIn.HttpResponseErrorCode400"] = "Invalid user or password",
+            ["Errors.LoggingIn.ConnectionError"] = "Error while connecting to server"
 
         }
     };
 
+    /// <summary>
+    /// Actual selected language
+    /// </summary>
     private static string _selectedLang = "pl";
 
+    /// <summary>
+    /// Method for getting translation based on key
+    /// if selected lang or key does not exist - return key
+    /// </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
     public static string GetTranslation(string key)
     {
         if (!Translator._translations.ContainsKey(Translator._selectedLang)) return key;
@@ -65,16 +89,28 @@ public class Translator
         return translationsSet[key];
     }
 
+    /// <summary>
+    /// Method for getting all possible languages
+    /// </summary>
+    /// <returns></returns>
     public static string[] GetPossibleLangs()
     {
         return Translator._translations.Keys.ToArray();
     }
 
+    /// <summary>
+    /// Method for getting actual selected language
+    /// </summary>
+    /// <returns></returns>
     public static string GetSelectedLang()
     {
         return _selectedLang;
     }
 
+    /// <summary>
+    /// Method for setting new language
+    /// </summary>
+    /// <param name="lang"></param>
     public static void SetLang(string lang)
     {
         Translator._selectedLang = lang;

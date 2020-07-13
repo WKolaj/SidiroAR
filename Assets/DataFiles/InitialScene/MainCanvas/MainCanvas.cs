@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -46,54 +47,111 @@ public class MainCanvas : MonoBehaviour
         _actualMainCanvas._menu.DrawIn();
     }
 
+    /// <summary>
+    /// Method for showing loading page
+    /// </summary>
     public static void ShowLoadingPage()
     {
         _actualMainCanvas._loadingPage.Show();
     }
 
+    /// <summary>
+    /// Method for hiding loading page
+    /// </summary>
     public static void HideLoadingPage()
     {
         _actualMainCanvas._loadingPage.Hide();
     }
 
+    /// <summary>
+    /// Method for showing auxilliary page. If content is the same as exiting - it won't be instantiate again
+    /// </summary>
+    /// <param name="pageContent">
+    /// Content to show
+    /// </param>
     public static void ShowAuxPage(GameObject pageContent)
     {
         _actualMainCanvas._auxPageContainer.DrawOut(pageContent);
     }
 
+    /// <summary>
+    /// Method for showing auxilliary page instantly. If content is the same as exiting - it won't be instantiate again. Used to present login window on the begining if user is not logged in
+    /// </summary>
+    /// <param name="pageContent">
+    /// Content to show
+    /// </param>
     public static void ShowAuxPageInstantly(GameObject pageContent)
     {
         _actualMainCanvas._auxPageContainer.DrawOutInstantly(pageContent);
     }
 
-
+    /// <summary>
+    /// Method for hiding auxiliary page
+    /// </summary>
     public static void HideAuxPage()
     {
         _actualMainCanvas._auxPageContainer.DrawIn();
     }
 
+    /// <summary>
+    /// Method for shoing login page
+    /// </summary>
     public static void ShowLoginPage()
     {
         ShowAuxPage(_actualMainCanvas.LoginPagePrefab);
     }
 
+    /// <summary>
+    /// Method for showing login page instantly - without animation
+    /// </summary>
     public static void ShowLoginPageInstantly()
     {
         ShowAuxPageInstantly(_actualMainCanvas.LoginPagePrefab);
     }
 
+    /// <summary>
+    /// Method for showing dialog window
+    /// </summary>
+    /// <param name="windowText">
+    /// Text embeded in window
+    /// </param>
+    /// <param name="button0Text">
+    /// first button text
+    /// </param>
+    /// <param name="button0Method">
+    /// method connected to first button
+    /// </param>
+    /// <param name="button0Color">
+    /// color of first button
+    /// </param>
+    /// <param name="button1Text">
+    /// second button text
+    /// </param>
+    /// <param name="button1Method">
+    /// method connected to second button
+    /// </param>
+    /// <param name="button1Color">
+    /// color of second button
+    /// </param>
     public static void ShowDialogWindow(string windowText = "", string button0Text = null, Action button0Method = null, string button0Color = "#FFFF0266", string button1Text = null, Action button1Method = null, string button1Color = "#FF3EACAB")
     {
         _actualMainCanvas._dialogWindow.Show(windowText, button0Text, button0Method, button0Color, button1Text, button1Method, button1Color);
     }
 
+    /// <summary>
+    /// Method for hiding dialog window
+    /// </summary>
     public static void HideDialogWindow()
     {
         _actualMainCanvas._dialogWindow.Hide();
     }
     
+    /// <summary>
+    /// Method for showing language window
+    /// </summary>
     public static void ShowLanguageWindow()
     {
+        //Getting translations of window components
         var translationWindowContentText = Translator.GetTranslation("TranslationWindow.ContentText");
         var translationWindowPolishButtonText = Translator.GetTranslation("TranslationWindow.PolishButtonText");
         var translationWindowEnglishButtonText = Translator.GetTranslation("TranslationWindow.EnglishButtonText");
@@ -108,13 +166,81 @@ public class MainCanvas : MonoBehaviour
             "#41ABAB");
     }
 
-    public static void ShowErrorWindow(string errorText)
+    /// <summary>
+    /// Method for showing error window
+    /// </summary>
+    /// <param name="errorText">
+    /// Error text to display
+    /// </param>
+    /// <param name="variant">
+    /// Variant of call - eg. different translation of error depedining on situation
+    /// </param>
+    public static void ShowErrorWindow(string errorText, string variant)
     {
+        var totalErrorKey = String.Format("Errors.{0}.{1}", variant, errorText);
+
+        var dialogText = Translator.GetTranslation(totalErrorKey);
+
+        //Checking if text was translated - setting original error if not
+        if (dialogText == totalErrorKey) dialogText = errorText;
+
+        //Getting translations of window components
+        var okButtonText = Translator.GetTranslation("ErrorDialogWindow.OkButtonText");
+
+        //Showing window
         MainCanvas.ShowDialogWindow(
-            errorText,
-            "OK",
+            dialogText,
+            okButtonText,
             () => {  },
-            "#41ABAB");
+            "#FF0266");
+    }
+
+    /// <summary>
+    /// Method for asynchronously log in a user
+    /// </summary>
+    /// <param name="userEmail">
+    /// user email
+    /// </param>
+    /// <param name="userPassword">
+    /// user password
+    /// </param>
+    /// <returns>
+    /// Has user been logged in successfully
+    /// </returns>
+    public async static Task<bool> AsyncTryLogIn(string userEmail, string userPassword)
+    {
+        try
+        {
+            ShowLoadingPage();
+            await _actualMainCanvas.Loader.LoginUserFromServer(userEmail, userPassword);
+            HideLoadingPage();
+
+            //Returning true - user logged in succesfully
+            return true;
+        }
+        catch (Exception err)
+        {
+            //Getting error message
+            //If error is known network error - it will be replaced with translation
+            //Otherwise whole error text will be displayed
+            var message = Common.getNetworkErrorTextCode(err);
+
+            HideLoadingPage();
+
+            //Variant - LogginIn
+            ShowErrorWindow(message, "LoggingIn");
+
+            //Returning false - user logged in succesfully
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Method for logging out a user
+    /// </summary>
+    public static void LogOutUser()
+    {
+        _actualMainCanvas.Loader.LogoutUser();
     }
 
     private UserLoader _userLoader = new UserLoader();
@@ -133,11 +259,29 @@ public class MainCanvas : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Reference to main menu
+    /// </summary>
     private Menu _menu = null;
+
+    /// <summary>
+    /// Reference to loading page
+    /// </summary>
     private LoadingPage _loadingPage = null;
+
+    /// <summary>
+    /// Refernce to auxilliary page container
+    /// </summary>
     private AuxPageContainer _auxPageContainer = null;
+
+    /// <summary>
+    /// Reference to dialog window
+    /// </summary>
     private DialogWindow _dialogWindow = null;
 
+    /// <summary>
+    /// Method called on application start
+    /// </summary>
     private void Awake()
     {
         MainCanvas._actualMainCanvas = this;
@@ -149,29 +293,18 @@ public class MainCanvas : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Method called after awake - for application initialization
+    /// </summary>
     private void Start()
     {
-        InitApp();
-    }
-
-    private void Update()
-    {
-        _showLoginPageIfUserIsNotLoggedIn();
-
-    }
-
-    private void _showLoginPageIfUserIsNotLoggedIn()
-    {
-        if (UserLoader.LoggedUser == null)
-        {
-            ShowLoginPage();
-        }
+        _initApp();
     }
 
     /// <summary>
     /// Method for initializing application
     /// </summary>
-    private void InitApp()
+    private void _initApp()
     {
         //Create directories if not exist
         if (!Directory.Exists(Common.AppDirPath)) Directory.CreateDirectory(Common.AppDirPath);
@@ -187,33 +320,26 @@ public class MainCanvas : MonoBehaviour
     }
 
     /// <summary>
-    /// Method for asynchronusly try to log in
+    /// Method called every update of UI
     /// </summary>
-    /// <returns>
-    /// user successfully logged in
-    /// </returns>
-    public async static Task<bool> AsyncTryLogIn(string userEmail, string userPassword)
+    private void Update()
     {
-        try
-        {
-            ShowLoadingPage();
-            await _actualMainCanvas.Loader.LoginUserFromServer(userEmail, userPassword);
-            HideLoadingPage();
+        //Showing page for user to log in - if any user is not logged in
+        _showLoginPageIfUserIsNotLoggedIn();
 
-            return true;
-        }
-        catch (Exception err)
-        {
-            HideLoadingPage();
-            ShowErrorWindow(err.Message);
+    }
 
-            return false;
+    /// <summary>
+    /// Method for showing login page if user is not logged in
+    /// </summary>
+    private void _showLoginPageIfUserIsNotLoggedIn()
+    {
+        if (UserLoader.LoggedUser == null)
+        {
+            //Showing page in every update does not make creation of new content of auxPageContainer - it checks wether new content is equal to acutal and prevent creation new instance in this case
+            ShowLoginPage();
         }
     }
 
-    public static void LogOutUser()
-    {
-        _actualMainCanvas.Loader.LogoutUser();
-    }
 
 }

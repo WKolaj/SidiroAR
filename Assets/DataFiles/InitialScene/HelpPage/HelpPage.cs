@@ -6,10 +6,7 @@ using UnityEngine;
 public class HelpPage : MonoBehaviour
 {
     private GameObject _auxPageHeaderGO = null;
-    private GameObject _mainTitleLabelGO = null;
-
     private AuxPageHeader _auxPageHeader = null;
-    private TextMeshProUGUI _mainTitleLabel = null;
 
     private void Awake()
     {

@@ -20,9 +20,6 @@ public class AuxPageContainer : MonoBehaviour
         }
     }
 
-    //Used for checking if content in show changes
-    private GameObject _actualContent = null;
-
     public float PageContainerOffset
     {
         get
@@ -46,6 +43,9 @@ public class AuxPageContainer : MonoBehaviour
             return PageContainerOffset == 0;
         }
     }
+
+    //Used for checking if content in show changes
+    private GameObject _actualContent = null;
 
     private bool _shouldBeDrawnOut = false;
     private float _normalizedDrawOutSpeed;
@@ -128,6 +128,11 @@ public class AuxPageContainer : MonoBehaviour
         _movePageContainer(_actualHeight);
     }
 
+    /// <summary>
+    /// Method for setting new content to page container
+    /// New content is instantiated only if it is different from actual one
+    /// </summary>
+    /// <param name="content"></param>
     public void SetContent(GameObject content)
     {
         //Changing content only if it changes

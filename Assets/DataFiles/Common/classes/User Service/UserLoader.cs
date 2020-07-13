@@ -235,6 +235,8 @@ public class UserLoader
     {
         UserLoader._loggedUser = user;
         SaveLoggedUserToPlayerPrefs();
+
+        Debug.Log(user.ModelList);
     }
 
     /// <summary>

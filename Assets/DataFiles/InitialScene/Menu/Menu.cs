@@ -246,13 +246,18 @@ public class Menu : MonoBehaviour
 
     public void HandleLogOutMenuItemClicked()
     {
+
+        var contentText = Translator.GetTranslation("Menu.LogOutWindowDialog.ContentText");
+        var yesButtonText = Translator.GetTranslation("Menu.ExitWindowDialog.YesButtonText");
+        var noButtonText = Translator.GetTranslation("Menu.ExitWindowDialog.NoButtonText");
+
         MainCanvas.ShowDialogWindow(
-            "Czy na pewno chcesz się wylogować?",
-            "TAK",
+            contentText,
+            yesButtonText,
             () => { MainCanvas.LogOutUser(); this.DrawIn(); },
             "#FF0266",
-            "NIE",
-            () => { },
+            noButtonText,
+            () => { this.DrawIn(); },
             "#41ABAB");
 
        

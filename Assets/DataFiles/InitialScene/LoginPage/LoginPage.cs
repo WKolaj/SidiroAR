@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -65,7 +66,15 @@ public class LoginPage : MonoBehaviour
 
         this._passwordInput.text = "";
 
-        if (logInSuccessfull) MainCanvas.HideAuxPage();
+        if (logInSuccessfull)
+        {
+            //Setting language if exists in possible languages
+            if (UserLoader.LoggedUser.DefaultLang != null && Translator.GetPossibleLangs().Contains(UserLoader.LoggedUser.DefaultLang))
+                Translator.SetLang(UserLoader.LoggedUser.DefaultLang);
+
+            //Hidding aux page
+            MainCanvas.HideAuxPage();
+        }
     }
 
     private bool _validateLoginAndPassword()

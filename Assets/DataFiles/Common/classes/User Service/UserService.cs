@@ -63,7 +63,7 @@ public class UserService
             var jsonAuthObject = JsonUtility.ToJson(newAuthObject);
 
             webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
-            
+
             var testJSONUserData = await webClient.UploadStringTaskAsync(UserService.authApiURL,jsonAuthObject);
 
             var userJsonObject = UserLoader.GetUserJSONDataFromString(testJSONUserData);
