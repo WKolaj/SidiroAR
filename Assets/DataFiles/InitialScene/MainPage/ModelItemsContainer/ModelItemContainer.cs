@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class ModelItemContainer : MonoBehaviour
 {
+    /// <summary>
+    /// Model prefab used for instantiate models
+    /// </summary>
     [SerializeField]
     private GameObject _modelItemPrefab = null;
     public GameObject ModelItemPrefab
@@ -20,6 +23,9 @@ public class ModelItemContainer : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// All instantiated models
+    /// </summary>
     private List<ModelItem> _instantiatedModels = new List<ModelItem>();
     public List<ModelItem> InstantiatedModels
     {
@@ -29,7 +35,15 @@ public class ModelItemContainer : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Item container
+    /// </summary>
     private GameObject _itemContainerGO;
+
+    /// <summary>
+    /// Flag determining whether login page started refreshing - in order not to start it again before coming back to previous state
+    /// </summary>
+    private bool _refreshingShouldBeFired = false;
 
     /// <summary>
     /// Main scroll view 
@@ -62,13 +76,8 @@ public class ModelItemContainer : MonoBehaviour
 
     private void Start()
     {
-        if(UserLoader.LoggedUser != null)
-        {
-            foreach(var model in UserLoader.LoggedUser.ModelList)
-            {
-                _createAndAddModelItem(model);
-            }
-        }
+        //Refreshing data to display on startup
+        RefreshDataDisplay();
     }
 
     /// <summary>
@@ -77,6 +86,7 @@ public class ModelItemContainer : MonoBehaviour
     public void RefreshDataDisplay()
     {
         _refreshModelList();
+        _refreshAllModelDataDisplay();
     }
 
     /// <summary>
@@ -89,24 +99,50 @@ public class ModelItemContainer : MonoBehaviour
         var differance = this._scrollViewTopLimit.transform.position.y - this._scrollViewPositionCheckItem.transform.position.y;
 
         //Firing scroll refresh if elements move is greater than limit
-        if (differance > 30.0) await _handleScrollRefresh();
+        if (differance > 30.0)
+        {
+                _refreshingShouldBeFired = true;
+        }
+        else if (differance < 29.0)
+        {
+            if(_refreshingShouldBeFired)
+            {
+                await _handleScrollRefresh();
+                //Resetting blocking flag if difference came back to normal
+                _refreshingShouldBeFired = false;
+            }
+        }
     }
 
+    /// <summary>
+    /// Method invoked when scrollview has been scrolled down above given limit
+    /// </summary>
+    /// <returns></returns>
     private async Task _handleScrollRefresh()
     {
         await MainCanvas.RefreshUserDataFromServer();
     }
 
+    /// <summary>
+    /// Method for creating and additing new model item to Instantiated model
+    /// </summary>
+    /// <param name="model"></param>
     private void _createAndAddModelItem(AssetModelLoader model)
     {
         var newModelItemGO = GameObject.Instantiate(ModelItemPrefab, _itemContainerGO.transform);
 
+        //Creating and assigning model to new model item
         var newModelItem = newModelItemGO.GetComponent<ModelItem>();
         newModelItem.AssignModel(model);
 
         this.InstantiatedModels.Add(newModelItem);
 
     }
+
+    /// <summary>
+    /// Method for deleting 
+    /// </summary>
+    /// <param name="modelItem"></param>
     private void _deleteModelItem(ModelItem modelItem)
     {
         InstantiatedModels.Remove(modelItem);
@@ -155,8 +191,14 @@ public class ModelItemContainer : MonoBehaviour
         {
             _createAndAddModelItem(model);
         }
-
-
+    }
+    
+    private void _refreshAllModelDataDisplay()
+    {
+        foreach(var item in InstantiatedModels)
+        {
+            item.RefreshDataDisplay();
+        }
     }
 
 }

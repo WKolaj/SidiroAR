@@ -667,7 +667,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _drawOutSpeed: 5000
   _menuWidthPercentage: 80
-  _helpAuxPageContent: {fileID: 0}
+  _helpAuxPageContent: {fileID: 3760697451399860083, guid: 6219bb1155e9d484f8ce546b3f4a2424,
+    type: 3}
+  _settingsAuxPageContent: {fileID: 8663826300966292212, guid: 01bb70b2c1617ca46a4ecbc392ad38aa,
+    type: 3}
 --- !u!1 &5662485484340780558
 GameObject:
   m_ObjectHideFlags: 0

@@ -50,6 +50,21 @@ public class Menu : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    private GameObject _settingsAuxPageContent = null;
+    public GameObject SettingsAuxPageContent
+    {
+        get
+        {
+            return _settingsAuxPageContent;
+        }
+
+        set
+        {
+            _settingsAuxPageContent = value;
+        }
+    }
+
     private float _menuWidth;
     private float _normalizedDrawOutSpeed;
 
@@ -230,7 +245,7 @@ public class Menu : MonoBehaviour
     
     public void HandleSettingsMenuItemClicked()
     {
-        Debug.Log("Settings clicked");
+        MainCanvas.ShowAuxPage(SettingsAuxPageContent);
         this.DrawIn();
     }
     public void HandleLanguageMenuItemClicked()

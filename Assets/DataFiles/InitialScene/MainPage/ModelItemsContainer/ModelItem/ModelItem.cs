@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -34,6 +35,8 @@ public class ModelItem : MonoBehaviour
     private ModelItemButton _showButton;
     private StopDownloadButton _stopDownloadButton;
 
+    private bool _fileForModelExists = false;
+
     protected void Awake()
     {
         InitResizeMechanism();
@@ -64,19 +67,25 @@ public class ModelItem : MonoBehaviour
         _stopDownloadButton.SetWidth(this.rectTransform.rect.width - _buttonContainerRectTrans.offsetMin.x);
     }
 
-    private void Update()
-    {
-        if(Model != null)
-        {
-            this._modeNameLabel.text = Model.ModelName;
-        }
-    }
-
+    /// <summary>
+    /// Method called to assing model to model item
+    /// </summary>
+    /// <param name="model"></param>
     public void AssignModel(AssetModelLoader model)
     {
         this._model = model;
+
+        this._model.OnDownloadCanceled += HandleDownloadCanceled;
+        this._model.OnDownloadCompleted += HandleDownloadCompleted;
+        this._model.OnDownloadFailure += HandleDownloadFailure;
+        this._model.OnProgressChanged += HandleDownloadProgressChanged;
+        this._model.OnDownloadStarted += HandleDownloadStart;
+
     }
 
+    /// <summary>
+    /// MUST BE IMPLEMENTED IN ORDER TO FIT SCROLL VIEW WIDTH
+    /// </summary>
     private void InitResizeMechanism()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -85,40 +94,246 @@ public class ModelItem : MonoBehaviour
             scrollRectRectTransform = scrollRect.GetComponent<RectTransform>();
     }
 
+    /// <summary>
+    /// MUST BE IMPLEMENTED IN ORDER TO FIT SCROLL VIEW WIDTH
+    /// </summary>
     protected void OnEnable()
     {
         UpdateWidth();
     }
 
+    /// <summary>
+    /// MUST BE IMPLEMENTED IN ORDER TO FIT SCROLL VIEW WIDTH
+    /// </summary>
     protected void OnRectTransformDimensionsChange()
     {
         UpdateWidth(); // Update every time if parent changed
     }
 
+    /// <summary>
+    /// MUST BE IMPLEMENTED IN ORDER TO FIT SCROLL VIEW WIDTH
+    /// </summary>
     private void UpdateWidth()
     {
         if (rectTransform)
             rectTransform.sizeDelta = new Vector2(scrollRectRectTransform.rect.size.x, rectTransform.sizeDelta.y);
     }
 
+    /// <summary>
+    /// Method used for refreshing model item 
+    /// </summary>
+    public void RefreshDataDisplay()
+    {
+        _refreshDataForUI();
+
+        _refreshUI();
+
+    }
+
+    /// <summary>
+    /// method for refreshing data based on which, ui is being rendered
+    /// </summary>
+    private void _refreshDataForUI()
+    {
+        _fileForModelExists = Model.CheckIfModelFileExists();
+    }
+
+    /// <summary>
+    /// Method for rendering ui based on model's data
+    /// </summary>
+    private void _refreshUI()
+    {
+        this._modeNameLabel.text = Model.ModelName;
+
+        //Depending on platform smld or ismdl file are being downloaded
+
+        #region PLATFORM_DEPENDED_CODE
+
+        Common.RunplatformDependendCode(
+            () => {
+                //Android Code
+
+                //Refreshing buttons visibility
+                if (!Model.FileExists)
+                {
+                    this._startDownloadButtonGO.SetActive(false);
+                    this._stopDownloadButtonGO.SetActive(false);
+                    this._deleteFileButtonGO.SetActive(false);
+                    this._showButtonGO.SetActive(false);
+                }
+                else if (_fileForModelExists)
+                {
+                    this._startDownloadButtonGO.SetActive(false);
+                    this._stopDownloadButtonGO.SetActive(false);
+                    this._deleteFileButtonGO.SetActive(true);
+                    this._showButtonGO.SetActive(true);
+                }
+                else if (_model.IsDownloading)
+                {
+                    this._startDownloadButtonGO.SetActive(false);
+                    this._stopDownloadButtonGO.SetActive(true);
+                    this._deleteFileButtonGO.SetActive(false);
+                    this._showButtonGO.SetActive(false);
+                }
+                else
+                {
+                    this._startDownloadButtonGO.SetActive(true);
+                    this._stopDownloadButtonGO.SetActive(false);
+                    this._deleteFileButtonGO.SetActive(false);
+                    this._showButtonGO.SetActive(false);
+                }
+
+                return null;
+            }, () =>
+            {
+                //IOS Code
+
+                //Refreshing buttons visibility
+                if (!Model.IOSFileExists)
+                {
+                    this._startDownloadButtonGO.SetActive(false);
+                    this._stopDownloadButtonGO.SetActive(false);
+                    this._deleteFileButtonGO.SetActive(false);
+                    this._showButtonGO.SetActive(false);
+                }
+                else if (_fileForModelExists)
+                {
+                    this._startDownloadButtonGO.SetActive(false);
+                    this._stopDownloadButtonGO.SetActive(false);
+                    this._deleteFileButtonGO.SetActive(true);
+                    this._showButtonGO.SetActive(true);
+                }
+                else if (_model.IsDownloading)
+                {
+                    this._startDownloadButtonGO.SetActive(false);
+                    this._stopDownloadButtonGO.SetActive(true);
+                    this._deleteFileButtonGO.SetActive(false);
+                    this._showButtonGO.SetActive(false);
+                }
+                else
+                {
+                    this._startDownloadButtonGO.SetActive(true);
+                    this._stopDownloadButtonGO.SetActive(false);
+                    this._deleteFileButtonGO.SetActive(false);
+                    this._showButtonGO.SetActive(false);
+                }
+                return null;
+            });
+
+        #endregion PLATFORM_DEPENDED_CODE
+
+    }
+
+    /// <summary>
+    /// Method for handling start download of model file
+    /// </summary>
     public void HandleStartDownloadButtonClicked()
     {
-
+        Model.StartDownload();
     }
 
+    /// <summary>
+    /// Method for handling delete file button clicked
+    /// </summary>
     public void HandleDeleteButtonClicked()
     {
-
+        MainCanvas.ShowDeleteModelFileWindow(this);
     }
 
+    /// <summary>
+    /// Method for handling showing model in AR
+    /// </summary>
     public void HandleShowButtonClicked()
     {
-
+        //TODO - implement scene change
+        Debug.Log("Show in AR!");
     }
 
+    /// <summary>
+    /// Method for handling stop download clicked
+    /// </summary>
     public void HandleStopDownloadButtonClicked()
     {
-
+        MainCanvas.ShowStopModelDownloadingWindow(this);
     }
 
+    private void Update()
+    {
+        //Making translations
+        _startDownloadButton.SetText(Translator.GetTranslation("ModelItem.StartDownloadFileButtonText"));
+        _stopDownloadButton.SetText(Translator.GetTranslation("ModelItem.StopDownloadFileButtonText"));
+        _deleteFileButton.SetText(Translator.GetTranslation("ModelItem.RemoveFileButtonText"));
+        _showButton.SetText(Translator.GetTranslation("ModelItem.ShowModelButtonText"));
+    }
+
+    /// <summary>
+    /// Method for handling download completed
+    /// </summary>
+    /// <param name="progress"></param>
+    private void HandleDownloadCompleted()
+    {
+        Common.DispatchInMainThread(new Action(() =>
+        {
+            RefreshDataDisplay();
+        }));
+    }
+
+    /// <summary>
+    /// Method for handling download progress changed
+    /// </summary>
+    /// <param name="progress"></param>
+    private void HandleDownloadProgressChanged(float progress)
+    {
+        Common.DispatchInMainThread(new Action(() =>
+        {
+            this._stopDownloadButton.SetBarPercentage(progress);
+        }));
+    }
+
+    /// <summary>
+    /// Method for handling download start
+    /// </summary>
+    /// <param name="progress"></param>
+    private void HandleDownloadStart()
+    {
+        Common.DispatchInMainThread(new Action(() =>
+        {
+            RefreshDataDisplay();
+        }));
+    }
+
+    /// <summary>
+    /// Method for handling download cancel
+    /// </summary>
+    /// <param name="progress"></param>
+    private void HandleDownloadCanceled()
+    {
+        Common.DispatchInMainThread(new Action(() =>
+        {
+            RefreshDataDisplay();
+        }));
+    }
+
+    /// <summary>
+    /// Method for handling download failure
+    /// </summary>
+    /// <param name="progress"></param>
+    private void HandleDownloadFailure(string errorMessage)
+    {
+        Common.DispatchInMainThread(new Action(() =>
+        {
+            MainCanvas.ShowDownloadingErrorWindow();
+            RefreshDataDisplay();
+        }));
+    }
+
+
+    //Stopping downloading if it is in progress but item is being destroyed
+    private void OnDestroy()
+    {
+        if (Model != null && Model.CheckIfModelFileExists() && Model.IsDownloading)
+        {
+            Model.StopDownload();
+        }
+    }
 }

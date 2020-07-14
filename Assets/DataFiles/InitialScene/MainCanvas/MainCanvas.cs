@@ -8,6 +8,7 @@ using UnityEngine;
 
 public class MainCanvas : MonoBehaviour
 {
+
     /// <summary>
     /// Prefab used for showing login page
     /// </summary>
@@ -193,6 +194,81 @@ public class MainCanvas : MonoBehaviour
             okButtonText,
             () => {  },
             "#FF0266");
+    }
+
+    /// <summary>
+    /// Method for showing window for deleting models file
+    /// </summary>
+    public static void ShowDeleteModelFileWindow(ModelItem assetModelItem)
+    {
+        //Getting translations of window components
+        var windowContentText = Translator.GetTranslation("DeleteModelFileWindow.ContentText");
+        var button0ButtonText = Translator.GetTranslation("DeleteModelFileWindow.YesButtonText");
+        var button1ButtonText = Translator.GetTranslation("DeleteModelFileWindow.NoButtonText");
+
+        var fullWindowContentText = String.Format("{0} {1}?", windowContentText, assetModelItem.Model.ModelName);
+
+        MainCanvas.ShowDialogWindow(
+            fullWindowContentText,
+            button0ButtonText,
+            () => {
+
+                try
+                {
+                    assetModelItem.Model.DeleteModelFileIfExists();
+                    assetModelItem.RefreshDataDisplay();
+                }
+                catch(Exception err)
+                {
+                    ShowErrorWindow(err.Message, "DeletingModelFile");
+                }
+            },
+            "#FF0266",
+            button1ButtonText,
+            () => {  },
+            "$3EACAB");
+    }
+
+    /// <summary>
+    /// Method for showing window for stopping model downloading
+    /// </summary>
+    public static void ShowStopModelDownloadingWindow(ModelItem assetModelItem)
+    {
+        //Getting translations of window components
+        var windowContentText = Translator.GetTranslation("StopModelDownloading.ContentText");
+        var button0ButtonText = Translator.GetTranslation("StopModelDownloading.YesButtonText");
+        var button1ButtonText = Translator.GetTranslation("StopModelDownloading.NoButtonText");
+
+        var fullWindowContentText = String.Format("{0} {1}?", windowContentText, assetModelItem.Model.ModelName);
+
+        MainCanvas.ShowDialogWindow(
+            fullWindowContentText,
+            button0ButtonText,
+            () =>
+            {
+                try
+                {
+                    assetModelItem.Model.StopDownload();
+                    assetModelItem.RefreshDataDisplay();
+                }
+                catch (Exception err)
+                {
+                    ShowErrorWindow(err.Message, "StoppingModelDownloading");
+                }
+
+            },
+            "#FF0266",
+            button1ButtonText,
+            () => { },
+            "$3EACAB");
+    }
+
+    /// <summary>
+    /// Method for showing error window while downloading file
+    /// </summary>
+    public static void ShowDownloadingErrorWindow()
+    {
+        ShowErrorWindow("DownloadingError", "DownloadingError");
     }
 
     /// <summary>

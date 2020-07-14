@@ -58,8 +58,12 @@ public class StopDownloadButton : MonoBehaviour
         this._buttonMask = this._buttonMaskGO.GetComponent<ModelItemButtonMask>();
         this._progressBarRectTrans = this._progressBarGO.GetComponent<RectTransform>();
 
+
         this._buttonMask.OnClick = this.OnClick;
+
+        SetBarPercentage(0);
     }
+
 
 
     public void SetText(string text)
