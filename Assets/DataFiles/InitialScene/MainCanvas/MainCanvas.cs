@@ -385,7 +385,7 @@ public class MainCanvas : MonoBehaviour
     /// <summary>
     /// Reference to main menu
     /// </summary>
-    private Menu _menu = null;
+    private MainMenu _menu = null;
 
     /// <summary>
     /// Reference to loading page
@@ -414,7 +414,7 @@ public class MainCanvas : MonoBehaviour
     {
         MainCanvas._actualMainCanvas = this;
 
-        this._menu = this.GetComponentInChildren<Menu>(true);
+        this._menu = this.GetComponentInChildren<MainMenu>(true);
         this._loadingPage = this.GetComponentInChildren<LoadingPage>(true);
         this._auxPageContainer = this.GetComponentInChildren<AuxPageContainer>(true);
         this._dialogWindow = this.GetComponentInChildren<DialogWindow>(true);

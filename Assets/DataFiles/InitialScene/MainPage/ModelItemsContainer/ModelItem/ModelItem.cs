@@ -250,8 +250,8 @@ public class ModelItem : MonoBehaviour
             //Assigning current model path and starting ar scene
             Common.ModelPath = this.Model.BundleFilePath;
 
-            //TODO - implement scene change
-            Debug.Log("Show in AR!");
+            //Loading ar scene
+            Common.LoadARScene();
         }
 
     }

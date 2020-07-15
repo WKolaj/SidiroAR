@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class Common
 {
@@ -19,7 +20,6 @@ public static class Common
     /// Name for directory inside app data dir to store models
     /// </summary>
     private static string modelsDirName = "models";
-
 
     /// <summary>
     /// Path to applicaton files directory
@@ -42,6 +42,7 @@ public static class Common
             return Path.Combine(Application.persistentDataPath, dataDirName, modelsDirName);
         }
     }
+
     /// <summary>
     /// Path for presented model - used to connect two scenes - initial and AR - together
     /// </summary>
@@ -78,6 +79,16 @@ public static class Common
         {
             PlayerPrefs.SetFloat("ModelScale", value);
         }
+    }
+
+    public static void LoadARScene()
+    {
+        SceneManager.LoadScene("ARScene");
+    }
+
+    public static void LoadInitialScene()
+    {
+        SceneManager.LoadScene("InitialScene");
     }
 
     public static void QuitApp()
@@ -243,6 +254,22 @@ public static class Common
         }
 
         return err.Message;
+    }
+
+    /// <summary>
+    /// Name for directory inside models directory to store models for default user
+    /// </summary>
+    private static string defaultUserDirName = "_default";
+
+    /// <summary>
+    /// Path to default user directory
+    /// </summary>
+    public static string DefaultUserDirPath
+    {
+        get
+        {
+            return Path.Combine(Application.persistentDataPath, dataDirName, modelsDirName, defaultUserDirName);
+        }
     }
 
 }
