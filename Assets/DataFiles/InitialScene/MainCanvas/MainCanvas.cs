@@ -226,7 +226,7 @@ public class MainCanvas : MonoBehaviour
             "#FF0266",
             button1ButtonText,
             () => {  },
-            "$3EACAB");
+            "#3EACAB");
     }
 
     /// <summary>
@@ -260,7 +260,7 @@ public class MainCanvas : MonoBehaviour
             "#FF0266",
             button1ButtonText,
             () => { },
-            "$3EACAB");
+            "#3EACAB");
     }
 
     /// <summary>
@@ -414,11 +414,15 @@ public class MainCanvas : MonoBehaviour
     {
         MainCanvas._actualMainCanvas = this;
 
+        this._dialogWindow = this.GetComponentInChildren<DialogWindow>(true);
         this._menu = this.GetComponentInChildren<MainMenu>(true);
         this._loadingPage = this.GetComponentInChildren<LoadingPage>(true);
         this._auxPageContainer = this.GetComponentInChildren<AuxPageContainer>(true);
-        this._dialogWindow = this.GetComponentInChildren<DialogWindow>(true);
         this._modelItemContainer = this.GetComponentInChildren<ModelItemContainer>(true);
+
+
+        //Enable screen dimming
+        Screen.sleepTimeout = SleepTimeout.SystemSetting;
 
     }
 

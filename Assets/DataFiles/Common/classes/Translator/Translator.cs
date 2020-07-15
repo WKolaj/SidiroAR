@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Translator
+public static class Translator
 {
     /// <summary>
     /// Dictionary containg all translations
@@ -51,6 +51,10 @@ public class Translator
             ["StopModelDownloading.ContentText"] = "Czy na pewno chcesz zatrzymać pobiernie pliku modelu",
             ["StopModelDownloading.YesButtonText"] = "TAK",
             ["StopModelDownloading.NoButtonText"] = "NIE",
+            ["BackFromARSceneDialogWindow.ContentText"] = "Czy na pewno chcesz wyjść do okna głównego?",
+            ["BackFromARSceneDialogWindow.YesButtonText"] = "TAK",
+            ["BackFromARSceneDialogWindow.NoButtonText"] = "NIE",
+            ["WaitingForSurfaceLabel.ContentText"] = "ZESKANUJ POWIERZCHNIĘ ABY POSTAWIĆ MODEL...",
             ["ErrorDialogWindow.OkButtonText"] = "OK",
             ["Errors.LoggingIn.HttpResponseErrorCode400"] = "Nieprawidłowy login lub hasło",
             ["Errors.LoggingIn.ConnectionError"] = "Błąd połączenia z serwerem",
@@ -103,6 +107,10 @@ public class Translator
             ["StopModelDownloading.ContentText"] = "Do you really want to stop downloading file of model",
             ["StopModelDownloading.YesButtonText"] = "YES",
             ["StopModelDownloading.NoButtonText"] = "NO",
+            ["BackFromARSceneDialogWindow.ContentText"] = "Do you really want to go back to main window?",
+            ["BackFromARSceneDialogWindow.YesButtonText"] = "YES",
+            ["BackFromARSceneDialogWindow.NoButtonText"] = "NO",
+            ["WaitingForSurfaceLabel.ContentText"] = "SCAN THE SURFACE TO PLACE THE MODEL...",
             ["ErrorDialogWindow.OkButtonText"] = "OK",
             ["Errors.LoggingIn.HttpResponseErrorCode400"] = "Invalid user or password",
             ["Errors.LoggingIn.ConnectionError"] = "Error while connecting to server",

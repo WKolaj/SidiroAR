@@ -5,6 +5,7 @@ using UnityEngine;
 public class AssetModel : MonoBehaviour
 {
     private static string doorComponentName = "Door";
+    private static string coverComponentName = "Cover";
 
     /// <summary>
     /// Creator of obj model
@@ -44,6 +45,18 @@ public class AssetModel : MonoBehaviour
         }
     }
 
+    private List<GameObject> _coverComponents = new List<GameObject>();
+    /// <summary>
+    /// List containing components for coover elements
+    /// </summary>
+    public List<GameObject> CoverComponents
+    {
+        get
+        {
+            return _coverComponents;
+        }
+    }
+
     /// <summary>
     /// Name of OBJ model
     /// </summary>
@@ -63,6 +76,17 @@ public class AssetModel : MonoBehaviour
         get
         {
             return DoorComponents.Count > 0;
+        }
+    }
+
+    /// <summary>
+    /// Property to check whether cover components are available withing OBJ Model
+    /// </summary>
+    public bool AreCoverComponentsAvailable
+    {
+        get
+        {
+            return CoverComponents.Count > 0;
         }
     }
 
@@ -161,6 +185,22 @@ public class AssetModel : MonoBehaviour
 
     }
 
+    private void InitCoverComponents()
+    {
+        CoverComponents.Clear();
+
+        foreach (var child in gameObject.transform)
+        {
+            if (typeof(Transform).IsAssignableFrom(child.GetType()))
+            {
+                var component = (Transform)child;
+                if (component.name.Contains(coverComponentName)) CoverComponents.Add(component.gameObject);
+            }
+        }
+
+
+    }
+
     public void Init(AssetModelCreator creator, AssetBundle bundle)
     {
         this._creator = creator;
@@ -178,6 +218,8 @@ public class AssetModel : MonoBehaviour
         //Initializing door components
         InitDoorComponents();
 
+        //Initializing cover components
+        InitCoverComponents();
     }
 
     /// <summary>
@@ -209,6 +251,28 @@ public class AssetModel : MonoBehaviour
     public void ShowDoorComponents()
     {
         foreach (var component in DoorComponents)
+        {
+            component.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// Method for hiddining visiblity of all cover components
+    /// </summary>
+    public void HideCoverComponents()
+    {
+        foreach (var component in CoverComponents)
+        {
+            component.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// Method for showing visiblity of all cover components
+    /// </summary>
+    public void ShowCoverComponents()
+    {
+        foreach (var component in CoverComponents)
         {
             component.SetActive(true);
         }

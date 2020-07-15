@@ -290,10 +290,11 @@ public class MainMenu : MonoBehaviour
             () => { Common.QuitApp(); },
             "#FF0266",
             cancelButtonText, 
-            () => {  }, 
+            () => {
+                this.DrawIn();
+            }, 
             "#41ABAB");
 
-        this.DrawIn();
     }
 
 }
