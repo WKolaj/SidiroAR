@@ -245,8 +245,15 @@ public class ModelItem : MonoBehaviour
     /// </summary>
     public void HandleShowButtonClicked()
     {
-        //TODO - implement scene change
-        Debug.Log("Show in AR!");
+        if (Model != null && Model.CheckIfModelFileExists())
+        {
+            //Assigning current model path and starting ar scene
+            Common.ModelPath = this.Model.BundleFilePath;
+
+            //TODO - implement scene change
+            Debug.Log("Show in AR!");
+        }
+
     }
 
     /// <summary>

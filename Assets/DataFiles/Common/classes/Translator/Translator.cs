@@ -13,7 +13,14 @@ public class Translator
         ["pl"] = new Dictionary<string, string>()
         {
             ["HelpPage.HeaderTitle"] = "Pomoc",
+            ["HelpPage.LinkButtonText"] = "Film instruktażowy",
+            ["HelpPage.URL"] = @"https://www.youtube.com/watch?v=sN4LPpXrePc",
             ["SettingsPage.HeaderTitle"] = "Ustawienia aplikacji",
+            ["SettingsPage.ScaleDropDown.LabelText"] = "Skala modelu",
+            ["SettingsPage.ScaleDropDown.ScaleOption1"] = "Skala 1:1",
+            ["SettingsPage.ScaleDropDown.ScaleOption1_2"] = "Skala 1:2",
+            ["SettingsPage.ScaleDropDown.ScaleOption1_5"] = "Skala 1:5",
+            ["SettingsPage.ScaleDropDown.ScaleOption1_10"] = "Skala 1:10",
             ["TranslationWindow.ContentText"] = "Proszę, wybierz język aplikacji",
             ["TranslationWindow.PolishButtonText"] = "POLSKI",
             ["TranslationWindow.EnglishButtonText"] = "ANGIELSKI",
@@ -52,12 +59,20 @@ public class Translator
             ["Errors.RefreshingData.HttpResponseErrorCode403"] = "Dostęp zabroniony",
             ["Errors.RefreshingData.HttpResponseErrorCode404"] = "Nie znaleziono użytkownika",
             ["Errors.DownloadingError.DownloadingError"] = "Błąd podczas pobierania pliku"
+
         },
         
         ["en"] = new Dictionary<string, string>()
         {
             ["HelpPage.HeaderTitle"] = "Help",
+            ["HelpPage.LinkButtonText"] = "Instructional video",
+            ["HelpPage.URL"] = @"https://www.youtube.com/watch?v=sN4LPpXrePc",
             ["SettingsPage.HeaderTitle"] = "Application settings",
+            ["SettingsPage.ScaleDropDown.LabelText"] = "Model scale",
+            ["SettingsPage.ScaleDropDown.ScaleOption1"] = "Scale 1:1",
+            ["SettingsPage.ScaleDropDown.ScaleOption1_2"] = "Scale 1:2",
+            ["SettingsPage.ScaleDropDown.ScaleOption1_5"] = "Scale 1:5",
+            ["SettingsPage.ScaleDropDown.ScaleOption1_10"] = "Scale 1:10",
             ["TranslationWindow.ContentText"] = "Please choose application language",
             ["TranslationWindow.PolishButtonText"] = "POLISH",
             ["TranslationWindow.EnglishButtonText"] = "ENGLISH",

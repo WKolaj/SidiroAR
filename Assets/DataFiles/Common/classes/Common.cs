@@ -42,9 +42,8 @@ public static class Common
             return Path.Combine(Application.persistentDataPath, dataDirName, modelsDirName);
         }
     }
-
     /// <summary>
-    /// Path to currently loaded model
+    /// Path for presented model - used to connect two scenes - initial and AR - together
     /// </summary>
     private static string _modelPath = string.Empty;
     public static string ModelPath
@@ -60,6 +59,26 @@ public static class Common
         }
     }
 
+    /// <summary>
+    /// Scale of presented model - set in player prefs in order to be permantent
+    /// </summary>
+    private static float _scale = 1;
+    public static float Scale
+    {
+        get
+        {
+            //Returning value from model scale or 1.0 as default value if it was not set before
+            if(!PlayerPrefs.HasKey("ModelScale"))
+                PlayerPrefs.SetFloat("ModelScale", 1);
+
+                return PlayerPrefs.GetFloat("ModelScale");
+        }
+
+        set
+        {
+            PlayerPrefs.SetFloat("ModelScale", value);
+        }
+    }
 
     public static void QuitApp()
     {
