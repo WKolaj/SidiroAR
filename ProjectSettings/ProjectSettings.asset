@@ -165,8 +165,9 @@ PlayerSettings:
   applicationIdentifier:
     Android: com.WK.SidiroAR
     iPhone: com.WK.SidiroARIOS
-  buildNumber: {}
-  AndroidBundleVersionCode: 4
+  buildNumber:
+    iPhone: 8
+  AndroidBundleVersionCode: 8
   AndroidMinSdkVersion: 24
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
