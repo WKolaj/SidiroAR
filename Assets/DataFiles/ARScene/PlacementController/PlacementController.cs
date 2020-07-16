@@ -265,6 +265,10 @@ public class PlacementController : MonoBehaviour
         //Assigning indicator component
         _indicator = Container.GetComponentInChildren<Indicator>(true);
 
+        //Border width should be scaled as well
+        if (Common.Scale != 1.0f)
+            this.Indicator.BorderWidth = Common.Scale * this.Indicator.BorderWidth;
+
         this.Indicator.Init(Model.Size, Model.InitialPosition);
 
         //Hide indicator at the begining
@@ -274,7 +278,7 @@ public class PlacementController : MonoBehaviour
     private void InitModel()
     {
         var creator = new AssetModelCreator(Common.ModelPath);
-        _model = creator.CreateModel(Container);
+        _model = creator.CreateModel(Container, Common.Scale);
 
         Model.Hide();
     }

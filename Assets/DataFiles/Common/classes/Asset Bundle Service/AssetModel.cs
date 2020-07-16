@@ -20,6 +20,24 @@ public class AssetModel : MonoBehaviour
 
     }
 
+
+    /// <summary>
+    /// Scale of model
+    /// </summary>
+    private float _scale = 1.0f;
+    public float Scale
+    {
+        get
+        {
+            return _scale;
+        }
+
+        private set
+        {
+            _scale = value;
+        }
+    }
+
     /// <summary>
     /// Asset bundle containing model template
     /// </summary>
@@ -201,10 +219,13 @@ public class AssetModel : MonoBehaviour
 
     }
 
-    public void Init(AssetModelCreator creator, AssetBundle bundle)
+    public void Init(AssetModelCreator creator, AssetBundle bundle, float scale)
     {
         this._creator = creator;
         this._bundle = bundle;
+
+        if (scale != 1.0f)
+            this._setScale(scale);
 
         //Get and assign model size and position
         var sizeAndPosition = GetSizeAndPositionOfCombinedMesh(gameObject);
@@ -301,5 +322,17 @@ public class AssetModel : MonoBehaviour
     {
         //Unloading asset bundle when destroying model
         Unload();
+    }
+
+    /// <summary>
+    /// Method for setting scale of model
+    /// </summary>
+    /// <param name="newScale">
+    /// New scale value
+    /// </param>
+    private void _setScale(float newScale)
+    {
+        gameObject.transform.localScale = new Vector3(newScale, newScale, newScale);
+        Scale = newScale;
     }
 }

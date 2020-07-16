@@ -37,6 +37,22 @@ public class ARCanvas : MonoBehaviour
     }
 
     /// <summary>
+    /// Show window Loading page
+    /// </summary>
+    public static void ShowLoadingPageStatic()
+    {
+        _actualARCanvas.ShowLoadingPage();
+    }
+
+    /// <summary>
+    /// Hide window Loading page
+    /// </summary>
+    public static void HideLoadingPageStatic()
+    {
+        _actualARCanvas.HideLoadingPage();
+    }
+
+    /// <summary>
     /// AR, actual canvas
     /// </summary>
     private static ARCanvas _actualARCanvas = null;
@@ -86,6 +102,11 @@ public class ARCanvas : MonoBehaviour
     /// </summary>
     private CircleController _circleController = null;
 
+    /// <summary>
+    /// loading page element
+    /// </summary>
+    private LoadingPage _loadingPage = null;
+
     [SerializeField]
     private GameObject _placementControllerGO;
     public GameObject PlacementControllerGO
@@ -102,6 +123,16 @@ public class ARCanvas : MonoBehaviour
     }
 
     private PlacementController _placementController;
+
+    /// <summary>
+    /// Game object of scale label object
+    /// </summary>
+    private GameObject _scaleLabelGO = null;
+
+    /// <summary>
+    /// Text Label of scale label
+    /// </summary>
+    private TextMeshProUGUI _scaleLabelText = null;
 
     /// <summary>
     /// Method called on application start
@@ -124,6 +155,11 @@ public class ARCanvas : MonoBehaviour
         var showCoversButtonGO = this.transform.Find("ShowCoversButton").gameObject;
         var hideCoversButtonGO = this.transform.Find("HideCoversButton").gameObject;
 
+        var loadingPageGO = this.transform.Find("LoadingPage").gameObject;
+
+        this._scaleLabelGO = this.transform.Find("ScaleLabel").gameObject;
+        var scaleLabelTextGO = _scaleLabelGO.transform.Find("Label").gameObject;
+
         this._waitingForSurfaceLabel = waitingForSurfaceLabelGO.GetComponent<TextMeshProUGUI>();
 
         this._goBackButton = backButtonGO.GetComponent<ClickableImage>();
@@ -133,10 +169,59 @@ public class ARCanvas : MonoBehaviour
         this._showCoversButton = showCoversButtonGO.GetComponent<ClickableImage>();
         this._hideCoversButton = hideCoversButtonGO.GetComponent<ClickableImage>();
 
+        this._loadingPage = loadingPageGO.GetComponent<LoadingPage>();
+
         this._waitingForSurfaceLabel.text = Translator.GetTranslation("WaitingForSurfaceLabel.ContentText");
+
+        this._scaleLabelText = scaleLabelTextGO.GetComponent<TextMeshProUGUI>();
+
+        this._scaleLabelText.text = _getScaleLabelTranslationText();
 
         //Disable screen dimming
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
+    }
+
+    //Method for retriveing scale label text based on scale value in common
+    private string _getScaleLabelTranslationText()
+    {
+        switch (Common.Scale)
+        {
+            case 1.0f:
+                {
+                    return Translator.GetTranslation("ScaleLabel.ScaleOption1");
+                }
+
+            case 0.5f:
+                {
+                    return Translator.GetTranslation("ScaleLabel.ScaleOption1_2");
+                }
+
+            case 0.2f:
+                {
+                    return Translator.GetTranslation("ScaleLabel.ScaleOption1_5");
+                }
+
+            case 0.1f:
+                {
+                    return Translator.GetTranslation("ScaleLabel.ScaleOption1_10");
+                }
+
+            default:
+                {
+                    return String.Empty;
+                }
+        }
+    }
+
+    public void ShowLoadingPage()
+    {
+        this._loadingPage.gameObject.SetActive(true);
+    }
+
+    public void HideLoadingPage()
+    {
+        this._loadingPage.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -202,6 +287,15 @@ public class ARCanvas : MonoBehaviour
             }
         }
 
+        //Refreshing scale label
+        if(Common.Scale != 1.0f)
+        {
+            _scaleLabelGO.SetActive(true);
+        }
+        else
+        {
+            _scaleLabelGO.SetActive(false);
+        }
     }
 
     /// <summary>

@@ -146,10 +146,13 @@ public class AssetModelCreator
     /// <param name="parentGO">
     /// Parent game object for created model
     /// </param>
+    /// <param name="scale">
+    /// Scale of model
+    /// </param>
     /// <returns>
     /// New asset model
     /// </returns>
-    public AssetModel CreateModel(GameObject parentGO)
+    public AssetModel CreateModel(GameObject parentGO, float scale)
     {
         AssetBundle bundle;
 
@@ -164,7 +167,7 @@ public class AssetModelCreator
 
         //getting and returning obj model script
         _model = modelGO.GetComponent<AssetModel>();
-        Model.Init(this, bundle);
+        Model.Init(this, bundle, scale);
 
         return Model;
     }
