@@ -317,11 +317,7 @@ public class MainCanvas : MonoBehaviour
     /// </summary>
     public async static Task RefreshUserDataFromServer()
     {
-        Common.DispatchInMainThread(() =>
-        {
-            ShowLoadingPage();
-        });
-
+      
         try
         {
             await UserLoader.LoggedUser.RefreshDataFromServer();
@@ -345,7 +341,6 @@ public class MainCanvas : MonoBehaviour
 
         Common.DispatchInMainThread(() =>
         {
-            HideLoadingPage();
             RefreshModelItemsContainerDisplay();
         });
     }

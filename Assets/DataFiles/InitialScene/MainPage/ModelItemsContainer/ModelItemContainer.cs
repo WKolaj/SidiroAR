@@ -23,6 +23,7 @@ public class ModelItemContainer : MonoBehaviour
         }
     }
 
+
     /// <summary>
     /// All instantiated models
     /// </summary>
@@ -34,6 +35,17 @@ public class ModelItemContainer : MonoBehaviour
             return _instantiatedModels;
         }
     }
+
+    /// <summary>
+    /// Refresh circle object
+    /// </summary>
+    private GameObject _refreshCircleObject = null;
+
+    private RectTransform _refreshCircleObjectRectTrans = null;
+
+    private Loading _refreshCircleLoadingScript = null;
+
+    private Image _refreshCircleImage = null;
 
     /// <summary>
     /// Item container
@@ -51,6 +63,11 @@ public class ModelItemContainer : MonoBehaviour
     private ScrollRect _scrollView;
 
     /// <summary>
+    /// Rect trans of scroll view 
+    /// </summary>
+    private RectTransform _scrollViewRectTrans;
+
+    /// <summary>
     /// Item for checking position of scroll view in order to implement refresh - outside scroll area
     /// </summary>
     private GameObject _scrollViewTopLimit;
@@ -60,16 +77,34 @@ public class ModelItemContainer : MonoBehaviour
     /// </summary>
     private GameObject _scrollViewPositionCheckItem;
 
+    //Flag determining if users data is being refreshed
+    private bool _whileRefreshing = false;
+
     private void Awake()
     {
         var scrollViewGO = this.transform.Find("ScrollView").gameObject;
+        this._refreshCircleObject = this.transform.Find("RefreshCircleElement").gameObject;
+        var circularProgressGO = _refreshCircleObject.transform.Find("CircularProgress").gameObject;
+        var vicaGO = circularProgressGO.transform.Find("vica").gameObject;
+
         this._itemContainerGO = scrollViewGO.transform.Find("ItemsContainer").gameObject;
 
+
+
         this._scrollView = scrollViewGO.GetComponent<ScrollRect>();
+        this._scrollViewRectTrans = scrollViewGO.GetComponent<RectTransform>();
 
         //Items for detecting position of scroll bar
         this._scrollViewPositionCheckItem = this._itemContainerGO.transform.Find("ScrollViewPositionCheckItem").gameObject;
         this._scrollViewTopLimit = scrollViewGO.transform.Find("ScrollViewTopLimit").gameObject;
+
+        this._refreshCircleObjectRectTrans = _refreshCircleObject.GetComponent<RectTransform>();
+
+        this._refreshCircleLoadingScript = _refreshCircleObject.GetComponentInChildren<Loading>();
+        this._refreshCircleImage = vicaGO.GetComponentInChildren<Image>();
+
+        //refreshing circle roation should be disabled in the begining
+        _stopLoadingScript();
 
         this._scrollView.onValueChanged.AddListener(_handleScrollValueChanged);
     }
@@ -93,25 +128,90 @@ public class ModelItemContainer : MonoBehaviour
     /// Method called when scroll view values changes
     /// </summary>
     /// <param name="pos"></param>
-    private async void _handleScrollValueChanged(Vector2 pos)
+    private void _handleScrollValueChanged(Vector2 pos)
     {
         //Calculating differance between element
         var differance = this._scrollViewTopLimit.transform.position.y - this._scrollViewPositionCheckItem.transform.position.y;
 
-        //Firing scroll refresh if elements move is greater than limit
-        if (differance > 30.0)
+         _handleMoveRefreshCircle(differance);
+
+    }
+
+    /// <summary>
+    /// Method used for starting loading script
+    /// </summary>
+    private void _startLoadingScript()
+    {
+        //starting script
+        _refreshCircleLoadingScript.enabled = true;
+
+
+    }
+
+    /// <summary>
+    /// Method used for stoping loading script
+    /// </summary>
+    private void _stopLoadingScript()
+    {
+        //stoping script
+        _refreshCircleLoadingScript.enabled = false;
+
+        //reseting loading image
+        _refreshCircleImage.fillAmount = 0.75f;
+        _refreshCircleImage.transform.localRotation = new Quaternion(0, 0, 0, 0);
+    }
+
+
+
+    private void _handleMoveRefreshCircle(float scrollDownOffset)
+    {
+        if(scrollDownOffset > _refreshCircleObjectRectTrans.rect.height + 1)
         {
-                _refreshingShouldBeFired = true;
+            _refreshingShouldBeFired = true;
         }
-        else if (differance < 29.0)
+        else if (scrollDownOffset <= _refreshCircleObjectRectTrans.rect.height)
         {
-            if(_refreshingShouldBeFired)
+            if (_refreshingShouldBeFired && !_whileRefreshing)
             {
-                await _handleScrollRefresh();
-                //Resetting blocking flag if difference came back to normal
-                _refreshingShouldBeFired = false;
+                //Invoking first part and other part after simulated time
+                _whileRefreshing = true;
+
+                //Starting rotating circle
+                _startLoadingScript();
+
+                //Specially delay method invoke to simulate longer loading- then invoke rest 
+                Invoke(nameof(_refreshUserDataEnd), 0.5f);
             }
         }
+
+        if(_whileRefreshing)
+        {
+            //if element is being refreshed - circle should stay presented
+            _refreshCircleObjectRectTrans.anchoredPosition = new Vector2(_refreshCircleObjectRectTrans.anchoredPosition.x, -_refreshCircleObjectRectTrans.rect.height);
+        }
+        else
+        {
+            //if element is not being refreshed - circle offset should be equal to scroll offset
+            _refreshCircleObjectRectTrans.anchoredPosition = new Vector2(_refreshCircleObjectRectTrans.anchoredPosition.x, -scrollDownOffset);
+        }
+    }
+
+    /// <summary>
+    /// method for refreshing user data- second part after simulating delay
+    /// </summary>
+    private async Task _refreshUserDataEnd()
+    {
+        await _handleScrollRefresh();
+
+        _refreshCircleObjectRectTrans.anchoredPosition = new Vector2(_refreshCircleObjectRectTrans.anchoredPosition.x, 0);
+
+        //Stoping rotating circle
+        _stopLoadingScript();
+
+        //Resetting blocking flag if difference came back to normal
+        _refreshingShouldBeFired = false;
+
+        _whileRefreshing = false;
     }
 
     /// <summary>
