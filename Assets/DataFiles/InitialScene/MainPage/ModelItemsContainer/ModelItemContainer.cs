@@ -41,8 +41,15 @@ public class ModelItemContainer : MonoBehaviour
     /// </summary>
     private GameObject _refreshCircleObject = null;
 
+    /// <summary>
+    /// Refresh circle object rect trans - used for moving refresh circle
+    /// </summary>
     private RectTransform _refreshCircleObjectRectTrans = null;
 
+
+    /// <summary>
+    /// Refresh circle object loading script - used for rotating refresh circle
+    /// </summary>
     private Loading _refreshCircleLoadingScript = null;
 
     private Image _refreshCircleImage = null;
@@ -51,11 +58,6 @@ public class ModelItemContainer : MonoBehaviour
     /// Item container
     /// </summary>
     private GameObject _itemContainerGO;
-
-    /// <summary>
-    /// Flag determining whether login page started refreshing - in order not to start it again before coming back to previous state
-    /// </summary>
-    private bool _refreshingShouldBeFired = false;
 
     /// <summary>
     /// Main scroll view 
@@ -77,7 +79,14 @@ public class ModelItemContainer : MonoBehaviour
     /// </summary>
     private GameObject _scrollViewPositionCheckItem;
 
-    //Flag determining if users data is being refreshed
+    /// <summary>
+    /// Flag determining whether login page started refreshing - in order not to start it again before coming back to previous state
+    /// </summary>
+    private bool _refreshingShouldBeFired = false;
+
+    /// <summary>
+    /// Flag determining if users data is being refreshed - preventing from refreshing again before actual refreshing ends
+    /// </summary>
     private bool _whileRefreshing = false;
 
     private void Awake()
@@ -88,7 +97,6 @@ public class ModelItemContainer : MonoBehaviour
         var vicaGO = circularProgressGO.transform.Find("vica").gameObject;
 
         this._itemContainerGO = scrollViewGO.transform.Find("ItemsContainer").gameObject;
-
 
 
         this._scrollView = scrollViewGO.GetComponent<ScrollRect>();
@@ -161,29 +169,35 @@ public class ModelItemContainer : MonoBehaviour
         _refreshCircleImage.transform.localRotation = new Quaternion(0, 0, 0, 0);
     }
 
-
-
+    /// <summary>
+    /// Method that controls position of refreshing circle - fires refreshing methods if circle is low enought
+    /// </summary>
+    /// <param name="scrollDownOffset">
+    /// scroll down offset - difference between first element in scroll view y position and reference element on the top
+    /// </param>
     private void _handleMoveRefreshCircle(float scrollDownOffset)
     {
         if(scrollDownOffset > _refreshCircleObjectRectTrans.rect.height + 1)
         {
+            //if refreshing circle is low enought - refreshing should be fired after refreshing circle comes back
             _refreshingShouldBeFired = true;
         }
         else if (scrollDownOffset <= _refreshCircleObjectRectTrans.rect.height)
         {
+            //while refreshing flag blocks invoking several refreshiong at once
             if (_refreshingShouldBeFired && !_whileRefreshing)
             {
-                //Invoking first part and other part after simulated time
-                _whileRefreshing = true;
-
-                //Starting rotating circle
-                _startLoadingScript();
+                //Invoking first part of user refresh - second one will be invoked with simulated delay
+                _refreshUserDataBegin();
 
                 //Specially delay method invoke to simulate longer loading- then invoke rest 
                 Invoke(nameof(_refreshUserDataEnd), 0.5f);
             }
         }
 
+        //Setting circle position y based on refreshing state:
+        //If refreshing - circle should be fixed y position on the top of scroll view
+        //If not refreshing - circle should move together with first element in scroll view - based on scrollDownOffset
         if(_whileRefreshing)
         {
             //if element is being refreshed - circle should stay presented
@@ -197,12 +211,27 @@ public class ModelItemContainer : MonoBehaviour
     }
 
     /// <summary>
+    /// method for refreshing user data- first part before simulating delay
+    /// </summary>
+    private void _refreshUserDataBegin()
+    {
+        //Invoking first part and other part after simulated time
+        _whileRefreshing = true;
+
+        //Starting rotating circle
+        _startLoadingScript();
+
+    }
+
+    /// <summary>
     /// method for refreshing user data- second part after simulating delay
     /// </summary>
     private async Task _refreshUserDataEnd()
     {
-        await _handleScrollRefresh();
+        //Refreshing user data from server - refreshes also content of modelItemContainer via MainCanvas
+        await MainCanvas.RefreshUserDataFromServer();
 
+        //Returning with refreshing to initial position
         _refreshCircleObjectRectTrans.anchoredPosition = new Vector2(_refreshCircleObjectRectTrans.anchoredPosition.x, 0);
 
         //Stoping rotating circle
@@ -211,16 +240,8 @@ public class ModelItemContainer : MonoBehaviour
         //Resetting blocking flag if difference came back to normal
         _refreshingShouldBeFired = false;
 
+        //Refreshing ends
         _whileRefreshing = false;
-    }
-
-    /// <summary>
-    /// Method invoked when scrollview has been scrolled down above given limit
-    /// </summary>
-    /// <returns></returns>
-    private async Task _handleScrollRefresh()
-    {
-        await MainCanvas.RefreshUserDataFromServer();
     }
 
     /// <summary>

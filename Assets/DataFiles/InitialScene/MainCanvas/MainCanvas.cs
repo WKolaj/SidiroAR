@@ -317,7 +317,6 @@ public class MainCanvas : MonoBehaviour
     /// </summary>
     public async static Task RefreshUserDataFromServer()
     {
-      
         try
         {
             await UserLoader.LoggedUser.RefreshDataFromServer();
@@ -341,6 +340,7 @@ public class MainCanvas : MonoBehaviour
 
         Common.DispatchInMainThread(() =>
         {
+            //Model item container should be refreshed after new user data was fetched
             RefreshModelItemsContainerDisplay();
         });
     }

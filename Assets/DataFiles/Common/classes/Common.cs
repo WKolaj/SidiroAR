@@ -63,7 +63,6 @@ public static class Common
     /// <summary>
     /// Scale of presented model - set in player prefs in order to be permantent
     /// </summary>
-    private static float _scale = 1;
     public static float Scale
     {
         get
