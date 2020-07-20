@@ -14,7 +14,7 @@ public static class Translator
         {
             ["HelpPage.HeaderTitle"] = "Pomoc",
             ["HelpPage.LinkButtonText"] = "Film instruktażowy",
-            ["HelpPage.URL"] = @"https://www.youtube.com/watch?v=sN4LPpXrePc",
+            ["HelpPage.URL"] = @"https://youtu.be/xPJPTsIjdOM",
             ["SettingsPage.HeaderTitle"] = "Ustawienia aplikacji",
             ["SettingsPage.ScaleDropDown.LabelText"] = "Skala modelu",
             ["SettingsPage.ScaleDropDown.ScaleOption1"] = "Skala 1:1",
@@ -74,7 +74,7 @@ public static class Translator
         {
             ["HelpPage.HeaderTitle"] = "Help",
             ["HelpPage.LinkButtonText"] = "Instructional video",
-            ["HelpPage.URL"] = @"https://www.youtube.com/watch?v=sN4LPpXrePc",
+            ["HelpPage.URL"] = @"https://youtu.be/a7WhxlbZYcU",
             ["SettingsPage.HeaderTitle"] = "Application settings",
             ["SettingsPage.ScaleDropDown.LabelText"] = "Model scale",
             ["SettingsPage.ScaleDropDown.ScaleOption1"] = "Scale 1:1",
