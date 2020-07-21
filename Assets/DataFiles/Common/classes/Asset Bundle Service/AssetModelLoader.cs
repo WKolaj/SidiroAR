@@ -22,7 +22,7 @@ public class AssetModelLoader
     /// </param>
     public AssetModelLoader(string id, string modelName, bool fileExists, User user, bool iosFileExists)
     {
-        this.Init(id, modelName, fileExists, user, iosFileExists );
+        this.Init(id, modelName, fileExists, user, iosFileExists);
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public class AssetModelLoader
         this._iosFileExists = iosFileExists;
         this.timeoutHandler = new Timer();
         //60s timeout
-        this.timeoutHandler.Interval = 10*1000;
+        this.timeoutHandler.Interval = 10 * 1000;
         this.timeoutHandler.AutoReset = false;
         this.timeoutHandler.Elapsed += HandleTimeout;
     }
@@ -278,14 +278,15 @@ public class AssetModelLoader
     /// <summary>
     /// Progress of download action
     /// </summary>
-    private float _downloadProgress = 0.0f;
-    public float DownloadProgress
+    private int _downloadProgress = 0;
+    public int DownloadProgress
     {
         get
         {
             return _downloadProgress;
         }
     }
+
 
     /// <summary>
     /// Method for downloading model from server
@@ -373,7 +374,7 @@ public class AssetModelLoader
         }
 
         //Removing handler from model
-        if(this.downloadHandler != null) this.downloadHandler.Dispose();
+        if (this.downloadHandler != null) this.downloadHandler.Dispose();
         this.downloadHandler = null;
 
         //Stopping timeout handler
@@ -441,11 +442,15 @@ public class AssetModelLoader
     /// <param name="progress">
     /// new progress
     /// </param>
-    private void SetProgress(float progress)
+    private void SetProgress(int progress)
     {
-        this._downloadProgress = progress;
+        //Setting progress only if it's changed
+        if (progress != this.DownloadProgress)
+        {
+            this._downloadProgress = progress;
 
-        if (OnProgressChanged != null) OnProgressChanged(progress);
+            if (OnProgressChanged != null) OnProgressChanged(progress);
+        }
     }
 
     /// <summary>
@@ -486,6 +491,11 @@ public class AssetModelLoader
 
     ~AssetModelLoader()
     {
+        if(IsDownloading)
+        {
+            StopDownload();
+        }
+
         //Removing timer and clearing memory
         if (this.timeoutHandler != null)
         {

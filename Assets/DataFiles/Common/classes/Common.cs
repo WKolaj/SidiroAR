@@ -206,6 +206,11 @@ public static class Common
 
                 return webErr.Status;
             }
+            //returning timeout error in case WebClientWithTimeout throws timeout exception
+            else if (err is TimeoutException)
+            {
+                return WebExceptionStatus.Timeout;
+            }
             else
             {
                 return WebExceptionStatus.UnknownError;

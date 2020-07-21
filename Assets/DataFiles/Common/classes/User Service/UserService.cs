@@ -24,12 +24,13 @@ public class UserService
     /// </returns>
     public static async Task<UserJSONData> GetUserDataFromServer(string jwt)
     {
-        using (var webClient = new WebClient())
+        //timeout = 10 sec
+        using (var webClient = new WebclientWithTimeout(10 * 1000))
         {
             webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
             webClient.Headers["x-auth-token"] = jwt;
 
-            var testJSONUserData = await webClient.DownloadStringTaskAsync(UserService.userApiURL);
+            var testJSONUserData = await webClient.DownloadStringTaskWithTimeoutAsync(UserService.userApiURL);
 
             var userJsonObject = UserLoader.GetUserJSONDataFromString(testJSONUserData);
             return userJsonObject;
@@ -52,7 +53,8 @@ public class UserService
     /// </returns>
     public static async Task<UserJSONData> GetUserDataFromServer(string email, string password)
     {
-        using (var webClient = new WebClient())
+        //timeout = 10 sec
+        using (var webClient = new WebclientWithTimeout(10 * 1000))
         {
             //Creating Object to parse to JSON content based on given credentials
             var newAuthObject = new AuthJSONData();
@@ -64,7 +66,7 @@ public class UserService
 
             webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
 
-            var testJSONUserData = await webClient.UploadStringTaskAsync(UserService.authApiURL,jsonAuthObject);
+            var testJSONUserData = await webClient.UploadStringTaskWithTimeoutAsync(UserService.authApiURL,jsonAuthObject);
 
             var userJsonObject = UserLoader.GetUserJSONDataFromString(testJSONUserData);
             return userJsonObject;

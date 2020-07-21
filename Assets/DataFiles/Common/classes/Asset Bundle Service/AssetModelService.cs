@@ -28,7 +28,8 @@ public class AssetModelService
     {
         if (UserLoader.LoggedUser == null) throw new InvalidOperationException("User is not logged in!");
 
-        using (var webClient = new WebClient())
+        //timeout = 30 sec
+        using (var webClient = new WebclientWithTimeout(30 * 1000))
         {
             webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
             webClient.Headers["x-auth-token"] = jwt;
