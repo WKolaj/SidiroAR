@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class ModelItem : MonoBehaviour
 {
+
     private AssetModelLoader _model = null;
     public AssetModelLoader Model
     {
@@ -34,6 +35,7 @@ public class ModelItem : MonoBehaviour
     private ModelItemButton _deleteFileButton;
     private ModelItemButton _showButton;
     private StopDownloadButton _stopDownloadButton;
+    private FileDownloader _fileDownloader;
 
     private bool _fileForModelExists = false;
 
@@ -59,6 +61,7 @@ public class ModelItem : MonoBehaviour
         this._showButton = _showButtonGO.GetComponent<ModelItemButton>();
         this._stopDownloadButton = _stopDownloadButtonGO.GetComponent<StopDownloadButton>();
 
+        this._fileDownloader = this.GetComponentInChildren<FileDownloader>();
     }
 
     private void Start()
@@ -75,12 +78,13 @@ public class ModelItem : MonoBehaviour
     {
         this._model = model;
 
-        this._model.OnDownloadCanceled += HandleDownloadCanceled;
-        this._model.OnDownloadCompleted += HandleDownloadCompleted;
-        this._model.OnDownloadFailure += HandleDownloadFailure;
-        this._model.OnProgressChanged += HandleDownloadProgressChanged;
-        this._model.OnDownloadStarted += HandleDownloadStart;
+        this._model.OnDownloadCanceled = HandleDownloadCanceled;
+        this._model.OnDownloadCompleted = HandleDownloadCompleted;
+        this._model.OnDownloadFailure = HandleDownloadFailure;
+        this._model.OnProgressChanged = HandleDownloadProgressChanged;
+        this._model.OnDownloadStarted = HandleDownloadStart;
 
+        this._model.AssignFileDownloader(this._fileDownloader);
     }
 
     /// <summary>
@@ -279,22 +283,16 @@ public class ModelItem : MonoBehaviour
     /// <param name="progress"></param>
     private void HandleDownloadCompleted()
     {
-        Common.DispatchInMainThread(new Action(() =>
-        {
-            RefreshDataDisplay();
-        }));
+        RefreshDataDisplay();
     }
 
     /// <summary>
     /// Method for handling download progress changed
     /// </summary>
     /// <param name="progress"></param>
-    private void HandleDownloadProgressChanged(float progress)
+    private void HandleDownloadProgressChanged(int progress)
     {
-        Common.DispatchInMainThread(new Action(() =>
-        {
-            this._stopDownloadButton.SetBarPercentage(progress);
-        }));
+        this._stopDownloadButton.SetBarPercentage(Convert.ToSingle(progress));
     }
 
     /// <summary>
@@ -303,10 +301,7 @@ public class ModelItem : MonoBehaviour
     /// <param name="progress"></param>
     private void HandleDownloadStart()
     {
-        Common.DispatchInMainThread(new Action(() =>
-        {
-            RefreshDataDisplay();
-        }));
+        RefreshDataDisplay();
     }
 
     /// <summary>
@@ -315,23 +310,16 @@ public class ModelItem : MonoBehaviour
     /// <param name="progress"></param>
     private void HandleDownloadCanceled()
     {
-        Common.DispatchInMainThread(new Action(() =>
-        {
-            RefreshDataDisplay();
-        }));
+        RefreshDataDisplay();
     }
 
     /// <summary>
     /// Method for handling download failure
     /// </summary>
-    /// <param name="progress"></param>
-    private void HandleDownloadFailure(string errorMessage)
+    private void HandleDownloadFailure(long errorCode, string errorMessage)
     {
-        Common.DispatchInMainThread(new Action(() =>
-        {
-            MainCanvas.ShowDownloadingErrorWindow();
-            RefreshDataDisplay();
-        }));
+        MainCanvas.ShowDownloadingErrorWindow();
+        RefreshDataDisplay();
     }
 
 

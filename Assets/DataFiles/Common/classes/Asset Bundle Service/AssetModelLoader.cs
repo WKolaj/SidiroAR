@@ -8,6 +8,78 @@ using UnityEngine;
 
 public class AssetModelLoader
 {
+    static string fileApiURL = "https://sidiro.pl/sidiroar/api/file/me";
+    static string iosFileApiURL = "https://sidiro.pl/sidiroar/api/file/ios/me";
+
+    /// <summary>
+    /// File downloader
+    /// </summary>
+    private FileDownloader _fileDownloader = null;
+    public FileDownloader FileDownloader
+    {
+        get
+        {
+            return this._fileDownloader;
+        }
+
+        private set
+        {
+            this._fileDownloader = value;
+        }
+    }
+
+    /// <summary>
+    /// Flag to determine if model file is downloading
+    /// </summary>
+    public bool IsDownloading
+    {
+        get
+        {
+            if (FileDownloader == null) return false;
+
+            return FileDownloader.IsDownloading;
+        }
+    }
+
+    /// <summary>
+    /// Method for assigning and initializing file downloader
+    /// </summary>
+    /// <param name="fileDownloader">
+    /// File downloader to assign
+    /// </param>
+    public void AssignFileDownloader(FileDownloader fileDownloader)
+    {
+        this._fileDownloader = fileDownloader;
+
+        if (UserLoader.LoggedUser == null) throw new InvalidOperationException("User is not logged in!");
+
+        fileDownloader.SetHeader("x-auth-token", this.User.JWT);
+
+        //timeout 30s
+        fileDownloader.SetTimeout(30);
+
+        #region PLATFORM_DEPENDED_CODE
+
+        Common.RunplatformDependendCode(
+            () => {
+                //Android Code
+
+                fileDownloader.SetURL(String.Format("{0}/{1}", fileApiURL, this.ID));
+
+                return null;
+            }, () =>
+            {
+                //IOS Code
+
+                fileDownloader.SetURL(String.Format("{0}/{1}", iosFileApiURL, this.ID));
+
+                return null;
+            });
+
+        #endregion PLATFORM_DEPENDED_CODE
+    }
+
+
     /// <summary>
     /// Class representing loader of asset models for loading it from internet or file
     /// </summary>
@@ -44,13 +116,7 @@ public class AssetModelLoader
         this._user = user;
         this._fileExists = fileExists;
         this._iosFileExists = iosFileExists;
-        this.timeoutHandler = new Timer();
-        //60s timeout
-        this.timeoutHandler.Interval = 10 * 1000;
-        this.timeoutHandler.AutoReset = false;
-        this.timeoutHandler.Elapsed += HandleTimeout;
     }
-
 
     private string _id;
     /// <summary>
@@ -196,62 +262,6 @@ public class AssetModelLoader
     }
 
     /// <summary>
-    /// Handler for download action
-    /// </summary>
-    private WebClient downloadHandler = null;
-
-    /// <summary>
-    /// Timer for handling download timer error
-    /// </summary>
-    private Timer timeoutHandler = null;
-
-    /// <summary>
-    /// Method for handling timeout
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void HandleTimeout(object sender, ElapsedEventArgs e)
-    {
-        //Stopping timer
-        StopTimeoutTimer();
-
-        //Stopping downloading
-        StopDownload();
-
-        //Invoking handling timeout error
-        HandleDownloadFailure(new Exception("Download timeout error"));
-    }
-
-    private void StartTimeoutTimer()
-    {
-        timeoutHandler.Start();
-    }
-
-    private void StopTimeoutTimer()
-    {
-        timeoutHandler.Stop();
-    }
-
-    private void ResetTimeoutTimer()
-    {
-        timeoutHandler.Stop();
-        timeoutHandler.Start();
-    }
-
-
-
-    /// <summary>
-    /// Is asset model during downloading model form server
-    /// </summary>
-    public bool IsDownloading
-    {
-        get
-        {
-            return this.downloadHandler != null;
-        }
-    }
-
-    /// <summary>
     /// Method called to check if model file exists
     /// </summary>
     /// <returns>
@@ -293,21 +303,11 @@ public class AssetModelLoader
     /// </summary>
     public void StartDownload()
     {
-        if (this.IsDownloading) StopDownload();
-
         //Generating new temporary path for download file
         this._temporaryDownloadPath = Common.GenerateRandomTemporaryFilePath();
 
-        //Generating new download handler
-        downloadHandler = AssetModelService.DownloadAssembly(this.User.JWT, this.ID, this.TemporaryDownloadPath);
-        downloadHandler.DownloadProgressChanged += HandleDownloadProgressChanged;
-        downloadHandler.DownloadFileCompleted += HandleDownloadStop;
-
-        //Starting download timeout
-        StartTimeoutTimer();
-
-        //Firing onDownloadStarted event if it is not a null
-        if (OnDownloadStarted != null) OnDownloadStarted();
+        //Starting downloading
+        FileDownloader.StartDownload(this.TemporaryDownloadPath, _handleDownloadingStarted, _handleDownloadingStopped, _handleProgressChanged, _handleDownloadingFinished, _handleDownloadingError);
     }
 
     /// <summary>
@@ -315,79 +315,57 @@ public class AssetModelLoader
     /// </summary>
     public void StopDownload()
     {
-        //Stopping download timeout
-        StopTimeoutTimer();
-
         //Canceling download process
-        this.downloadHandler.CancelAsync();
-
-        //Removing handler from model
-        if (this.downloadHandler != null) this.downloadHandler.Dispose();
-        this.downloadHandler = null;
-
+        FileDownloader.StopDownloading();
     }
 
     /// <summary>
-    /// Event called when download is started
+    /// Method called when downloading error occurs
     /// </summary>
-    public event Action OnDownloadStarted;
-
-    /// <summary>
-    /// Event called when progress changed
-    /// </summary>
-    public event Action<float> OnProgressChanged;
-
-    /// <summary>
-    /// Event called when download has been completed
-    /// </summary>
-    public event Action OnDownloadCompleted;
-
-    /// <summary>
-    /// Event called when download has been canceled
-    /// </summary>
-    public event Action OnDownloadCanceled;
-
-    /// <summary>
-    /// Event called when download has failed
-    /// </summary>
-    public event Action<string> OnDownloadFailure;
-
-    /// <summary>
-    /// Method for handling download completed action
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void HandleDownloadStop(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+    /// <param name="errorCode">
+    /// Error code
+    /// </param>
+    /// <param name="errorText">
+    /// Error text
+    /// </param>
+    private void _handleDownloadingError(long errorCode, string errorText)
     {
-        if (e.Cancelled)
+        if(OnDownloadFailure != null)
         {
-            HandleDownloadCancel();
+            OnDownloadFailure(errorCode, errorText);
         }
-        else if (e.Error != null)
-        {
-            HandleDownloadFailure(e.Error);
-
-        }
-        else
-        {
-            HandleDownloadFinish();
-        }
-
-        //Removing handler from model
-        if (this.downloadHandler != null) this.downloadHandler.Dispose();
-        this.downloadHandler = null;
-
-        //Stopping timeout handler
-        StopTimeoutTimer();
     }
 
     /// <summary>
-    /// Method called when download is canceled
+    /// Method called when downloading finished successfuly
     /// </summary>
-    private void HandleDownloadCancel()
+    private void _handleDownloadingFinished()
     {
-        SetProgress(0);
+        //Moving file from temporary location to permanent location
+        MoveTemporaryFileToModelDir();
 
+        if (OnDownloadCompleted != null)
+        {
+            OnDownloadCompleted();
+        }
+    }
+
+    /// <summary>
+    /// Method called when progress changes
+    /// </summary>
+    private void _handleProgressChanged(int value)
+    {
+        if (OnProgressChanged != null)
+        {
+            OnProgressChanged(value);
+        }
+    }
+
+    /// <summary>
+    /// Method called when downloading stops
+    /// </summary>
+    private void _handleDownloadingStopped()
+    {
         if (OnDownloadCanceled != null)
         {
             OnDownloadCanceled();
@@ -395,63 +373,40 @@ public class AssetModelLoader
     }
 
     /// <summary>
-    /// Method called when download fails
+    /// Method called when downloading starts
     /// </summary>
-    private void HandleDownloadFailure(Exception err)
+    private void _handleDownloadingStarted()
     {
-        SetProgress(0);
-
-        if (OnDownloadFailure != null)
+        if (OnDownloadStarted != null)
         {
-            OnDownloadFailure(err.Message);
+            OnDownloadStarted();
         }
-
     }
 
     /// <summary>
-    /// Method called when download finishes
+    /// Event called when download is started
     /// </summary>
-    private void HandleDownloadFinish()
-    {
-        SetProgress(100);
-        MoveTemporaryFileToModelDir();
-
-        if (OnDownloadCompleted != null)
-        {
-            OnDownloadCompleted();
-        }
-
-    }
+    public Action OnDownloadStarted;
 
     /// <summary>
-    /// Method for handling hange progress event
+    /// Event called when progress changed
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void HandleDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-    {
-        //Resetting timer timeout
-        ResetTimeoutTimer();
-
-        SetProgress(e.ProgressPercentage);
-    }
+    public Action<int> OnProgressChanged;
 
     /// <summary>
-    /// Method for setting progress
+    /// Event called when download has been completed
     /// </summary>
-    /// <param name="progress">
-    /// new progress
-    /// </param>
-    private void SetProgress(int progress)
-    {
-        //Setting progress only if it's changed
-        if (progress != this.DownloadProgress)
-        {
-            this._downloadProgress = progress;
+    public Action OnDownloadCompleted;
 
-            if (OnProgressChanged != null) OnProgressChanged(progress);
-        }
-    }
+    /// <summary>
+    /// Event called when download has been canceled
+    /// </summary>
+    public Action OnDownloadCanceled;
+
+    /// <summary>
+    /// Event called when download has failed
+    /// </summary>
+    public Action<long,string> OnDownloadFailure;
 
     /// <summary>
     /// Method for deleting model file if it exists
@@ -489,20 +444,4 @@ public class AssetModelLoader
         this._modelCreator = new AssetModelCreator(this.BundleFilePath, this.ModelName);
     }
 
-    ~AssetModelLoader()
-    {
-        if(IsDownloading)
-        {
-            StopDownload();
-        }
-
-        //Removing timer and clearing memory
-        if (this.timeoutHandler != null)
-        {
-            StopTimeoutTimer();
-            this.timeoutHandler.Dispose();
-            this.timeoutHandler = null;
-        }
-
-    }
 }
