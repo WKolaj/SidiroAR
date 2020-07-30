@@ -17,5 +17,9 @@ EditorBuildSettings:
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 0cc85976eca317746bb57d89b074cbd0,
       type: 2}
+    com.unity.xr.management.arcore_loader: {fileID: 11400000, guid: 96a9e3b01465605409af429d91ff4b19,
+      type: 2}
+    com.unity.xr.management.arkit_loader: {fileID: 11400000, guid: 7ebedeb54ca67dc4a8af84f4976abe48,
+      type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 6cb9c5507af6a8b48bc9ff96305fcf33,
       type: 2}
