@@ -121,12 +121,8 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 0.11.0
-  preloadedAssets:
-  - {fileID: 11400000, guid: 7ebedeb54ca67dc4a8af84f4976abe48, type: 2}
-  - {fileID: 1967424669944893896, guid: 6cb9c5507af6a8b48bc9ff96305fcf33, type: 2}
-  - {fileID: 11400000, guid: 96a9e3b01465605409af429d91ff4b19, type: 2}
-  - {fileID: 4800000, guid: c9f956787b1d945e7b36e0516201fc76, type: 3}
+  bundleVersion: 0.12.0
+  preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -173,7 +169,7 @@ PlayerSettings:
     iPhone: com.WK.SidiroARIOS
   buildNumber:
     iPhone: 11
-  AndroidBundleVersionCode: 11
+  AndroidBundleVersionCode: 12
   AndroidMinSdkVersion: 29
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
