@@ -394,7 +394,13 @@ public class PlacementController : MonoBehaviour
 
             //Initializing rotation if not initialized
             if (!RotationInitialized)
-                InitRotation(CurrentRaycastPointPose.rotation);
+            {
+                //Initial rotation should be 180 degree rotated - arrow pointing to camera
+                Vector3 rot = CurrentRaycastPointPose.rotation.eulerAngles;
+                rot = new Vector3(rot.x, rot.y + 180, rot.z);
+
+                InitRotation(Quaternion.Euler(rot));
+            }
 
             if (!PositionInitialized)
                 InitPosition(CurrentRaycastPointPose.position);

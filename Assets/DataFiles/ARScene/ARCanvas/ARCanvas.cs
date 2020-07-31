@@ -180,6 +180,7 @@ public class ARCanvas : MonoBehaviour
         //Disable screen dimming
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
+
     }
 
     //Method for retriveing scale label text based on scale value in common
