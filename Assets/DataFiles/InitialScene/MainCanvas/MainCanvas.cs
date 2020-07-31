@@ -449,11 +449,34 @@ public class MainCanvas : MonoBehaviour
 
     }
 
+    private void _showExitWindow()
+    {
+        var contentText = Translator.GetTranslation("Menu.ExitWindowDialog.ContentText");
+        var yesButtonText = Translator.GetTranslation("Menu.ExitWindowDialog.YesButtonText");
+        var cancelButtonText = Translator.GetTranslation("Menu.ExitWindowDialog.CancelButtonText");
+
+        MainCanvas.ShowDialogWindow(
+            contentText,
+            yesButtonText,
+            () => { Common.QuitApp(); },
+            "#FF0266",
+            cancelButtonText,
+            () => {
+            },
+            "#41ABAB");
+    }
+
     /// <summary>
     /// Method called every update of UI
     /// </summary>
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            //Trying to update when back button clicked
+            _showExitWindow();
+        }
+
         //Showing page for user to log in - if any user is not logged in
         _showLoginPageIfUserIsNotLoggedIn();
 
