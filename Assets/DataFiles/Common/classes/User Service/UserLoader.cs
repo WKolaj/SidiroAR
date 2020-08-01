@@ -235,6 +235,8 @@ public class UserLoader
     {
         UserLoader._loggedUser = user;
         SaveLoggedUserToPlayerPrefs();
+
+        Translator.SetLanguageFromLoggedUser();
     }
 
     /// <summary>
@@ -270,6 +272,8 @@ public class UserLoader
             var user = UserLoader.GenerateUserFromJSONData(jsonData, this);
 
             UserLoader._loggedUser = user;
+
+            Translator.SetLanguageFromLoggedUser();
 
             return true;
         }

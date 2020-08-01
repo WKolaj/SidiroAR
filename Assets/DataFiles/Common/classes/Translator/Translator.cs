@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public static class Translator
 {
@@ -184,5 +185,41 @@ public static class Translator
     public static void SetLang(string lang)
     {
         Translator._selectedLang = lang;
+    }
+
+
+    /// <summary>
+    /// Method to set language according to OS language
+    /// </summary>
+    public static void SetLanguageAccordingToOS()
+    {
+        try
+        {
+            if (Application.systemLanguage == SystemLanguage.Polish)
+            {
+                SetLang("pl");
+            }
+            else
+            {
+                //If language was not detected - set english
+                SetLang("en");
+            }
+        }
+        catch(Exception)
+        {
+            //if there is an error - set english language
+            SetLang("en");
+        }
+        
+    }
+
+    /// <summary>
+    /// Method for setting language from logged user if user is logged in
+    /// </summary>
+    public static void SetLanguageFromLoggedUser()
+    {
+        //Setting language if exists in possible languages
+        if (UserLoader.LoggedUser.DefaultLang != null && Translator.GetPossibleLangs().Contains(UserLoader.LoggedUser.DefaultLang))
+            Translator.SetLang(UserLoader.LoggedUser.DefaultLang);
     }
 }

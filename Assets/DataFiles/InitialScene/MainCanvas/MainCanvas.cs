@@ -440,6 +440,9 @@ public class MainCanvas : MonoBehaviour
         //Create directories if not exist
         if (!Directory.Exists(Common.ModelsDirPath)) Directory.CreateDirectory(Common.ModelsDirPath);
 
+        //Setting language from OS
+        Translator.SetLanguageAccordingToOS();
+
         //Trying loading user from prefs
         var successfullyLogIn = Loader.LoginUserFromPlayerPrefs();
 

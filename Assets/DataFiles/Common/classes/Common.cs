@@ -68,10 +68,10 @@ public static class Common
         get
         {
             //Returning value from model scale or 1.0 as default value if it was not set before
-            if(!PlayerPrefs.HasKey("ModelScale"))
+            if (!PlayerPrefs.HasKey("ModelScale"))
                 PlayerPrefs.SetFloat("ModelScale", 1);
 
-                return PlayerPrefs.GetFloat("ModelScale");
+            return PlayerPrefs.GetFloat("ModelScale");
         }
 
         set
@@ -181,7 +181,7 @@ public static class Common
                 return -1;
             }
         }
-        catch(Exception)
+        catch (Exception)
         {
             return -1;
         }
@@ -239,9 +239,9 @@ public static class Common
         //Checking if error reason is a connection timeout
         var errorType = getWebErrorType(err);
 
-        if (errorType == WebExceptionStatus.Timeout || 
-            errorType == WebExceptionStatus.ConnectFailure || 
-            errorType == WebExceptionStatus.ReceiveFailure || 
+        if (errorType == WebExceptionStatus.Timeout ||
+            errorType == WebExceptionStatus.ConnectFailure ||
+            errorType == WebExceptionStatus.ReceiveFailure ||
             errorType == WebExceptionStatus.NameResolutionFailure)
         {
             return "ConnectionError";
@@ -251,9 +251,9 @@ public static class Common
             //Getting response code from error
             var responseCode = getResponseCodeOfError(err);
 
-            if(responseCode >= 0)
+            if (responseCode >= 0)
             {
-                return String.Format("HttpResponseErrorCode{0}",responseCode);
+                return String.Format("HttpResponseErrorCode{0}", responseCode);
             }
         }
 
@@ -275,5 +275,4 @@ public static class Common
             return Path.Combine(Application.persistentDataPath, dataDirName, modelsDirName, defaultUserDirName);
         }
     }
-
 }
