@@ -11,6 +11,7 @@ public class LoginPage : MonoBehaviour
     private GameObject _loginButtonGO;
     private GameObject _demoButtonGO;
     private GameObject _languageButtonGO;
+    private GameObject _helpButtonGO;
     private GameObject _loginInputPlaceholderGO;
     private GameObject _passwordInputPlaceholderGO;
     private GameObject _mainLabelGO;
@@ -19,6 +20,7 @@ public class LoginPage : MonoBehaviour
     private TMP_InputField _passwordInput;
     private LoginButton _loginButton;
     private DemoButton _demoButton;
+    private ClickableImage _helpButton;
     private ClickableImage _languageButton;
     private TextMeshProUGUI _loginInputPlaceholder;
     private TextMeshProUGUI _passwordInputPlaceholder;
@@ -28,16 +30,18 @@ public class LoginPage : MonoBehaviour
     private void Awake()
     {
         this._languageButtonGO = transform.Find("LanguageButton").gameObject;
+        this._helpButtonGO = transform.Find("HelpButton").gameObject;
 
         this._languageButton = _languageButtonGO.GetComponent<ClickableImage>();
-        
+        this._helpButton = _helpButtonGO.GetComponent<ClickableImage>();
+
         var loginComponent = transform.Find("LoginComponent").gameObject;
 
         this._loginInputGO = loginComponent.transform.Find("LoginInput").gameObject;
         this._passwordInputGO = loginComponent.transform.Find("PasswordInput").gameObject;
         this._loginButtonGO = loginComponent.transform.Find("LoginButton").gameObject;
         this._mainLabelGO = loginComponent.transform.Find("MainLabel").gameObject;
-        this._demoButtonGO = loginComponent.transform.Find("DemoButton").gameObject;
+        this._demoButtonGO = transform.Find("DemoButton").gameObject;
 
         var loginInputTextArea = _loginInputGO.transform.Find("Text Area").gameObject;
         _loginInputPlaceholderGO = loginInputTextArea.transform.Find("Placeholder").gameObject;
@@ -56,6 +60,7 @@ public class LoginPage : MonoBehaviour
 
         this._loginButton.OnClick.AddListener(_handleLoginButtonClicked);
         this._demoButton.OnClick.AddListener(_handleDemoButtonClicked);
+        this._helpButton.OnClick.AddListener(_handleHelpButtonClicked);
 
         this._languageButton.OnClick.AddListener(_handleLanguageButtonClicked);
     }
@@ -104,6 +109,17 @@ public class LoginPage : MonoBehaviour
         }
     }
 
+    private void _handleHelpButtonClicked()
+    {
+        //getting url
+        var URL = Translator.GetTranslation("HelpPage.URL");
+
+        //naviagating
+        if (!string.IsNullOrEmpty(URL))
+        {
+            Application.OpenURL(URL);
+        }
+    }
 
     private bool _validateLoginAndPassword()
     {

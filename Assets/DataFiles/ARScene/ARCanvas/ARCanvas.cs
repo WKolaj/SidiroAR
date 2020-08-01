@@ -265,25 +265,43 @@ public class ARCanvas : MonoBehaviour
             this._pickUpModelButton.gameObject.SetActive(true);
             this._circleController.gameObject.SetActive(false);
 
-            if(_placementController.DoorsShown)
+            //Refreshing door buttons visibility
+            if(_placementController.DoorsAvailable)
             {
-                this._showDoorsButton.gameObject.SetActive(false);
-                this._hideDoorsButton.gameObject.SetActive(true);
+                if (_placementController.DoorsShown)
+                {
+                    this._showDoorsButton.gameObject.SetActive(false);
+                    this._hideDoorsButton.gameObject.SetActive(true);
+                }
+                else
+                {
+                    this._showDoorsButton.gameObject.SetActive(true);
+                    this._hideDoorsButton.gameObject.SetActive(false);
+                }
             }
             else
             {
-                this._showDoorsButton.gameObject.SetActive(true);
+                this._showDoorsButton.gameObject.SetActive(false);
                 this._hideDoorsButton.gameObject.SetActive(false);
             }
 
-            if (_placementController.CoversShown)
+            //Refreshing door buttons visibility
+            if (_placementController.CoversAvailable)
             {
-                this._showCoversButton.gameObject.SetActive(false);
-                this._hideCoversButton.gameObject.SetActive(true);
+                if (_placementController.CoversShown)
+                {
+                    this._showCoversButton.gameObject.SetActive(false);
+                    this._hideCoversButton.gameObject.SetActive(true);
+                }
+                else
+                {
+                    this._showCoversButton.gameObject.SetActive(true);
+                    this._hideCoversButton.gameObject.SetActive(false);
+                }
             }
             else
             {
-                this._showCoversButton.gameObject.SetActive(true);
+                this._showCoversButton.gameObject.SetActive(false);
                 this._hideCoversButton.gameObject.SetActive(false);
             }
         }

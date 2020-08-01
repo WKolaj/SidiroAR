@@ -31,6 +31,30 @@ public class PlacementController : MonoBehaviour
     }
 
     /// <summary>
+    /// Flag determining whether door components are avaiable in model
+    /// </summary>
+    public Boolean DoorsAvailable
+    {
+        get
+        {
+            if (Model == null) return false;
+            return Model.AreDoorComponentsAvailable;
+        }
+    }
+
+    /// <summary>
+    /// Flag determining whether cover components are avaiable in model
+    /// </summary>
+    public Boolean CoversAvailable
+    {
+        get
+        {
+            if (Model == null) return false;
+            return Model.AreCoverComponentsAvailable;
+        }
+    }
+
+    /// <summary>
     /// Flag determining in which state placement controller is actually in
     /// </summary>
     private PlacementControllerState _placementControllerState = PlacementControllerState.waitingForSurface;
