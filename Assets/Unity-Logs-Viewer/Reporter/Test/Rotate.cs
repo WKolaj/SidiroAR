@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Rotate : MonoBehaviour
+public class RotateElement : MonoBehaviour
 {
 	Vector3 angle;
 
