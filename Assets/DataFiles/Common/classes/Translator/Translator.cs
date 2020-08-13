@@ -42,7 +42,7 @@ public static class Translator
             ["LoginPage.PasswordInputPlaceholder"] = "Hasło",
             ["LoginPage.LoginButtonText"] = "Zaloguj",
             ["LoginPage.MainLabelText"] = "Logowanie",
-            ["LoginPage.DemoButtonText"] = "Wypróbuj bez logowania",
+            ["LoginPage.DemoButtonText"] = "Kontynuuj bez logowania",
             ["LoginPage.DemoAccountEmail"] = "sidiroargosc@sidiro.pl",
             ["LoginPage.DemoAccountPassword"] = "LGck9FvnIW8yRZaUqynY0XmBx1bJf0",
             ["ModelItem.StartDownloadFileButtonText"] = "Pobierz",

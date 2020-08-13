@@ -121,7 +121,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 1.0.3
+  bundleVersion: 1.0.4
   preloadedAssets:
   - {fileID: 11400000, guid: 7ebedeb54ca67dc4a8af84f4976abe48, type: 2}
   - {fileID: 1967424669944893896, guid: 6cb9c5507af6a8b48bc9ff96305fcf33, type: 2}
@@ -172,8 +172,8 @@ PlayerSettings:
     Android: com.WK.SidiroAR
     iPhone: com.WK.SidiroARIOS
   buildNumber:
-    iPhone: 103
-  AndroidBundleVersionCode: 103
+    iPhone: 104
+  AndroidBundleVersionCode: 104
   AndroidMinSdkVersion: 29
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
