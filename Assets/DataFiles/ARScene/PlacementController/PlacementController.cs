@@ -221,7 +221,7 @@ public class PlacementController : MonoBehaviour
         }
     }
 
-    private UnityEngine.XR.ARSubsystems.TrackableType _trackingType = UnityEngine.XR.ARSubsystems.TrackableType.PlaneWithinBounds;
+    private UnityEngine.XR.ARSubsystems.TrackableType _trackingType = UnityEngine.XR.ARSubsystems.TrackableType.PlaneWithinPolygon;
     public UnityEngine.XR.ARSubsystems.TrackableType TrackingType
     {
         get
@@ -366,6 +366,32 @@ public class PlacementController : MonoBehaviour
         RotateContainer(0, angle, 0);
     }
 
+    public void MoveZ(float offset)
+    {
+        //Making rotation
+        Container.transform.Translate(new Vector3(0, offset, 0));
+
+        //Refreshing current position
+        _containerPosition = Container.transform.position;
+    }
+
+    public void MoveX(float offset)
+    {
+        //Making rotation
+        Container.transform.Translate(new Vector3(offset, 0, 0));
+
+        //Refreshing current position
+        _containerPosition = Container.transform.position;
+    }
+
+    public void MoveY(float offset)
+    {
+        //Making rotation
+        Container.transform.Translate(new Vector3(0, 0, offset));
+
+        //Refreshing current position
+        _containerPosition = Container.transform.position;
+    }
 
     private void Awake()
     {

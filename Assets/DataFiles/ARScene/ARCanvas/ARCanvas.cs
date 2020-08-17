@@ -7,6 +7,7 @@ using UnityEngine;
 public class ARCanvas : MonoBehaviour
 {
 
+
     /// <summary>
     /// Method for showing dialog window
     /// </summary>
@@ -98,6 +99,16 @@ public class ARCanvas : MonoBehaviour
     private ClickableImage _showCoversButton = null;
 
     /// <summary>
+    /// Show precise positioning button
+    /// </summary>
+    private ClickableImage _showPrecisePositioningButton = null;
+
+    /// <summary>
+    /// Hide precise positioning button
+    /// </summary>
+    private ClickableImage _hidePrecisePositioningButton = null;
+
+    /// <summary>
     /// Reference to circle controller
     /// </summary>
     private CircleController _circleController = null;
@@ -106,6 +117,11 @@ public class ARCanvas : MonoBehaviour
     /// loading page element
     /// </summary>
     private LoadingPage _loadingPage = null;
+
+    /// <summary>
+    /// Component for precise positioning
+    /// </summary>
+    private PrecisePositioningComponent _precisePoistioningComponent = null;
 
     [SerializeField]
     private GameObject _placementControllerGO;
@@ -145,6 +161,7 @@ public class ARCanvas : MonoBehaviour
 
         this._dialogWindow = this.GetComponentInChildren<DialogWindow>(true);
         this._circleController = this.GetComponentInChildren<CircleController>(true);
+        this._precisePoistioningComponent = this.GetComponentInChildren<PrecisePositioningComponent>(true);
 
         var waitingForSurfaceLabelGO = this.transform.Find("WaitingForSurfaceLabel").gameObject;
 
@@ -154,6 +171,8 @@ public class ARCanvas : MonoBehaviour
         var hideDoorButtonGO = this.transform.Find("HideDoorsButton").gameObject;
         var showCoversButtonGO = this.transform.Find("ShowCoversButton").gameObject;
         var hideCoversButtonGO = this.transform.Find("HideCoversButton").gameObject;
+        var showPrecisePositioningButtonGO = this.transform.Find("ShowPreciseButton").gameObject;
+        var hidePrecisePositioningButtonGO = this.transform.Find("HidePreciseButton").gameObject;
 
         var loadingPageGO = this.transform.Find("LoadingPage").gameObject;
 
@@ -168,6 +187,8 @@ public class ARCanvas : MonoBehaviour
         this._hideDoorsButton = hideDoorButtonGO.GetComponent<ClickableImage>();
         this._showCoversButton = showCoversButtonGO.GetComponent<ClickableImage>();
         this._hideCoversButton = hideCoversButtonGO.GetComponent<ClickableImage>();
+        this._showPrecisePositioningButton = showPrecisePositioningButtonGO.GetComponent<ClickableImage>();
+        this._hidePrecisePositioningButton = hidePrecisePositioningButtonGO.GetComponent<ClickableImage>();
 
         this._loadingPage = loadingPageGO.GetComponent<LoadingPage>();
 
@@ -248,6 +269,9 @@ public class ARCanvas : MonoBehaviour
             this._hideDoorsButton.gameObject.SetActive(false);
             this._showCoversButton.gameObject.SetActive(false);
             this._hideCoversButton.gameObject.SetActive(false);
+            this._showPrecisePositioningButton.gameObject.SetActive(false);
+            this._hidePrecisePositioningButton.gameObject.SetActive(false);
+            this._precisePoistioningComponent.DrawIn();
         }
         else if (_placementController.PlacementControllerState == PlacementControllerState.indicatorPresented)
         {
@@ -258,6 +282,9 @@ public class ARCanvas : MonoBehaviour
             this._hideDoorsButton.gameObject.SetActive(false);
             this._showCoversButton.gameObject.SetActive(false);
             this._hideCoversButton.gameObject.SetActive(false);
+            this._showPrecisePositioningButton.gameObject.SetActive(false);
+            this._hidePrecisePositioningButton.gameObject.SetActive(false);
+            this._precisePoistioningComponent.DrawIn();
         }
         else if (_placementController.PlacementControllerState == PlacementControllerState.modelPresented)
         {
@@ -303,6 +330,17 @@ public class ARCanvas : MonoBehaviour
             {
                 this._showCoversButton.gameObject.SetActive(false);
                 this._hideCoversButton.gameObject.SetActive(false);
+            }
+
+            if(_precisePoistioningComponent.ShouldBeDrawnOut)
+            {
+                this._showPrecisePositioningButton.gameObject.SetActive(false);
+                this._hidePrecisePositioningButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                this._showPrecisePositioningButton.gameObject.SetActive(true);
+                this._hidePrecisePositioningButton.gameObject.SetActive(false);
             }
         }
 
@@ -389,6 +427,22 @@ public class ARCanvas : MonoBehaviour
     }
 
     /// <summary>
+    /// Method invoked when show precise button is clicked
+    /// </summary>
+    public void HandleShowPreciseButtonClicked()
+    {
+        _precisePoistioningComponent.DrawOut();
+    }
+
+    /// <summary>
+    /// Method invoked when hide precise button is clicked
+    /// </summary>
+    public void HandleHidePreciseButtonClicked()
+    {
+        _precisePoistioningComponent.DrawIn();
+    }
+
+    /// <summary>
     /// Method used for displaying dialog window to go back to previous scene
     /// </summary>
     private void _showBackFromARSceneDialogWindow()
@@ -403,4 +457,55 @@ public class ARCanvas : MonoBehaviour
            "#3EACAB");
     }
 
+    public void HandleMoveUpButtonClicked()
+    {
+        _placementController.MoveZ(Common.PrecisePositionPositionDelta);
+    }
+
+    public void HandleMoveDownButtonClicked()
+    {
+        _placementController.MoveZ(-Common.PrecisePositionPositionDelta);
+    }
+
+    public void HandleMoveBackButtonClicked()
+    {
+        _placementController.MoveY(Common.PrecisePositionPositionDelta);
+    }
+
+    public void HandleMoveForwardButtonClicked()
+    {
+        _placementController.MoveY(-Common.PrecisePositionPositionDelta);
+    }
+
+    public void HandleMoveLeftButtonClicked()
+    {
+        _placementController.MoveX(Common.PrecisePositionPositionDelta);
+    }
+
+    public void HandleMoveRightButtonClicked()
+    {
+        _placementController.MoveX(-Common.PrecisePositionPositionDelta);
+    }
+
+    public void HandleRotateLeftButtonClicked()
+    {
+        var newValue = _circleController.Value - Common.PrecisePositionRotateDelta;
+
+        if (newValue > 360) newValue = newValue - 360;
+        if (newValue < 0) newValue = newValue + 360;
+
+        _placementController.AssingContainerAngle(newValue);
+        _circleController.ChangeValue(newValue);
+    }
+
+    public void HandleRotateRightButtonClicked()
+    {
+        var newValue = _circleController.Value + Common.PrecisePositionRotateDelta;
+
+        if (newValue > 360) newValue = newValue - 360;
+        if (newValue < 0) newValue = newValue + 360;
+
+        _placementController.AssingContainerAngle(newValue);
+        _circleController.ChangeValue(newValue);
+    }
 }

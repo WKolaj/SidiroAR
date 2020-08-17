@@ -80,6 +80,47 @@ public static class Common
         }
     }
 
+    /// <summary>
+    /// Rotatation delta
+    /// </summary>
+    public static float PrecisePositionRotateDelta
+    {
+        get
+        {
+            //Returning value from model scale or 1.0 as default value if it was not set before
+            if (!PlayerPrefs.HasKey("PrecisePositionRotateDelta"))
+                PlayerPrefs.SetFloat("PrecisePositionRotateDelta", 0.25f);
+
+            return PlayerPrefs.GetFloat("PrecisePositionRotateDelta");
+        }
+
+        set
+        {
+            PlayerPrefs.SetFloat("PrecisePositionRotateDelta", value);
+        }
+    }
+
+    /// <summary>
+    /// Precise position x delta
+    /// </summary>
+    public static float PrecisePositionPositionDelta
+    {
+        get
+        {
+            //Returning value from model scale or 1.0 as default value if it was not set before
+            if (!PlayerPrefs.HasKey("PrecisePositionPositionDelta"))
+                PlayerPrefs.SetFloat("PrecisePositionPositionDelta", 0.005f);
+
+            return PlayerPrefs.GetFloat("PrecisePositionPositionDelta");
+        }
+
+        set
+        {
+            PlayerPrefs.SetFloat("PrecisePositionPositionDelta", value);
+        }
+    }
+
+
     public static void LoadARScene()
     {
         SceneManager.LoadScene("ARScene");
