@@ -15,6 +15,10 @@ EditorBuildSettings:
     path: Assets/DataFiles/ARScene/ARScene.unity
     guid: d3b693ee99f99e747b58c20bf0e35479
   m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: b25ee48dbc7febe42b1f36499b60538e,
+      type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: a490ab0d8b01ac045b093a1d4b63bd66,
+      type: 2}
     com.unity.addressableassets: {fileID: 11400000, guid: 0cc85976eca317746bb57d89b074cbd0,
       type: 2}
     com.unity.xr.management.arcore_loader: {fileID: 11400000, guid: 96a9e3b01465605409af429d91ff4b19,
